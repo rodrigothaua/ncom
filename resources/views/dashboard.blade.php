@@ -6,100 +6,99 @@
     <title>Dashboard - Ncom</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            overflow-x: hidden;
-        }
-        .sidebar {
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background-color: #343a40;
-            color: white;
-            width: 250px;
-        }
-        .sidebar a {
-            color: white;
-            text-decoration: none;
-            padding: 15px;
-            display: block;
-        }
-        .sidebar a:hover {
-            background-color: #495057;
-        }
-        .content {
-            margin-left: 250px;
-            padding: 20px;
-        }
-    </style>
 </head>
 <body>
     <!-- Sidebar -->
-    <div class="sidebar">
-        <h2 class="text-center py-4">Ncom</h2>
-        <a href="/dashboard">Dashboard</a>
-        <a href="/users">Usuários</a>
-        <a href="/settings">Configurações</a>
-        <a href="/logout">Sair</a>
+    <div class="sidebar bg-dark text-light p-3" style="height: 100vh; position: fixed; width: 250px;">
+        <h2>Ncom</h2>
+        <a href="/dashboard" class="d-block text-light py-2">Dashboard</a>
+        <a href="/users" class="d-block text-light py-2">Usuários</a>
+        <a href="{{ route('processos.index') }}" class="d-block text-light py-2">Processos de Compras</a>
+        <a href="/settings" class="d-block text-light py-2">Configurações</a>
+        <a href="/logout" class="d-block text-light py-2">Sair</a>
     </div>
 
-    <!-- Content -->
-    <div class="content">
-        <!-- Header -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
-            <div class="container-fluid">
-                <span class="navbar-brand mb-0 h1">Dashboard</span>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Perfil</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/logout">Sair</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Main Content -->
+    <!-- Main Content -->
+    <div class="content" style="margin-left: 250px; padding: 20px;">
         <h1>Bem-vindo, {{ Auth::user()->name }}!</h1>
-        <p class="text-muted">Aqui está o resumo do sistema:</p>
+        <p class="text-muted">Resumo do sistema:</p>
 
-        <!-- Example Cards -->
+        <!-- Estatísticas -->
         <div class="row">
             <div class="col-md-4">
                 <div class="card text-white bg-primary mb-3">
                     <div class="card-body">
-                        <h5 class="card-title">Usuários</h5>
-                        <p class="card-text">Gerencie os usuários cadastrados no sistema.</p>
+                        <h5 class="card-title">Total de Usuários</h5>
+                        <p class="card-text fs-4">{{ $totalUsers }}</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card text-white bg-success mb-3">
                     <div class="card-body">
-                        <h5 class="card-title">Relatórios</h5>
-                        <p class="card-text">Acesse relatórios e estatísticas.</p>
+                        <h5 class="card-title">Novos Usuários (7 dias)</h5>
+                        <p class="card-text fs-4">{{ $recentUsers }}</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card text-white bg-warning mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Configurações</h5>
-                        <p class="card-text">Personalize as configurações do sistema.</p>
-                    </div>
-                </div>
+        </div>
+
+        <!-- Gráfico -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">Cadastros nos Últimos 7 Dias</h5>
+                <canvas id="userChart" width="400" height="200"></canvas>
             </div>
         </div>
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Dados do gráfico enviados pelo Laravel
+        const labels = @json($labels);
+        const data = @json($data);
+
+        // Configuração do Chart.js
+        const ctx = document.getElementById('userChart').getContext('2d');
+        const userChart = new Chart(ctx, {
+            type: 'line', // Tipo do gráfico
+            data: {
+                labels: labels, // Datas
+                datasets: [{
+                    label: 'Usuários Cadastrados',
+                    data: data, // Contagem de cadastros
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false // Ocultar legenda
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Data'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Cadastros'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>

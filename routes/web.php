@@ -1,9 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Auth;
 
+
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProcessoCompraController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -27,9 +29,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
-Route::get('/logout', function () {
-    Auth::logout();
-    return redirect('/login');
-});
+Route::resource('processos', ProcessoCompraController::class)->middleware('auth');
 
 require __DIR__.'/auth.php';

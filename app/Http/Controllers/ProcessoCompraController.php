@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProcessoCompra;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class ProcessoCompraController extends Controller
 {
@@ -59,7 +60,25 @@ class ProcessoCompraController extends Controller
         // Redireciona para a página de processos com uma mensagem de sucesso
         return redirect()->route('processos.index')->with('success', 'Processo criado com sucesso!');
     }
+    
+    /**
+     * Método para calcular o status com base na data vigente.
+     */
+    private function calcularStatus($data_vigente, $hoje)
+    {
+        // Se a data vigente for hoje ou no futuro
+        if ($data_vigente->isToday() || $data_vigente->isFuture()) {
+            return 'verde'; // Status Verde
+        }
 
+        // Se a data vigente está a 7 dias ou menos de diferença do hoje
+        if ($data_vigente->diffInDays($hoje) <= 7) {
+            return 'amarelo'; // Status Amarelo
+        }
+
+        // Caso contrário, o status será vermelho
+        return 'vermelho'; // Status Vermelho
+    }
 
 }
 

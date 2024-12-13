@@ -15,7 +15,7 @@ class CreateProcessosComprasTable extends Migration
     {
         Schema::create('processo_compras', function (Blueprint $table) {
             $table->id();
-            $table->string('numero_processo')->unique();
+            $table->string('numero_processo');
             $table->string('descricao');
             $table->date('data_vigente');
             $table->timestamps();
@@ -29,6 +29,6 @@ class CreateProcessosComprasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('processos_compras');
+        Schema::dropIfExists('processo_compras');
     }
 }

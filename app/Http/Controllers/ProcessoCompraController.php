@@ -7,42 +7,59 @@ use Illuminate\Http\Request;
 
 class ProcessoCompraController extends Controller
 {
-    //Gerenciador de processos
     public function index()
     {
         $processos = ProcessoCompra::all();
 
-        // Calcular status com base na data vigente
-        foreach ($processos as $processo) {
-            $diff = now()->diffInMonths($processo->data_vigente, false);
-
-            if ($diff > 12) {
-                $processo->status = 'green';
-            } elseif ($diff > 6) {
-                $processo->status = 'yellow';
-            } else {
-                $processo->status = 'red';
-            }
-        }
+        // Garantir que a data seja um objeto Carbon
+        $processos->each(function ($processo) {
+            $processo->data_vigente = \Carbon\Carbon::parse($processo->data_vigente);
+        });
 
         return view('processos.index', compact('processos'));
     }
 
     public function create()
     {
+        // Retorna a view para criar um novo processo de compra
         return view('processos.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'numero_processo' => 'required|unique:processos_compras',
-            'descricao' => 'required',
+            'numero_processo' => 'required|string|max:255',
+            'descricao' => 'required|string|max:1000',
             'data_vigente' => 'required|date',
         ]);
 
-        ProcessoCompra::create($request->all());
+        // Lógica para definir o status baseado na data vigente
+        $data_vigente = Carbon::parse($request->data_vigente);
+        $hoje = Carbon::today();
 
-        return redirect()->route('processos.index')->with('success', 'Processo cadastrado com sucesso!');
+        if ($data_vigente->isToday() || $data_vigente->isFuture()) {
+            // Se a data vigente for hoje ou no futuro, o status será verde
+            $status = 'verde';
+        } elseif ($data_vigente->diffInDays($hoje) <= 7) {
+            // Se a data vigente estiver a 7 dias ou menos do hoje, o status será amarelo
+            $status = 'amarelo';
+        } else {
+            // Caso contrário, o status será vermelho
+            $status = 'vermelho';
+        }
+
+        // Cria o novo processo
+        ProcessoCompra::create([
+            'numero' => $request->numero,
+            'descricao' => $request->descricao,
+            'data_vigente' => $request->data_vigente,
+            'status' => $status, // Atribui o status calculado
+        ]);
+
+        // Redireciona para a página de processos com uma mensagem de sucesso
+        return redirect()->route('processos.index')->with('success', 'Processo criado com sucesso!');
     }
+
+
 }
+

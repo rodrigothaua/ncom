@@ -9,5 +9,10 @@ class ProcessoCompra extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['numero_processo', 'descricao', 'data_vigente'];
+    protected $fillable = [
+        'numero_processo',
+        'descricao',
+        'data_vigente',
+    ];
 }
+

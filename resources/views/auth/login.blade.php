@@ -1,36 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Ncom</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-    <div class="container d-flex align-items-center justify-content-center vh-100">
-        <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
+@extends('layouts.app')
+
+@section('content')
+<div class="container d-flex align-items-center justify-content-center vh-100">
+    <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
             <h2 class="text-center mb-4">Login</h2>
-            <form action="/login" method="POST">
-                <!-- Adicione o token CSRF no Laravel -->
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                
-                <!-- Campo de Email -->
+            <form action="{{ route('login') }}" method="POST">
+                @csrf
                 <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" id="email" name="email" class="form-control" placeholder="Digite seu email" required>
+                    <label for="email" class="form-label">E-mail</label>
+                    <input type="email" name="email" id="email" class="form-control" required>
                 </div>
-                
-                <!-- Campo de Senha -->
                 <div class="mb-3">
                     <label for="password" class="form-label">Senha</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="Digite sua senha" required>
+                    <input type="password" name="password" id="password" class="form-control" required>
                 </div>
-
-                <!-- Botão de Login -->
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">Entrar</button>
-                </div>
+                <button type="submit" class="btn btn-primary">Entrar</button>
             </form>
             
             <!-- Link de Cadastro -->
@@ -39,8 +23,4 @@
             </div>
         </div>
     </div>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    @endsection

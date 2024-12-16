@@ -10,12 +10,24 @@ class ProcessoCompraController extends Controller
 {
     public function index()
     {
-        $processos = ProcessoCompra::all();
+        $processos = ProcessoCompra::orderBy('data_vigente', 'asc')->get();
 
-        // Garantir que a data seja um objeto Carbon
-        $processos->each(function ($processo) {
-            $processo->data_vigente = \Carbon\Carbon::parse($processo->data_vigente);
-        });
+        // Calcular status de cada processo com base na data vigente
+        foreach ($processos as $processo) {
+            $dataAtual = Carbon::now();
+            $dataVigente = Carbon::parse($processo->data_vigente);
+            $diferencaMeses = $dataAtual->diffInMonths($dataVigente, false);
+
+            if ($diferencaMeses < 0) {
+                $processo->status = 'Vermelho'; // Vencido (vermelho)
+            } elseif ($diferencaMeses <= 3) {
+                $processo->status = 'Amarelo'; // 3 meses ou menos (amarelo)
+            } elseif ($diferencaMeses <= 6) {
+                $processo->status = 'Laranja'; // 6 meses ou menos (laranja)
+            } elseif ($diferencaMeses > 12) {
+                $processo->status = 'sem-cor'; // Mais de 1 ano (sem cor)
+            }
+        }
 
         return view('processos.index', compact('processos'));
     }
@@ -28,56 +40,21 @@ class ProcessoCompraController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'numero_processo' => 'required|string|max:255',
-            'descricao' => 'required|string|max:1000',
+        // Validação do formulário
+        $validatedData = $request->validate([
+            'numero_processo' => 'required|numeric',
+            'descricao' => 'required|string|max:255',
             'data_vigente' => 'required|date',
         ]);
 
-        // Lógica para definir o status baseado na data vigente
-        $data_vigente = Carbon::parse($request->data_vigente);
-        $hoje = Carbon::today();
-
-        if ($data_vigente->isToday() || $data_vigente->isFuture()) {
-            // Se a data vigente for hoje ou no futuro, o status será verde
-            $status = 'verde';
-        } elseif ($data_vigente->diffInDays($hoje) <= 7) {
-            // Se a data vigente estiver a 7 dias ou menos do hoje, o status será amarelo
-            $status = 'amarelo';
-        } else {
-            // Caso contrário, o status será vermelho
-            $status = 'vermelho';
-        }
-
-        // Cria o novo processo
         ProcessoCompra::create([
-            'numero' => $request->numero,
-            'descricao' => $request->descricao,
-            'data_vigente' => $request->data_vigente,
-            'status' => $status, // Atribui o status calculado
+            'numero_processo' => $validatedData['numero_processo'],
+            'descricao' => $validatedData['descricao'],
+            'data_vigente' => $validatedData['data_vigente'],
         ]);
 
         // Redireciona para a página de processos com uma mensagem de sucesso
-        return redirect()->route('processos.index')->with('success', 'Processo criado com sucesso!');
-    }
-    
-    /**
-     * Método para calcular o status com base na data vigente.
-     */
-    private function calcularStatus($data_vigente, $hoje)
-    {
-        // Se a data vigente for hoje ou no futuro
-        if ($data_vigente->isToday() || $data_vigente->isFuture()) {
-            return 'verde'; // Status Verde
-        }
-
-        // Se a data vigente está a 7 dias ou menos de diferença do hoje
-        if ($data_vigente->diffInDays($hoje) <= 7) {
-            return 'amarelo'; // Status Amarelo
-        }
-
-        // Caso contrário, o status será vermelho
-        return 'vermelho'; // Status Vermelho
+        return redirect()->route('processos.index')->with('success', 'Processo cadastrado com sucesso!');
     }
 
 }

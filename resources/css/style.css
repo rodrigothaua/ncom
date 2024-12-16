@@ -15,3 +15,16 @@ body {
 .card-text {
     font-size: 1rem;
 }
+
+/* Exemplo de estilos para tabela */
+.table-red tr {
+    background-color: red !important;
+}
+
+.table-yellow tr {
+    background-color: yellow !important;
+}
+
+.table-orange tr {
+    background-color: orange !important;
+}

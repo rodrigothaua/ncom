@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.table-orange {
+    background-color: #FFA500 !important; /* Cor laranja */
+    color: #000000; /* Texto preto para contraste */
+}
+
+body{
+    background-color: #000000;
+}

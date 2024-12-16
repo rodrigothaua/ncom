@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProcessoCompraController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use Illuminate\Support\Facades\Auth;
 
 // Página inicial (redirect para o dashboard ou outra página desejada)
 Route::get('/', function () {
@@ -15,9 +16,12 @@ Route::get('/', function () {
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 // Rotas de login e registro
-Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('login', [LoginController::class, 'login']);
-Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+// Rota para exibir o formulário de login
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+// Rota para processar o login
+Route::post('/login', [AuthController::class, 'login']);
+// Rota para logout
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('register', [RegisterController::class, 'register']);
 
@@ -56,3 +60,6 @@ Route::prefix('processos')->group(function () {
     Route::get('/', [ProcessoCompraController::class, 'index'])->name('processos.index');  // Exibe os processos
     Route::post('/', [ProcessoCompraController::class, 'store'])->name('processos.store');   // Armazena um novo processo
 });
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -3,16 +3,17 @@
 @section('content')
 <div class="container">
     <h1 class="mb-4">Gerenciamento de Processos</h1>
+    
     <a href="#" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalNovoProcesso">Novo Processo</a>
 
-    <table class="table table-bordered">
-        <thead class="table-dark">
+    <table class="table">
+        <thead>
             <tr>
-                <th>#</th>
-                <th>Número do Processo</th>
-                <th>Descrição</th>
-                <th>Data Vigente</th>
-                <th>Status</th>
+                <th scope="col">#</th>
+                <th scope="col">Número do Processo</th>
+                <th scope="col">Descrição</th>
+                <th scope="col">Data Vigente</th>
+                <th scope="col">Status</th>
             </tr>
         </thead>
         <tbody>
@@ -26,13 +27,13 @@
                         } elseif ($processo->status === 'Verde') {
                             $rowClass = 'table-success';
                         } elseif ($processo->status === 'Laranja') {
-                            $rowClass = 'table-orange';
+                            $rowClass = 'table-info';
                         } else {
-                            $rowClass = '';
+                            $rowClass = 'table-light';
                         }
                     @endphp
                     <tr class="{{ $rowClass }}">
-                    <td>{{ $processo->id}}</td>
+                        <th>{{ $processo->id}}</th>
                         <td>{{ $processo->numero_processo }}</td>
                         <td>{{ $processo->descricao }}</td>
                         <td>{{ \Carbon\Carbon::parse($processo->data_vigente)->format('d/m/Y') }}</td>

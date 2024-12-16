@@ -6,6 +6,9 @@ use App\Models\ProcessoCompra;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
+// Adicione esta linha para importar a classe Controller corretamente
+use App\Http\Controllers\Controller;
+
 class ProcessoCompraController extends Controller
 {
     public function index()
@@ -55,6 +58,31 @@ class ProcessoCompraController extends Controller
 
         // Redireciona para a página de processos com uma mensagem de sucesso
         return redirect()->route('processos.index')->with('success', 'Processo cadastrado com sucesso!');
+    }
+
+    public function edit($id)
+    {
+        $processo = ProcessoCompra::findOrFail($id);
+        return view('processos.edit', compact('processo'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'numero_processo' => 'required|unique:processo_compras,numero_processo,' . $id,
+            'descricao' => 'required',
+            'data_vigente' => 'required|date',
+        ]);
+
+        $processo = ProcessoCompra::findOrFail($id);
+        $processo->update($validated);
+        return redirect()->route('processos.index');
+    }
+
+    public function destroy($id)
+    {
+        ProcessoCompra::destroy($id);
+        return redirect()->route('processos.index');
     }
 
 }

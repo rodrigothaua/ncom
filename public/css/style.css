@@ -1,0 +1,30 @@
+/* resources/css/styles.css */
+body {
+    background-color: #f8f9fa;
+}
+
+.navbar {
+    margin-bottom: 20px;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.card-text {
+    font-size: 1rem;
+}
+
+/* Exemplo de estilos para tabela */
+.table-red tr {
+    background-color: red !important;
+}
+
+.table-yellow tr {
+    background-color: yellow !important;
+}
+
+.table-orange tr {
+    background-color: orange !important;
+}

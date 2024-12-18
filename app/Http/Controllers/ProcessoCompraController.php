@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProcessoCompra;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -84,6 +85,41 @@ class ProcessoCompraController extends Controller
         ProcessoCompra::destroy($id);
         return redirect()->route('processos.index');
     }
+
+    public function getProcessosChartData()
+    {
+        try {
+            $processos = ProcessoCompra::select('status', DB::raw('COUNT(*) as total'))
+                ->groupBy('status')
+                ->get();
+    
+            return response()->json([
+                'labels' => $processos->pluck('status'), // Labels: status
+                'totals' => $processos->pluck('total'), // Totais: contagem por status
+            ]);
+        } catch (\Exception $e) {
+            // Em caso de erro, capture a exceção e retorne o erro
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function chartData()
+    {
+        // Suponha que você tenha um modelo ProcessoCompra
+        $processos = ProcessoCompra::all();
+
+        // Processa os dados conforme necessário, por exemplo:
+        $chartData = [
+            'verde' => $processos->where('status', 'Verde')->count(),
+            'laranja' => $processos->where('status', 'Laranja')->count(),
+            'amarelo' => $processos->where('status', 'Amarelo')->count(),
+            'vermelho' => $processos->where('status', 'Vermelho')->count(),
+        ];
+
+        // Retorna os dados em formato JSON
+        return response()->json($chartData);
+    }
+
 
 }
 

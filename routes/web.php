@@ -33,6 +33,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
 
+//Rota Charts
+Route::get('/processos-chart-data', [ProcessoCompraController::class, 'getProcessosChartData'])->name('processos.chart.data');
+
 // Página inicial (pública) - sem necessidade de autenticação
 Route::get('/', function () {
     return view('welcome');

@@ -18,6 +18,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Rotas protegidas por autenticação (somente para usuários autenticados)
 Route::middleware('auth')->group(function () {
+
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -29,12 +30,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/processos/{id}', [ProcessoCompraController::class, 'update'])->name('processos.update');  // Atualizar processo
     Route::delete('/processos/{id}', [ProcessoCompraController::class, 'destroy'])->name('processos.destroy');  // Deletar processo
 
-    // Rota para o logout
-    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    //Rota Charts
+    Route::get('/processos-chart-data', [ProcessoCompraController::class, 'getProcessosChartData'])->name('processos.chart.data');
 });
-
-//Rota Charts
-Route::get('/processos-chart-data', [ProcessoCompraController::class, 'getProcessosChartData'])->name('processos.chart.data');
 
 // Página inicial (pública) - sem necessidade de autenticação
 Route::get('/', function () {

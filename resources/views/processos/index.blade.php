@@ -4,7 +4,9 @@
 <div class="container">
     <h1 class="mb-4">Gerenciamento de Processos</h1>
     
-    <a href="#" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalNovoProcesso">Novo Processo</a>
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <a href="#" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalNovoProcesso">Novo Processo</a>
+    </div>
 
     <table class="table">
         <thead>

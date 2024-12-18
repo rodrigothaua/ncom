@@ -10,8 +10,9 @@
                 <div class="card text-white bg-primary mb-4">
                     <div class="card-body">
                         <h5 class="card-title">Total de Processos</h5>
-                        <canvas id="processosChart" width="400" height="200"></canvas>
-                        <p class="card-text">Aqui você pode ver o total de processos cadastrados.</p>
+                        <!--<canvas id="processosChart" width="400" height="200"></canvas>-->
+                        <p class="card-text">Visualize todo o histórico de processos.</p>
+                        <a href="{{ route('processos.index') }}" class="btn btn-light">Ver todos os processos</a>
                     </div>
                 </div>
             </div>
@@ -26,22 +27,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        $(document).ready(function() {
-            $.get('/processos-chart-data', function(data) {
-                    var ctx = document.getElementById('processosChart').getContext('2d');
-                    var chart = new Chart(ctx, {
-                        type: 'pie',
-                        data: {
-                            labels: ['Verde', 'Laranja', 'Amarelo', 'Vermelho'],
-                            datasets: [{
-                                data: [data.verde, data.laranja, data.amarelo, data.vermelho],
-                                backgroundColor: ['green', 'orange', 'yellow', 'red'],
-                            }]
-                        }
-                    });
-                });
-            });
-        </script>
 @endsection

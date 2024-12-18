@@ -9,6 +9,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <!-- Código para a renderizaçãod o Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Outros estilos específicos (se necessário) -->
     @stack('styles')
@@ -23,17 +25,17 @@
         @yield('content')
     </div>
 
-    <!-- Adicionando jQuery (requerido pelo Bootstrap para dropdowns) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Adicionando jQuery (requerido pelo Bootstrap para dropdowns) -->
+<script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
+
+<!-- Javascript main -->
+<script src="{{ asset('js/main.js') }}"></script>
 
 <!-- Adicionando Popper.js (requerido para dropdowns e tooltips do Bootstrap) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
 
 <!-- Adicionando o JavaScript do Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Código para a renderizaçãod o Charts -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </body>
 </html>

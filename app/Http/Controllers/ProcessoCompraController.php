@@ -89,17 +89,41 @@ class ProcessoCompraController extends Controller
     public function getProcessosChartData()
     {
         try {
-            $processos = ProcessoCompra::select('status', DB::raw('COUNT(*) as total'))
-                ->groupBy('status')
-                ->get();
+            // Recupere todos os processos do banco de dados
+            $processos = ProcessoCompra::all();
     
+            // Inicialize contadores para cada status
+            $verde = 0;
+            $laranja = 0;
+            $amarelo = 0;
+            $vermelho = 0;
+    
+            // Percorra todos os processos e conte o status
+            foreach ($processos as $processo) {
+                $status = $this->calcularStatus($processo->data_vigente); // Método para calcular o status com base na data
+    
+                if ($status == 'Verde') {
+                    $verde++;
+                } elseif ($status == 'Laranja') {
+                    $laranja++;
+                } elseif ($status == 'Amarelo') {
+                    $amarelo++;
+                } elseif ($status == 'Vermelho') {
+                    $vermelho++;
+                }
+            }
+    
+            // Retorne os dados para o gráfico
             return response()->json([
-                'labels' => $processos->pluck('status'), // Labels: status
-                'totals' => $processos->pluck('total'), // Totais: contagem por status
+                'verde' => $verde,
+                'laranja' => $laranja,
+                'amarelo' => $amarelo,
+                'vermelho' => $vermelho
             ]);
         } catch (\Exception $e) {
-            // Em caso de erro, capture a exceção e retorne o erro
-            return response()->json(['error' => $e->getMessage()], 500);
+            // Log de erro para diagnóstico
+            \Log::error('Erro ao recuperar dados para o gráfico: ' . $e->getMessage());
+            return response()->json(['error' => 'Erro ao processar os dados'], 500);
         }
     }
 

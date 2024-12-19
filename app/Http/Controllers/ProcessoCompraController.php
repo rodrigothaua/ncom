@@ -14,24 +14,16 @@ class ProcessoCompraController extends Controller
 {
     public function index()
     {
-        $processos = ProcessoCompra::orderBy('data_vigente', 'asc')->get();
+        // Consultar todos os processos e ordenar pela data de vencimento
+        $processos = ProcessoCompra::orderBy('data_vencimento', 'asc')->get();
 
-        // Calcular status de cada processo com base na data vigente
-        foreach ($processos as $processo) {
-            $dataAtual = Carbon::now();
-            $dataVigente = Carbon::parse($processo->data_vigente);
-            $diferencaMeses = $dataAtual->diffInMonths($dataVigente, false);
+        // Calcular status para cada processo
+        $processos = $processos->map(function ($processo) {
+            // Cálculo do status baseado na data de vencimento
+            $processo->status = $this->calcularStatus($processo->data_inicio, $processo->data_vencimento);
 
-            if ($diferencaMeses < 0) {
-                $processo->status = 'Vermelho'; // Vencido (vermelho)
-            } elseif ($diferencaMeses <= 3) {
-                $processo->status = 'Amarelo'; // 3 meses ou menos (amarelo)
-            } elseif ($diferencaMeses <= 6) {
-                $processo->status = 'Laranja'; // 6 meses ou menos (laranja)
-            } elseif ($diferencaMeses > 12) {
-                $processo->status = 'sem-cor'; // Mais de 1 ano (sem cor)
-            }
-        }
+            return $processo;
+        });
 
         return view('processos.index', compact('processos'));
     }
@@ -44,22 +36,53 @@ class ProcessoCompraController extends Controller
 
     public function store(Request $request)
     {
-        // Validação do formulário
-        $validatedData = $request->validate([
-            'numero_processo' => 'required|numeric',
-            'descricao' => 'required|string|max:255',
-            'data_vigente' => 'required|date',
+        // Validação dos campos de entrada
+        $validated = $request->validate([
+            'numero_processo' => 'required',
+            'descricao' => 'required',
+            'data_inicio' => 'required|date',
+            'data_vencimento' => 'required|date|after:data_inicio',
         ]);
 
+        // Criação de um novo processo
         ProcessoCompra::create([
-            'numero_processo' => $validatedData['numero_processo'],
-            'descricao' => $validatedData['descricao'],
-            'data_vigente' => $validatedData['data_vigente'],
+            'numero_processo' => $validated['numero_processo'],
+            'descricao' => $validated['descricao'],
+            'data_inicio' => $validated['data_inicio'],
+            'data_vencimento' => $validated['data_vencimento'],
         ]);
 
         // Redireciona para a página de processos com uma mensagem de sucesso
         return redirect()->route('processos.index')->with('success', 'Processo cadastrado com sucesso!');
     }
+
+    private function calcularStatus($dataInicio, $dataVencimento)
+    {
+        $hoje = Carbon::now()->startOfDay();  // Ignora a parte do horário, considera apenas a data
+        $dataVencimento = Carbon::parse($dataVencimento)->startOfDay();  // Também ignora o horário
+
+        // Cálculo do status baseado nas datas
+        $diferencaMeses = $hoje->diffInMonths($dataVencimento, false); // False para permitir diferença negativa
+
+        if ($dataVencimento->isPast()) {
+            return 'Vermelho';  // Prazo vencido
+        }
+
+        if ($diferencaMeses > 12) {
+            return 'Verde';  // Mais de 1 ano para o vencimento
+        }
+
+        if ($diferencaMeses <= 3) {
+            return 'Amarelo';  // 3 meses ou menos para o vencimento
+        }
+
+        if ($diferencaMeses <= 6) {
+            return 'Laranja';  // 6 meses ou menos para o vencimento
+        }
+
+        return 'Sem cor';  // Caso algum outro critério
+    }
+
 
     public function edit($id)
     {

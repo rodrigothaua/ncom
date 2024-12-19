@@ -17,7 +17,9 @@ class CreateProcessosComprasTable extends Migration
             $table->id();
             $table->string('numero_processo');
             $table->string('descricao');
-            $table->date('data_vigente');
+            //$table->date('data_vigente');
+            $table->date('data_inicio');
+            $table->date('data_vencimento');
             $table->timestamps();
         });
     }

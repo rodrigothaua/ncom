@@ -16,18 +16,32 @@ body {
     font-size: 1rem;
 }
 
-/* Exemplo de estilos para tabela */
-.table-red tr {
-    background-color: red !important;
+/* Estilos para as cores dos status */
+.bg-verde {
+    background-color: #28a745; /* Verde para mais de 1 ano */
+    color: white;
 }
 
-.table-yellow tr {
-    background-color: yellow !important;
+.bg-amarelo {
+    background-color: #ffc107; /* Amarelo para 3 meses restantes */
+    color: black;
 }
 
-.table-orange tr {
-    background-color: orange !important;
+.bg-laranja {
+    background-color: #fd7e14; /* Laranja para 6 meses restantes */
+    color: white;
 }
+
+.bg-vermelho {
+    background-color: #dc3545; /* Vermelho para vencido */
+    color: white;
+}
+
+/* Estilos adicionais */
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
 
 #processosPieChart{
     width: 400px;

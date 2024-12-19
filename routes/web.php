@@ -31,7 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/processos/{id}', [ProcessoCompraController::class, 'destroy'])->name('processos.destroy');  // Deletar processo
 
     //Rota Charts
-    Route::get('/processos-chart-data', [ProcessoCompraController::class, 'getProcessosChartData'])->name('processos.chart.data');
+    Route::get('/processos-pie-chart-data', [ProcessoCompraController::class, 'getProcessosPieChartData']);
 });
 
 // Página inicial (pública) - sem necessidade de autenticação

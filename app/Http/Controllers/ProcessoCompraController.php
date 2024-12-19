@@ -86,63 +86,49 @@ class ProcessoCompraController extends Controller
         return redirect()->route('processos.index');
     }
 
-    public function getProcessosChartData()
+    public function getProcessosPieChartData()
     {
         try {
-            // Recupere todos os processos do banco de dados
+            // Obtenha os dados de todos os processos
             $processos = ProcessoCompra::all();
-    
-            // Inicialize contadores para cada status
-            $verde = 0;
-            $laranja = 0;
-            $amarelo = 0;
-            $vermelho = 0;
-    
-            // Percorra todos os processos e conte o status
+
+            // Inicialize contadores para os grupos de data
+            $semCor = 0;
+            $maisDeUmAno = 0;
+            $ateSeisMeses = 0;
+            $ateTresMeses = 0;
+            $vencido = 0;
+
             foreach ($processos as $processo) {
-                $status = $this->calcularStatus($processo->data_vigente); // Método para calcular o status com base na data
-    
-                if ($status == 'Verde') {
-                    $verde++;
-                } elseif ($status == 'Laranja') {
-                    $laranja++;
-                } elseif ($status == 'Amarelo') {
-                    $amarelo++;
-                } elseif ($status == 'Vermelho') {
-                    $vermelho++;
+                $dataVigente = \Carbon\Carbon::parse($processo->data_vigente);
+                $hoje = now();
+
+                if ($dataVigente->isPast()) {
+                    $vencido++;
+                } elseif ($hoje->diffInMonths($dataVigente) <= 3) {
+                    $ateTresMeses++;
+                } elseif ($hoje->diffInMonths($dataVigente) <= 6) {
+                    $ateSeisMeses++;
+                } elseif ($hoje->diffInMonths($dataVigente) > 12) {
+                    $semCor++;
                 }
             }
-    
-            // Retorne os dados para o gráfico
+
+            // Total de processos
+            $total = $processos->count();
+
+            // Retorne os dados em formato JSON
             return response()->json([
-                'verde' => $verde,
-                'laranja' => $laranja,
-                'amarelo' => $amarelo,
-                'vermelho' => $vermelho
+                'labels' => ['Vencido', 'Até 3 meses', 'Até 6 meses', 'Mais de 1 ano'],
+                'data' => [$vencido, $ateTresMeses, $ateSeisMeses, $semCor],
+                'total' => $total,
             ]);
         } catch (\Exception $e) {
-            // Log de erro para diagnóstico
-            \Log::error('Erro ao recuperar dados para o gráfico: ' . $e->getMessage());
+            \Log::error('Erro ao gerar dados para o gráfico: ' . $e->getMessage());
             return response()->json(['error' => 'Erro ao processar os dados'], 500);
         }
     }
 
-    public function chartData()
-    {
-        // Suponha que você tenha um modelo ProcessoCompra
-        $processos = ProcessoCompra::all();
-
-        // Processa os dados conforme necessário, por exemplo:
-        $chartData = [
-            'verde' => $processos->where('status', 'Verde')->count(),
-            'laranja' => $processos->where('status', 'Laranja')->count(),
-            'amarelo' => $processos->where('status', 'Amarelo')->count(),
-            'vermelho' => $processos->where('status', 'Vermelho')->count(),
-        ];
-
-        // Retorna os dados em formato JSON
-        return response()->json($chartData);
-    }
 
 
 }

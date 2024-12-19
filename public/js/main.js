@@ -1,15 +1,33 @@
-jQuery(document).ready(function($) {
-    $.get('/processos-chart-data', function(data) {
-        var ctx = document.getElementById('processosChart').getContext('2d');
-        var chart = new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: ['Verde', 'Laranja', 'Amarelo', 'Vermelho'],
-                datasets: [{
-                    data: [data.verde, data.laranja, data.amarelo, data.vermelho],
-                    backgroundColor: ['green', 'orange', 'yellow', 'red'],
-                }]
-            }
+document.addEventListener('DOMContentLoaded', function () {
+    // Obtenha os dados do backend
+    fetch('/processos-pie-chart-data')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('processosPieChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        data: data.data,
+                        backgroundColor: ['#ff4d4d', '#ffd633', '#ffa31a', '#33cc33'], // Vermelho, Amarelo, Laranja, Verde
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Distribuição de Processos por Status de Data'
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao carregar os dados do gráfico:', error);
         });
-    });
 });

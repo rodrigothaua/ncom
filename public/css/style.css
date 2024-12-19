@@ -28,3 +28,8 @@ body {
 .table-orange tr {
     background-color: orange !important;
 }
+
+#processosPieChart{
+    width: 400px;
+    height: 200px;
+}

@@ -14,18 +14,29 @@ class ProcessoCompraController extends Controller
 {
     public function index()
     {
-        // Consultar todos os processos e ordenar pela data de vencimento
-        $processos = ProcessoCompra::orderBy('data_vencimento', 'asc')->get();
+        $hoje = now();
 
-        // Calcular status para cada processo
-        $processos = $processos->map(function ($processo) {
-            // Cálculo do status baseado na data de vencimento
-            $processo->status = $this->calcularStatus($processo->data_inicio, $processo->data_vencimento);
+        $processos = ProcessoCompra::orderBy('data_vencimento', 'asc')->get()->map(function ($processo) use ($hoje) {
+        $dataVencimento = \Carbon\Carbon::parse($processo->data_vencimento);
 
-            return $processo;
-        });
+        if ($hoje->greaterThan($dataVencimento)) {
+            // Prazo vencido
+            $processo->status = 'Vermelho';
+        } elseif ($hoje->diffInMonths($dataVencimento) <= 3) {
+            // Faltam 3 meses ou menos
+            $processo->status = 'Amarelo';
+        } elseif ($hoje->diffInMonths($dataVencimento) <= 6) {
+            // Faltam entre 3 e 6 meses
+            $processo->status = 'Laranja';
+        } else {
+            // Mais de 6 meses
+            $processo->status = 'Sem cor';
+        }
 
-        return view('processos.index', compact('processos'));
+        return $processo;
+    });
+
+    return view('processos.index', compact('processos'));
     }
 
     public function create()
@@ -69,7 +80,7 @@ class ProcessoCompraController extends Controller
         }
 
         if ($diferencaMeses > 12) {
-            return 'Verde';  // Mais de 1 ano para o vencimento
+            return 'Há mais de 12 meses';  // Mais de 1 ano para o vencimento
         }
 
         if ($diferencaMeses <= 3) {

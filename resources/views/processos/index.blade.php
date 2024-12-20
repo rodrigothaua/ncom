@@ -30,8 +30,8 @@
         <a href="#" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalNovoProcesso">Novo Processo</a>
     </div>
 
-    <table class="table">
-        <thead>
+    <table class="table table-striped">
+        <thead class="table-light">
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Número do Processo</th>
@@ -41,7 +41,7 @@
                 <th scope="col">Status</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="table-group-divider">
                 @foreach ($processos as $processo)
                 <tr 
                     @if (\Carbon\Carbon::parse($processo->data_vencimento)->isPast()) class="table-danger" 
@@ -58,11 +58,11 @@
                         @if (\Carbon\Carbon::parse($processo->data_vencimento)->isPast())
                             Vencido
                         @elseif (\Carbon\Carbon::parse($processo->data_vencimento)->diffInMonths() <= 3)
-                            Amarelo
+                            + 3 meses
                         @elseif (\Carbon\Carbon::parse($processo->data_vencimento)->diffInMonths() <= 6)
-                            Laranja
+                            + 6 meses
                         @else
-                            Verde
+                            + 12 meses
                         @endif
                     </td>
                 </tr>

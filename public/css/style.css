@@ -17,30 +17,21 @@ body {
 }
 
 /* Estilos para as cores dos status */
-.bg-verde {
-    background-color: #28a745; /* Verde para mais de 1 ano */
-    color: white;
+.table-danger {
+    background-color: #f8d7da;
+    color: #721c24;
 }
 
-.bg-amarelo {
-    background-color: #ffc107; /* Amarelo para 3 meses restantes */
-    color: black;
+.table-warning {
+    background-color: #fff3cd;
+    color: #856404;
 }
 
-.bg-laranja {
-    background-color: #fd7e14; /* Laranja para 6 meses restantes */
-    color: white;
+.table-orange {
+    background-color: #ffe5b4;
+    color: #8a4500;
 }
 
-.bg-vermelho {
-    background-color: #dc3545; /* Vermelho para vencido */
-    color: white;
-}
-
-/* Estilos adicionais */
-tbody tr:hover {
-    background-color: #f1f1f1;
-}
 
 
 #processosPieChart{

@@ -14,6 +14,11 @@ class DashboardController extends Controller
     public function index()
     {  
         // Lógica para o dashboard
-        return view('dashboard');  // Ou qualquer outra view do dashboard
+        $totalProcessos = ProcessoCompra::count();
+        $processosVencidos = ProcessoCompra::where('data_vencimento', '<', now())->count();
+        $processosAtivos = ProcessoCompra::where('data_vencimento', '>=', now())->count();
+        $processosPendentes = ProcessoCompra::whereBetween('data_vencimento', [now(), now()->addMonths(3)])->count();
+
+        return view('dashboard', compact('totalProcessos', 'processosVencidos', 'processosAtivos', 'processosPendentes'));
     }
 }

@@ -31,6 +31,9 @@
 <!-- Javascript main -->
 <script src="{{ asset('js/main.js') }}"></script>
 
+<!-- Código para carregar o Chart -->
+<script src="{{ asset('css/Chart.js') }}"></script>
+
 <!-- Adicionando Popper.js (requerido para dropdowns e tooltips do Bootstrap) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
 

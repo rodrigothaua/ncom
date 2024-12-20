@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\ProcessosChartController;
 
 // Rotas para autenticação (Login, Registro, Logout)
 Auth::routes();
@@ -31,7 +32,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/processos/{id}', [ProcessoCompraController::class, 'destroy'])->name('processos.destroy');  // Deletar processo
 
     //Rota Charts
-    Route::get('/processos-pie-chart-data', [ProcessoCompraController::class, 'getProcessosPieChartData']);
+    Route::get('/processos-pie-chart-data', [ProcessosChartController::class, 'getProcessosData']);
+
 });
 
 // Página inicial (pública) - sem necessidade de autenticação

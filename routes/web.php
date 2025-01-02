@@ -39,4 +39,4 @@ Route::get('/', function () {
 });
 
     //Rota Charts
-    Route::get('/processos-pie-chart-data', [ProcessosChartController::class, 'getProcessosData']);
+    Route::get('/processos-pie-chart-data', [ProcessosChartController::class, 'getPieChartData']);

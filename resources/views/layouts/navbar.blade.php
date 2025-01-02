@@ -7,7 +7,10 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('processos.index') }}">Gerenciamento de Processos</a>
+                    <a class="nav-link" href="/dashboard">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/processos">Gerenciamento de Processos</a>
                 </li>
             </ul>  
         </div>
@@ -21,16 +24,11 @@
                         Configurações
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">Perfil</a></li>
-                        <li><a class="dropdown-item" href="#">Configurações</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-person-fill"></i> Perfil</a></li>
+                        <li><a class="dropdown-item" href="/register"><i class="bi bi-person-fill-add"></i> Cadastrar novo usuário</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="/logout">Sair</a></li>
+                        <li><a class="dropdown-item" href="/logout"><i class="bi bi-box-arrow-right"></i> Sair</a></li>
                     </ul>
-                </li>
-
-                <!-- Link para Cadastrar Novo Usuário -->
-                <li class="nav-item ms-2">
-                    <a class="btn btn-primary" href="/register">Cadastrar Novo Usuário</a>
                 </li>
             </ul>
         </div>

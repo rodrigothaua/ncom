@@ -46,7 +46,7 @@
                 <tr 
                     @if (\Carbon\Carbon::parse($processo->data_vencimento)->isPast()) class="table-danger" 
                     @elseif (\Carbon\Carbon::parse($processo->data_vencimento)->diffInMonths() <= 3) class="table-warning" 
-                    @elseif (\Carbon\Carbon::parse($processo->data_vencimento)->diffInMonths() <= 6) class="table-warning" 
+                    @elseif (\Carbon\Carbon::parse($processo->data_vencimento)->diffInMonths() <= 6) class="table-info" 
                     @endif
                 >
                     <th>{{ $processo->id }}</th>

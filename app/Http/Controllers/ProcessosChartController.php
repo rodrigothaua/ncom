@@ -2,37 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use App\Models\ProcessoCompra;
 
 class ProcessosChartController extends Controller
 {
-    public function getProcessosData()
+    public function getPieChartData()
     {
-        $hoje = now();
+        // Calcula a quantidade de processos por cor
+        $verde = ProcessoCompra::where('data_vencimento', '>', now()->addDays(30))->count();
+        $amarelo = ProcessoCompra::whereBetween('data_vencimento', [now(), now()->addDays(30)])->count();
+        $vermelho = ProcessoCompra::where('data_vencimento', '<', now())->count();
 
-        $processos = DB::table('processo_compras')->get();
-
-        $resumo = [
-            'vermelho' => 0,
-            'amarelo' => 0,
-            'laranja' => 0,
-            'sem_cor' => 0
-        ];
-
-        foreach ($processos as $processo) {
-            $dataVencimento = \Carbon\Carbon::parse($processo->data_vencimento);
-
-            if ($hoje->greaterThan($dataVencimento)) {
-                $resumo['vermelho']++;
-            } elseif ($hoje->diffInMonths($dataVencimento) <= 3) {
-                $resumo['amarelo']++;
-            } elseif ($hoje->diffInMonths($dataVencimento) <= 6) {
-                $resumo['laranja']++;
-            } else {
-                $resumo['sem_cor']++;
-            }
-        }
-
-        return response()->json($resumo);
+        // Retorna os dados como JSON
+        return response()->json([
+            'verde' => $verde,
+            'amarelo' => $amarelo,
+            'vermelho' => $vermelho,
+        ]);
     }
 }

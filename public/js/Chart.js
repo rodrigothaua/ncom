@@ -1,39 +1,28 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener("DOMContentLoaded", function () {
     fetch('/processos-pie-chart-data')
         .then(response => response.json())
         .then(data => {
             const ctx = document.getElementById('processosPieChart').getContext('2d');
-            const processosChart = new Chart(ctx, {
+            new Chart(ctx, {
                 type: 'pie',
                 data: {
-                    labels: ['Vencidos', 'Perto de Vencer', 'Moderado', 'Sem Cor'],
+                    labels: ['Verde', 'Amarelo', 'Vermelho'],
                     datasets: [{
-                        data: [data.vermelho, data.amarelo, data.laranja, data.sem_cor],
-                        backgroundColor: ['#dc3545', '#ffc107', '#fd7e14', '#d3d3d3'], // Cores
+                        data: [data.verde, data.amarelo, data.vermelho],
+                        backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+                        hoverBackgroundColor: ['#218838', '#e0a800', '#c82333'],
+                        borderWidth: 1
                     }]
                 },
                 options: {
                     responsive: true,
                     plugins: {
                         legend: {
-                            position: 'bottom',
+                            position: 'right',
                         },
-                        tooltip: {
-                            callbacks: {
-                                label: function (context) {
-                                    let label = context.label || '';
-                                    if (context.raw) {
-                                        label += ': ' + context.raw;
-                                    }
-                                    return label;
-                                }
-                            }
-                        }
                     }
                 }
             });
         })
-        .catch(error => {
-            console.error('Erro ao carregar dados do gráfico:', error);
-        });
+        .catch(error => console.error('Erro ao carregar os dados do gráfico:', error));
 });

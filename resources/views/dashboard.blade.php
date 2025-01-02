@@ -81,6 +81,7 @@
         
         <div class="row">
             <div class="col-lg-3 col-md-12">
+                <strong>Resumo de processos</strong>
                 <canvas id="processosPieChart"></canvas>
             </div>
         </div>

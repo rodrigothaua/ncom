@@ -31,12 +31,12 @@ Route::middleware('auth')->group(function () {
     Route::put('/processos/{id}', [ProcessoCompraController::class, 'update'])->name('processos.update');  // Atualizar processo
     Route::delete('/processos/{id}', [ProcessoCompraController::class, 'destroy'])->name('processos.destroy');  // Deletar processo
 
-    //Rota Charts
-    Route::get('/processos-pie-chart-data', [ProcessosChartController::class, 'getProcessosData']);
-
 });
 
 // Página inicial (pública) - sem necessidade de autenticação
 Route::get('/', function () {
     return view('welcome');
 });
+
+    //Rota Charts
+    Route::get('/processos-pie-chart-data', [ProcessosChartController::class, 'getProcessosData']);

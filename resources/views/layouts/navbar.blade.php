@@ -24,7 +24,7 @@
                         Configurações
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-person-fill"></i> Perfil</a></li>
+                        <li><a class="dropdown-item" href="/perfil"><i class="bi bi-person-fill"></i> Perfil</a></li>
                         <li><a class="dropdown-item" href="/register"><i class="bi bi-person-fill-add"></i> Cadastrar novo usuário</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>

@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\ProcessosChartController;
+use App\Http\Controllers\PerfilController;
 
 // Rotas para autenticação (Login, Registro, Logout)
 Auth::routes();
@@ -30,6 +31,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/processos/{id}/edit', [ProcessoCompraController::class, 'edit'])->name('processos.edit');  // Editar processo
     Route::put('/processos/{id}', [ProcessoCompraController::class, 'update'])->name('processos.update');  // Atualizar processo
     Route::delete('/processos/{id}', [ProcessoCompraController::class, 'destroy'])->name('processos.destroy');  // Deletar processo
+
+    //Rota Perfil
+    Route::get('/perfil', [PerfilController::class, 'show'])->name('perfil');
+    Route::get('/perfil/editar', [PerfilController::class, 'edit'])->name('perfil.editar');
+    Route::put('/perfil/atualizar', [PerfilController::class, 'update'])->name('perfil.atualizar');
 
 });
 

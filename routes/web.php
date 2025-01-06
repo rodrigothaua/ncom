@@ -39,10 +39,10 @@ Route::middleware('auth')->group(function () {
 
 });
 
-// Página inicial (pública) - sem necessidade de autenticação
-Route::get('/', function () {
-    return view('welcome');
-});
+    // Página inicial (pública) - sem necessidade de autenticação
+    Route::get('/', function () {
+        return view('welcome');
+    });
 
     //Rota Charts
     Route::get('/processos-pie-chart-data', [ProcessosChartController::class, 'getPieChartData']);

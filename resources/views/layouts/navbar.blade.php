@@ -27,7 +27,14 @@
                         <li><a class="dropdown-item" href="#"><i class="bi bi-person-fill"></i> Perfil</a></li>
                         <li><a class="dropdown-item" href="/register"><i class="bi bi-person-fill-add"></i> Cadastrar novo usuário</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="/logout"><i class="bi bi-box-arrow-right"></i> Sair</a></li>
+                        <li>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+                            <a class="dropdown-item" href="/logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="bi bi-box-arrow-right"></i>
+                                Logout
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>

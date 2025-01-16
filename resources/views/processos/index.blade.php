@@ -36,6 +36,8 @@
                 <th scope="col">#</th>
                 <th scope="col">Número do Processo</th>
                 <th scope="col">Descrição</th>
+                <th scope="col">Categoria</th>
+                <th scope="col">Valor Total</th>
                 <th scope="col">Data de Início</th>
                 <th scope="col">Data de Vencimento</th>
                 <th scope="col">Status</th>
@@ -52,6 +54,8 @@
                     <th>{{ $processo->id }}</th>
                     <td>{{ $processo->numero_processo }}</td>
                     <td>{{ $processo->descricao }}</td>
+                    <td>{{ ucfirst($processo->categoria) }}</td>
+                    <td>R$ {{ number_format($processo->valor_total, 2, ',', '.') }}</td>
                     <td>{{ \Carbon\Carbon::parse($processo->data_inicio)->format('d/m/Y') }}</td>
                     <td>{{ \Carbon\Carbon::parse($processo->data_vencimento)->format('d/m/Y') }}</td>
                     <td>

@@ -49,10 +49,12 @@ class ProcessoCompraController extends Controller
     {
         // Validação dos campos de entrada
         $validated = $request->validate([
-            'numero_processo' => 'required',
-            'descricao' => 'required',
+            'numero_processo' => 'required|string|max:255',
+            'descricao' => 'required|string',
             'data_inicio' => 'required|date',
-            'data_vencimento' => 'required|date|after:data_inicio',
+            'data_vencimento' => 'required|date|after_or_equal:data_inicio',
+            'categoria' => 'required|in:consumo,permanente,serviço',
+            'valor_total' => 'required|numeric|min:0',
         ]);
 
         // Criação de um novo processo
@@ -61,6 +63,8 @@ class ProcessoCompraController extends Controller
             'descricao' => $validated['descricao'],
             'data_inicio' => $validated['data_inicio'],
             'data_vencimento' => $validated['data_vencimento'],
+            'categoria' => $validated['categoria'],
+            'valor_total' => $validated['valor_total'],
         ]);
 
         // Redireciona para a página de processos com uma mensagem de sucesso

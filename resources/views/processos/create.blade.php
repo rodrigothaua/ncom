@@ -26,12 +26,30 @@
             @csrf
             <div class="mb-3">
                 <label for="numero" class="form-label">Número do Processo</label>
-                <input type="text" class="form-control" id="numero_processo" name="numero_processo" required>
+                <input type="text" class="form-control" id="numero_processo" name="numero_processo" placeholder="Digite o número do processo" required>
             </div>
+
             <div class="mb-3">
                 <label for="descricao" class="form-label">Descrição</label>
-                <textarea class="form-control" id="descricao" name="descricao" rows="4" required></textarea>
+                <textarea class="form-control" id="descricao" name="descricao" rows="4" placeholder="Informe resumidamente a descrição do processo" required></textarea>
+
             </div>
+
+            <div class="mb-3">
+                <label for="descricao" class="form-label">Categoria</label>
+                <select class="form-select" name="categoria" id="categoria" require>
+                    <option selected>Selecione a categoria</option>
+                    <option value="consumo">Consumo</option>
+                    <option value="permanente">Permanente</option>
+                    <option value="serviço">Serviço</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="descricao" class="form-label">Valor do contrato</label>
+                <input type="number" step="0.01" class="form-control" id="valor_total" name="valor_total" placeholder="Digite o valor do contrato" required>
+            </div>
+
             <div class="mb-3">
                 <label for="data_inicio">Data de Início</label>
                 <input type="date" name="data_inicio" id="data_inicio" class="form-control" required>

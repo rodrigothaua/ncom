@@ -14,6 +14,8 @@ class ProcessoCompra extends Model
         'descricao',
         'data_inicio',
         'data_vencimento',
+        'categoria',
+        'valor_total',
     ];
 
     // Método para calcular o status com base na data de vencimento

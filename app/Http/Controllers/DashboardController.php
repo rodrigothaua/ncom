@@ -14,11 +14,25 @@ class DashboardController extends Controller
     public function index()
     {  
         // Lógica para o dashboard
-        $totalProcessos = ProcessoCompra::count();
-        $processosVencidos = ProcessoCompra::where('data_vencimento', '<', now())->count();
-        $processosAtivos = ProcessoCompra::where('data_vencimento', '>=', now())->count();
-        $processosPendentes = ProcessoCompra::whereBetween('data_vencimento', [now(), now()->addMonths(3)])->count();
+        $processos = ProcessoCompra::orderBy('data_vencimento', 'asc')->get();
+    $totalProcessos = $processos->count();
+    $totalConsumo = $processos->where('categoria', 'consumo')->count();
+    $totalPermanente = $processos->where('categoria', 'permanente')->count();
+    $totalServico = $processos->where('categoria', 'serviço')->count();
 
-        return view('dashboard', compact('totalProcessos', 'processosVencidos', 'processosAtivos', 'processosPendentes'));
+    $processosChartData = [
+        $totalConsumo,
+        $totalPermanente,
+        $totalServico
+    ];
+
+    return view('welcome', compact(
+        'processos',
+        'totalProcessos',
+        'totalConsumo',
+        'totalPermanente',
+        'totalServico',
+        'processosChartData'
+    ));
     }
 }

@@ -32,7 +32,7 @@ class ProcessoCompraController extends Controller
             // Mais de 6 meses
             $processo->status = 'Sem cor';
         }
-
+        
         return $processo;
     });
 

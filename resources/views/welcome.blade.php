@@ -30,59 +30,171 @@
             <!-- Main Content -->
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Dashboard</h1>
+                    <h1 class="h2">Visão Geral</h1>
+                </div>
+
+                <div id="filtro" class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <b>FILTRO</b>
+                        </div>
+                        <div class="card-body">
+                            <fieldset class="form-group">
+                                <form method="GET" action="#">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="orgao" class="control-label">
+                                                    Órgão
+                                                </label>
+                                                <select class="form-select select2" id="orgao" name="orgao"></select>    
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="unidade" class="control-label">
+                                                    Unidade Gestora
+                                                </label>
+                                                <select class="form-select select2" id="unidade" name="unidade"></select>    
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group"  >
+                                                <label for="fornecedor" class="control-label">
+                                                    Fornecedor
+                                                </label>
+                                                <select class="form-select select2" id="fornecedor" name="fornecedor"></select>    
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group"  >
+                                                <label for="contrato" class="control-label">
+                                                    Contrato
+                                                </label>
+                                                <select class="form-select select2" id="contrato" name="contrato"></select>    
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <button class="btn btn-success text-right" type="submit"><i class="fa fa-search"></i> Filtrar</button>         
+                                </form>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+
+                <div class="card">
+                    <div class="card-header">
+                        <b>Valor total de contratos</b>
+                    </div>
+                    <div class="card-body">
+                        
+                    </div>
+                </div>
+
+                <br>
+
+                <!-- Cards -->
+                <div class="card">
+                    <div class="card-header">
+                        <b>RESUMO/CONTRATOS</b>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="col">
+                                    <div class="card text-white bg-primary mb-3">
+                                        <div class="card-header">Total de Contratos</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ $totalProcessos }}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card text-white bg-success mb-3">
+                                        <div class="card-header">Total de Consumo</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ $totalConsumo }}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card text-white bg-warning mb-3">
+                                        <div class="card-header">Total de Permanentes</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ $totalPermanente }}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card text-white bg-danger mb-3">
+                                        <div class="card-header">Total de Serviços</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ $totalServico }}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <!-- Chart -->
+                                <canvas id="processosChart" width="400" height="150"></canvas>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="col">
+                                    <div class="card text-white bg-danger mb-3">
+                                        <div class="card-header">VENCEM(-30 DIAS)</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ $totalProcessos }}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card text-white mb-3" style="background: #FF7701;">
+                                        <div class="card-header">VENCEM (30 A 60 DIAS)</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ $totalConsumo }}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card text-white bg-warning mb-3">
+                                        <div class="card-header">VENCEM(60 A 90 DIAS)</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ $totalPermanente }}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card text-white bg-success mb-3">
+                                        <div class="card-header">VENCEM(90 A 180 DIAS)</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ $totalServico }}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card text-white bg-primary mb-3">
+                                        <div class="card-header">VENCEM(+ 180 DIAS)</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ $totalServico }}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+                    
                 </div>
 
                 
-
-                <!-- Cards -->
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="card text-white bg-primary mb-3">
-                            <div class="card-header">Total de Processos</div>
-                            <div class="card-body">
-                                <h5 class="card-title">{{ $totalProcessos }}</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card text-white bg-success mb-3">
-                            <div class="card-header">Total de Consumo</div>
-                            <div class="card-body">
-                                <h5 class="card-title">{{ $totalConsumo }}</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card text-white bg-warning mb-3">
-                            <div class="card-header">Total de Permanentes</div>
-                            <div class="card-body">
-                                <h5 class="card-title">{{ $totalPermanente }}</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card text-white bg-danger mb-3">
-                            <div class="card-header">Total de Serviços</div>
-                            <div class="card-body">
-                                <h5 class="card-title">{{ $totalServico }}</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Chart -->
-                <div class="row">
-                    <div class="col-md-3">
-                        <canvas id="processosChart" width="400" height="150"></canvas>
-                    </div>
-                </div>
 
                 <!-- Table -->
                 <div class="row mt-4">
                     <div class="col-md-12">
                         <div class="card">
-                            <div class="card-header">Lista de Processos</div>
+                            <div class="card-header"><b>LISTA DE PROCESSOS</b></div>
                             <div class="card-body">
                                 <table class="table table-striped">
                                     <thead>
@@ -145,5 +257,6 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

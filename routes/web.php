@@ -10,13 +10,18 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\ProcessosChartController;
 use App\Http\Controllers\PerfilController;
 
+// Página inicial
+Route::get('/', [HomeController::class, 'index'])->name('welcome');
+
 // Rotas para autenticação (Login, Registro, Logout)
 Auth::routes();
 
-// Rota Login
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [LoginController::class, 'login']);
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+// Login e Registro
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Rotas protegidas por autenticação (somente para usuários autenticados)
 Route::middleware('auth')->group(function () {
@@ -41,6 +46,7 @@ Route::middleware('auth')->group(function () {
 
     // Página inicial (pública) - sem necessidade de autenticação
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
 
     //Rota Charts
     Route::get('/processos-pie-chart-data', [ProcessosChartController::class, 'getPieChartData']);

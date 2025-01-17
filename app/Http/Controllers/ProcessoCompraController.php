@@ -167,6 +167,15 @@ class ProcessoCompraController extends Controller
         }
     }
 
+    public function calcularValorTotal()
+    {
+        // Calcula o valor total de todos os processos
+        $valorTotal = ProcessoCompra::sum('valor');
+
+        // Retorna para a view
+        return view('welcome', compact('valorTotal'));
+    }
+
 
 
 }

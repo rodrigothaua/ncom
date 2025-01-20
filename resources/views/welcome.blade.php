@@ -85,12 +85,35 @@
 
                 <br>
 
-                <div class="card">
-                    <div class="card-header">
-                        <b>Valor total de contratos</b>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <b>Valor total</b>
+                            </div>
+                            <div class="card-body">
+                                R$ {{ isset($valorTotal) ? number_format($valorTotal, 2, ',', '.') : '0,00' }}
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        
+
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <b>Valor por categoria</b>
+                            </div>
+                            <div class="card-body">
+                            <ul>
+                                @if(isset($valoresPorCategoria) && count($valoresPorCategoria) > 0)
+                                    @foreach ($valoresPorCategoria as $categoria => $valor)
+                                        <li>{{ ucfirst($categoria) }}: R$ {{ number_format($valor, 2, ',', '.') }}</li>
+                                    @endforeach
+                                @else
+                                    <li>Sem dados disponíveis</li>
+                                @endif
+                            </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -101,6 +124,7 @@
                     <div class="card-header">
                         <b>RESUMO/CONTRATOS</b>
                     </div>
+                    
                     <div class="card-body">
                         <div class="row">
                             <div class="col-4">

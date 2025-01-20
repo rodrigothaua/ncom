@@ -15,24 +15,24 @@ class DashboardController extends Controller
     {  
         // Lógica para o dashboard
         $processos = ProcessoCompra::orderBy('data_vencimento', 'asc')->get();
-    $totalProcessos = $processos->count();
-    $totalConsumo = $processos->where('categoria', 'consumo')->count();
-    $totalPermanente = $processos->where('categoria', 'permanente')->count();
-    $totalServico = $processos->where('categoria', 'serviço')->count();
+        $totalProcessos = $processos->count();
+        $totalConsumo = $processos->where('categoria', 'consumo')->count();
+        $totalPermanente = $processos->where('categoria', 'permanente')->count();
+        $totalServico = $processos->where('categoria', 'serviço')->count();
 
-    $processosChartData = [
-        $totalConsumo,
-        $totalPermanente,
-        $totalServico
-    ];
+        $processosChartData = [
+            $totalConsumo,
+            $totalPermanente,
+            $totalServico
+        ];
 
-    return view('welcome', compact(
-        'processos',
-        'totalProcessos',
-        'totalConsumo',
-        'totalPermanente',
-        'totalServico',
-        'processosChartData'
-    ));
+        return view('welcome', compact(
+            'processos',
+            'totalProcessos',
+            'totalConsumo',
+            'totalPermanente',
+            'totalServico',
+            'processosChartData'
+        ));
     }
 }

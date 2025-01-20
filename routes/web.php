@@ -9,9 +9,10 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\ProcessosChartController;
 use App\Http\Controllers\PerfilController;
+use App\Http\Controllers\WelcomeController;
 
 // Página inicial
-Route::get('/', [HomeController::class, 'index'])->name('welcome');
+Route::get('/', [ProcessoController::class, 'index'])->name('welcome');
 
 // Rotas para autenticação (Login, Registro, Logout)
 Auth::routes();

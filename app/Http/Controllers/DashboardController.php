@@ -2,37 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User; // Modelo de usuários
-use App\Models\ProcessoCompra; // Caso necessário
 use Illuminate\Http\Request;
-
-// Importação da classe Controller
-use App\Http\Controllers\Controller;
+use App\Models\Processo;
 
 class DashboardController extends Controller
 {
     public function index()
-    {  
-        // Lógica para o dashboard
-        $processos = ProcessoCompra::orderBy('data_vencimento', 'asc')->get();
-        $totalProcessos = $processos->count();
-        $totalConsumo = $processos->where('categoria', 'consumo')->count();
-        $totalPermanente = $processos->where('categoria', 'permanente')->count();
-        $totalServico = $processos->where('categoria', 'serviço')->count();
+    {
+        // Calcula o total de processos
+        $totalProcessos = Processo::count();
 
-        $processosChartData = [
-            $totalConsumo,
-            $totalPermanente,
-            $totalServico
-        ];
+        // Calcula o total de consumo (só um exemplo, ajuste conforme seu banco)
+        $totalConsumo = Processo::where('categoria', 'consumo')->sum('valor_total');
 
-        return view('welcome', compact(
-            'processos',
-            'totalProcessos',
-            'totalConsumo',
-            'totalPermanente',
-            'totalServico',
-            'processosChartData'
-        ));
+        // Calcula o total de permanente
+        $totalPermanente = Processo::where('categoria', 'permanente')->sum('valor_total');
+
+        // Calcula o total de serviço
+        $totalServico = Processo::where('categoria', 'serviço')->sum('valor_total');
+
+        // Passa as variáveis para a view
+        return view('dashboard.index', compact('totalProcessos', 'totalConsumo', 'totalPermanente', 'totalServico'));
+    }
+
+    public function create()
+    {
+        return view('dashboard.create');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'categoria' => 'required|string',
+            'valor_total' => 'required|numeric',
+            'data_inicio' => 'required|date',
+            'data_fim' => 'required|date|after_or_equal:data_inicio',
+        ]);
+
+        Processo::create($request->all());
+
+        return redirect()->route('dashboard.index')->with('success', 'Processo criado com sucesso!');
     }
 }

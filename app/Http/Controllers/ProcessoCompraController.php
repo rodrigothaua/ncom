@@ -14,36 +14,7 @@ class ProcessoCompraController extends Controller
 {
     public function index()
     {
-        // Total de processos
-        $totalProcessos = Processo::count();
-
-        // Valor total de todos os processos
-        $valorTotal = Processo::sum('valor_total');
-
-        // Valores por categoria
-        $valoresPorCategoria = Processo::select('categoria', DB::raw('SUM(valor_total) as total'))
-            ->groupBy('categoria')
-            ->pluck('total', 'categoria');
-
-        // Processos vencendo por período
-        $hoje = now();
-        $ate30dias = Processo::where('vencimento', '<=', $hoje->copy()->addDays(30))->count();
-        $de30a60 = Processo::whereBetween('vencimento', [$hoje->copy()->addDays(31), $hoje->copy()->addDays(60)])->count();
-        $de60a90 = Processo::whereBetween('vencimento', [$hoje->copy()->addDays(61), $hoje->copy()->addDays(90)])->count();
-        $de90a180 = Processo::whereBetween('vencimento', [$hoje->copy()->addDays(91), $hoje->copy()->addDays(180)])->count();
-        $acima180 = Processo::where('vencimento', '>', $hoje->copy()->addDays(180))->count();
-
-        // Enviar para a view
-        return view('welcome', compact(
-            'totalProcessos',
-            'valorTotal',
-            'valoresPorCategoria',
-            'ate30dias',
-            'de30a60',
-            'de60a90',
-            'de90a180',
-            'acima180'
-        ));
+        
     }
 
     public function create()

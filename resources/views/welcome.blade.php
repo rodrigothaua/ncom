@@ -1,17 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
+// resources/views/welcome.blade.php
+@extends('layouts.app')
+
+@section('title', 'Visão Geral')
+
+@section('content')
     <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
-            <nav class="col-md-2 d-none d-md-block bg-dark sidebar">
+            <!-- Sidebar
+            <nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark"">
                 <div class="position-sticky">
                     <ul class="nav flex-column text-white p-3">
                         <li class="nav-item">
@@ -25,12 +21,17 @@
                         </li>
                     </ul>
                 </div>
-            </nav>
+            </nav>-->
 
             <!-- Main Content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <main class="container-fluid ms-sm-auto col-lg-10 px-md-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">Visão Geral</h1>
+                    <ul class="nav justify-content-end">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/login">Entrar</a>
+                        </li>
+                    </ul>
                 </div>
 
                 <div id="filtro" class="col-lg-12">
@@ -89,10 +90,10 @@
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-header">
-                                <b>Valor total</b>
+                                <b>Valor total dos Processos</b>
                             </div>
                             <div class="card-body">
-                                R$ {{ isset($valorTotal) ? number_format($valorTotal, 2, ',', '.') : '0,00' }}
+                                
                             </div>
                         </div>
                     </div>
@@ -103,15 +104,7 @@
                                 <b>Valor por categoria</b>
                             </div>
                             <div class="card-body">
-                            <ul>
-                                @if(isset($valoresPorCategoria) && count($valoresPorCategoria) > 0)
-                                    @foreach ($valoresPorCategoria as $categoria => $valor)
-                                        <li>{{ ucfirst($categoria) }}: R$ {{ number_format($valor, 2, ',', '.') }}</li>
-                                    @endforeach
-                                @else
-                                    <li>Sem dados disponíveis</li>
-                                @endif
-                            </ul>
+                                
                             </div>
                         </div>
                     </div>
@@ -124,7 +117,6 @@
                     <div class="card-header">
                         <b>RESUMO/CONTRATOS</b>
                     </div>
-                    
                     <div class="card-body">
                         <div class="row">
                             <div class="col-4">
@@ -140,7 +132,7 @@
                                     <div class="card text-white bg-success mb-3">
                                         <div class="card-header">Total de Consumo</div>
                                         <div class="card-body">
-                                            <h5 class="card-title">{{ $totalConsumo }}</h5>
+                                            <h5 class="card-title">{{ number_format($totalConsumo, 2, ',', '.') }}</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -148,7 +140,7 @@
                                     <div class="card text-white bg-warning mb-3">
                                         <div class="card-header">Total de Permanentes</div>
                                         <div class="card-body">
-                                            <h5 class="card-title">{{ $totalPermanente }}</h5>
+                                            <h5 class="card-title">{{ number_format($totalPermanente, 2, ',', '.') }}</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -156,7 +148,7 @@
                                     <div class="card text-white bg-danger mb-3">
                                         <div class="card-header">Total de Serviços</div>
                                         <div class="card-body">
-                                            <h5 class="card-title">{{ $totalServico }}</h5>
+                                            <h5 class="card-title">{{ number_format($totalServico, 2, ',', '.') }}</h5>
                                         </div>
                                     </div>
                                 </div>

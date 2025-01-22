@@ -86,24 +86,13 @@
                 <br>
 
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
                                 <b>Valor total dos Processos</b>
                             </div>
                             <div class="card-body">
                                 <h4><strong>{{ number_format($valorTotal, 2, ',', '.') }}</strong></h4>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <b>Valor por categoria</b>
-                            </div>
-                            <div class="card-body">
-                                
                             </div>
                         </div>
                     </div>
@@ -131,7 +120,10 @@
                                     <div class="card text-white bg-success mb-3">
                                         <div class="card-header">Total de Consumo</div>
                                         <div class="card-body">
-                                            <h5 class="card-title">{{ $totalConsumo }}</h5>
+                                            <h5 class="card-title">
+                                                {{ $totalConsumo }}
+                                                <small class="lead" style="font-size: 15px;"> - R$ {{ number_format($valorConsumo, 2, ',', '.') }}</small>
+                                            </h5>
                                         </div>
                                     </div>
                                 </div>
@@ -139,7 +131,10 @@
                                     <div class="card text-white bg-warning mb-3">
                                         <div class="card-header">Total de Permanentes</div>
                                         <div class="card-body">
-                                            <h5 class="card-title">{{ $totalPermanente }}</h5>
+                                            <h5 class="card-title">
+                                                {{ $totalPermanente }}
+                                                <small class="lead" style="font-size: 15px;"> - R$ {{ number_format($valorPermanente, 2, ',', '.') }}</small>
+                                            </h5>
                                         </div>
                                     </div>
                                 </div>
@@ -147,7 +142,10 @@
                                     <div class="card text-white bg-danger mb-3">
                                         <div class="card-header">Total de Serviços</div>
                                         <div class="card-body">
-                                            <h5 class="card-title">{{ $totalServico }}</h5>
+                                            <h5 class="card-title">
+                                                {{ $totalServico }}
+                                                <small class="lead" style="font-size: 15px;"> - R$ {{ number_format($valorServico, 2, ',', '.') }}</small>
+                                            </h5>
                                         </div>
                                     </div>
                                 </div>

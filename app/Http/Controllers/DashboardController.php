@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Processo;
 
@@ -10,6 +11,8 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $user = Auth::user(); // Obtém o usuário autenticado
+
         // Calcula o total de processos
         $totalProcessos = Processo::count();
 
@@ -23,7 +26,12 @@ class DashboardController extends Controller
         $totalServico = Processo::where('categoria', 'serviço')->sum('valor_total');
 
         // Passa as variáveis para a view
-        return view('dashboard.index', compact('totalProcessos', 'totalConsumo', 'totalPermanente', 'totalServico'));
+        return view('dashboard.index', compact(
+            'user',
+            'totalProcessos', 
+            'totalConsumo', 
+            'totalPermanente', 
+            'totalServico'));
     }
 
     public function create()

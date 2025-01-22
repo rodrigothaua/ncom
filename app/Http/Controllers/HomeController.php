@@ -17,10 +17,15 @@ class HomeController extends Controller
         // Calcula os totais
         $valorTotal = $processos->sum('valor_total');
 
-        // Consultar os totais de cada categoria no banco de dados
-        $totalConsumo = DB::table('processo_compras')->where('categoria', 'Consumo')->count();
-        $totalPermanente = DB::table('processo_compras')->where('categoria', 'Permanente')->count();
-        $totalServico = DB::table('processo_compras')->where('categoria', 'Serviço')->count();
+        // Totais por categoria
+        $totalConsumo = Processo::where('categoria', 'Consumo')->count();
+        $totalPermanente = Processo::where('categoria', 'Permanente')->count();
+        $totalServico = Processo::where('categoria', 'Serviço')->count();
+
+        // Valores por categoria
+        $valorConsumo = Processo::where('categoria', 'Consumo')->sum('valor_total');
+        $valorPermanente = Processo::where('categoria', 'Permanente')->sum('valor_total');
+        $valorServico = Processo::where('categoria', 'Serviço')->sum('valor_total');
 
         // Total geral
         $totalProcessos = $totalConsumo + $totalPermanente + $totalServico;
@@ -60,6 +65,9 @@ class HomeController extends Controller
             'totalConsumo', 
             'totalPermanente', 
             'totalServico', 
+            'valorConsumo', 
+            'valorPermanente', 
+            'valorServico', 
             'processosChartData',
             'totalMenos30Dias',
             'totalEntre30e60Dias',

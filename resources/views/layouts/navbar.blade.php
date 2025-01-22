@@ -26,7 +26,7 @@
                                 <a href="/processos" class="nav-link px-0"> <span class="d-none d-sm-inline">Visão geral</span></a>
                             </li>
                             <li>
-                                <a href="/register" class="nav-link px-0"> <span class="d-none d-sm-inline">Cadastrar novo processo</span></a>
+                                <a href="/processos/create" class="nav-link px-0"> <span class="d-none d-sm-inline">Cadastrar novo processo</span></a>
                             </li>
                         </ul>
                     </li>

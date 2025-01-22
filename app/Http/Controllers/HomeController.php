@@ -42,25 +42,15 @@ class HomeController extends Controller
         $hoje = Carbon::today();
 
         // Calcular os totais com base nos intervalos de vencimento
-        $totalMenos30Dias = DB::table('processo_compras')
-            ->where('data_vencimento', '<', $hoje->subDays(30))
-            ->count();
+        $totalMenos30Dias = Processo::where('data_vencimento', '<', $hoje->copy()->subDays(30))->count();
 
-        $totalEntre30e60Dias = DB::table('processo_compras')
-            ->whereBetween('data_vencimento', [$hoje->addDays(30), $hoje->addDays(60)])
-            ->count();
+        $totalEntre30e60Dias = Processo::whereBetween('data_vencimento', [$hoje->copy()->addDays(30), $hoje->copy()->addDays(60)])->count();
 
-        $totalEntre60e90Dias = DB::table('processo_compras')
-            ->whereBetween('data_vencimento', [$hoje->addDays(60), $hoje->addDays(90)])
-            ->count();
+        $totalEntre60e90Dias = Processo::whereBetween('data_vencimento', [$hoje->copy()->addDays(60), $hoje->copy()->addDays(90)])->count();
 
-        $totalEntre90e180Dias = DB::table('processo_compras')
-            ->whereBetween('data_vencimento', [$hoje->addDays(90), $hoje->addDays(180)])
-            ->count();
+        $totalEntre90e180Dias = Processo::whereBetween('data_vencimento', [$hoje->copy()->addDays(90), $hoje->copy()->addDays(180)])->count();
 
-        $totalMais180Dias = DB::table('processo_compras')
-            ->where('data_vencimento', '>', $hoje->addDays(180))
-            ->count();
+        $totalMais180Dias = Processo::where('data_vencimento', '>', $hoje->copy()->addDays(180))->count();
 
         // Retornar a view com os dados
         return view('welcome', compact(

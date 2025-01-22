@@ -27,9 +27,9 @@
         @yield('content')
     </div>
 
-    <footer>
+    <div class="container mt-4">
         @include('layouts.footer')
-    </footer>
+    </div>
 
 <!-- Adicionando jQuery (requerido pelo Bootstrap para dropdowns) -->
 <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>

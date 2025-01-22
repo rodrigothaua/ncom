@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Processo;
 
@@ -32,7 +33,7 @@ class DashboardController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nome' => 'required|string|max:255',
             'categoria' => 'required|string',
             'valor_total' => 'required|numeric',
@@ -40,7 +41,7 @@ class DashboardController extends Controller
             'data_fim' => 'required|date|after_or_equal:data_inicio',
         ]);
 
-        Processo::create($request->all());
+        Processo::create($validated);
 
         return redirect()->route('dashboard.index')->with('success', 'Processo criado com sucesso!');
     }

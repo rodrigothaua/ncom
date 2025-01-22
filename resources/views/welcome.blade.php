@@ -1,4 +1,3 @@
-// resources/views/welcome.blade.php
 @extends('layouts.app')
 
 @section('title', 'Visão Geral')
@@ -93,7 +92,7 @@
                                 <b>Valor total dos Processos</b>
                             </div>
                             <div class="card-body">
-                                
+                                <h4><strong>{{ number_format($valorTotal, 2, ',', '.') }}</strong></h4>
                             </div>
                         </div>
                     </div>
@@ -132,7 +131,7 @@
                                     <div class="card text-white bg-success mb-3">
                                         <div class="card-header">Total de Consumo</div>
                                         <div class="card-body">
-                                            <h5 class="card-title">{{ number_format($totalConsumo, 2, ',', '.') }}</h5>
+                                            <h5 class="card-title">{{ $totalConsumo }}</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -140,7 +139,7 @@
                                     <div class="card text-white bg-warning mb-3">
                                         <div class="card-header">Total de Permanentes</div>
                                         <div class="card-body">
-                                            <h5 class="card-title">{{ number_format($totalPermanente, 2, ',', '.') }}</h5>
+                                            <h5 class="card-title">{{ $totalPermanente }}</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -148,21 +147,21 @@
                                     <div class="card text-white bg-danger mb-3">
                                         <div class="card-header">Total de Serviços</div>
                                         <div class="card-body">
-                                            <h5 class="card-title">{{ number_format($totalServico, 2, ',', '.') }}</h5>
+                                            <h5 class="card-title">{{ $totalServico }}</h5>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <!-- Chart -->
-                                <canvas id="processosChart" width="400" height="150"></canvas>
+                                <canvas id="processosChart" width="400" height="200"></canvas>
                             </div>
                             <div class="col-md-4">
                                 <div class="col">
                                     <div class="card text-white bg-danger mb-3">
                                         <div class="card-header">VENCEM(-30 DIAS)</div>
                                         <div class="card-body">
-                                            <h5 class="card-title">{{ $totalProcessos }}</h5>
+                                            <h5 class="card-title">{{ $totalMenos30Dias }}</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -170,7 +169,7 @@
                                     <div class="card text-white mb-3" style="background: #FF7701;">
                                         <div class="card-header">VENCEM (30 A 60 DIAS)</div>
                                         <div class="card-body">
-                                            <h5 class="card-title">{{ $totalConsumo }}</h5>
+                                            <h5 class="card-title">{{ $totalEntre30e60Dias }}</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -178,7 +177,7 @@
                                     <div class="card text-white bg-warning mb-3">
                                         <div class="card-header">VENCEM(60 A 90 DIAS)</div>
                                         <div class="card-body">
-                                            <h5 class="card-title">{{ $totalPermanente }}</h5>
+                                            <h5 class="card-title">{{ $totalEntre60e90Dias }}</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -186,7 +185,7 @@
                                     <div class="card text-white bg-success mb-3">
                                         <div class="card-header">VENCEM(90 A 180 DIAS)</div>
                                         <div class="card-body">
-                                            <h5 class="card-title">{{ $totalServico }}</h5>
+                                            <h5 class="card-title">{{ $totalEntre90e180Dias }}</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -194,7 +193,7 @@
                                     <div class="card text-white bg-primary mb-3">
                                         <div class="card-header">VENCEM(+ 180 DIAS)</div>
                                         <div class="card-body">
-                                            <h5 class="card-title">{{ $totalServico }}</h5>
+                                            <h5 class="card-title">{{ $totalMais180Dias }}</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -248,27 +247,26 @@
     </div>
 
     <script>
-        // Data for the chart
-        const processosData = @json($processosChartData);
+        document.addEventListener("DOMContentLoaded", function () {
+            const ctx = document.getElementById('processosChart').getContext('2d');
+            const processosChartData = @json($processosChartData);
 
-        const ctx = document.getElementById('processosChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: ['Consumo', 'Permanente', 'Serviço'],
-                datasets: [{
-                    data: processosData,
-                    backgroundColor: ['#007bff', '#ffc107', '#28a745']
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top'
+            new Chart(ctx, {
+                type: 'pie', // Tipo de gráfico (torta)
+                data: processosChartData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Distribuição de Processos por Categoria'
+                        }
                     }
-                }
-            }
+                },
+            });
         });
     </script>
 

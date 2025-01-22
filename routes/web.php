@@ -13,6 +13,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Dashboard principal (após login)
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/create', [DashboardController::class, 'create'])->name('dashboard.create');
 
     // Gestão de processos
     Route::prefix('processos')->name('processos.')->group(function () {

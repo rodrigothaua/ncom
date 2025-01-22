@@ -38,9 +38,11 @@ body {
     color: #8a4500;
 }
 
-
-
 #processosPieChart{
     width: 400px;
     height: 200px;
+}
+
+.nav-item{
+    color: #fff;
 }

@@ -19,13 +19,17 @@
     
 </head>
 <body>
-    <!-- Inclusão do Navbar
+    <!-- Inclusão do Navbar 
     @include('layouts.navbar')-->
 
     <div class="container mt-4">
         <!-- Conteúdo da página -->
         @yield('content')
     </div>
+
+    <footer>
+        @include('layouts.footer')
+    </footer>
 
 <!-- Adicionando jQuery (requerido pelo Bootstrap para dropdowns) -->
 <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>

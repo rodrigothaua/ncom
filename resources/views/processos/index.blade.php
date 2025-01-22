@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@if (request()->is('processos*')) 
+    @include('layouts.navbar')
+@endif
+
 @section('content')
 <div class="container">
     <h1 class="mb-4">Gerenciamento de Processos</h1>
@@ -29,6 +33,12 @@
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
         <a href="#" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalNovoProcesso">Novo Processo</a>
     </div>
+
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
 
     <table class="table table-striped">
         <thead class="table-light">

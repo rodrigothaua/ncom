@@ -1,6 +1,10 @@
 <!-- resources/views/dashboard.blade.php -->
 @extends('layouts.app')
 
+@if (request()->is('dashboard*')) 
+    @include('layouts.navbar')
+@endif
+
 @section('content')
     <div class="container">
         <h1 class="my-4">Bem-vindo ao Dashboard</h1>

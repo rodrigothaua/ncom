@@ -21,9 +21,12 @@ class ProcessoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nome' => 'required|string|max:255',
+            'numero_processo' => 'required|string|max:255',
+            'descricao' => 'required|string',
             'categoria' => 'required|string',
             'valor_total' => 'required|numeric',
+            'data_inicio' => 'required|date',
+            'data_vencimento' => 'required|date|after_or_equal:data_inicio',
         ]);
 
         Processo::create($request->all());

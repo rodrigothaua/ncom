@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'NCOM - Login')
+
 @section('content')
 <section class="h-100">
 		<div class="container h-100">

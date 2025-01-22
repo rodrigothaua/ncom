@@ -36,7 +36,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="descricao" class="form-label">Categoria</label>
+                <label for="categoria" class="form-label">Categoria</label>
                 <select class="form-select" name="categoria" id="categoria" require>
                     <option selected>Selecione a categoria</option>
                     <option value="consumo">Consumo</option>
@@ -46,7 +46,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="descricao" class="form-label">Valor do contrato</label>
+                <label for="valor_contrato" class="form-label">Valor do contrato</label>
                 <input type="number" step="0.01" class="form-control" id="valor_total" name="valor_total" placeholder="Digite o valor do contrato" required>
             </div>
 

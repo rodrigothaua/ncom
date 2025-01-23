@@ -85,21 +85,6 @@
 
                 <br>
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <b>Valor global de Processos</b>
-                            </div>
-                            <div class="card-body">
-                                <h4><strong>{{ number_format($valorTotal, 2, ',', '.') }}</strong></h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <br>
-
                 <!-- Cards -->
                 <div class="card">
                     <div class="card-header">
@@ -107,7 +92,7 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-4">
+                            <div class="col-md-3">
                                 <div class="col">
                                     <div class="card text-white bg-primary mb-3">
                                         <div class="card-header">Total de Contratos</div>
@@ -150,11 +135,23 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <!-- Chart -->
-                                <canvas id="processosChart" width="400" height="200"></canvas>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header"><b>TOTAL GLOBAL DE CONTRATOS</b></div>
+                                    <div class="card-body text-center">
+                                        <h4><strong>{{ number_format($valorTotal, 2, ',', '.') }}</strong></h4>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="card">
+                                    <div class="card-header"><b>CATEGORIA CONTRATOS</b></div>
+                                    <div class="card-body">
+                                        <!-- Chart -->
+                                        <canvas id="processosChart" width="400" height="200"></canvas>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="col">
                                     <div class="card text-white bg-danger mb-3">
                                         <div class="card-header">VENCEM(-30 DIAS)</div>

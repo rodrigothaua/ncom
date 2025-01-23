@@ -2,29 +2,48 @@
 
 @section('content')
 <div class="container mt-5">
-    <div class="card">
-        <div class="card-header bg-primary text-white">
-            <h3>Perfil do Usuário</h3>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-4 text-center">
-                    <img src="https://via.placeholder.com/150" alt="Foto de Perfil" class="img-fluid rounded-circle">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4>Registrar Novo Usuário</h4>
                 </div>
-                <div class="col-md-8">
-                    <h4 class="mb-3">Informações Pessoais</h4>
-                    <ul class="list-group">
-                        <li class="list-group-item"><strong>Nome:</strong> {{ $user->name }}</li>
-                        <li class="list-group-item"><strong>Email:</strong> {{ $user->email }}</li>
-                        <li class="list-group-item"><strong>Telefone:</strong> {{ $user->telefone }}</li>
-                        <li class="list-group-item"><strong>Data de Registro:</strong> {{ $user->created_at->format('d/m/Y') }}</li>
-                    </ul>
+                <div class="card-body">
+                    <form action="{{ route('register') }}" method="POST">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nome</label>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required>
+                            @error('name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">E-mail</label>
+                            <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" required>
+                            @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Senha</label>
+                            <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" required>
+                            @error('password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password_confirmation" class="form-label">Confirmar Senha</label>
+                            <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Registrar</button>
+                    </form>
                 </div>
             </div>
-        </div>
-        <div class="card-footer text-end">
-            <a href="{{ route('editar.perfil') }}" class="btn btn-warning">Editar Perfil</a>
-            <a href="{{ route('dashboard') }}" class="btn btn-secondary">Voltar</a>
         </div>
     </div>
 </div>

@@ -10,30 +10,35 @@ use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('guest');
+    }
+
+    // Mostrar o formulário de registro
     public function showRegistrationForm()
     {
-        return view('auth.register'); // View de registro
+        return view('auth.register');
     }
 
+    // Registrar o novo usuário
     public function register(Request $request)
     {
-        // Validação
-        $data = $request->validate([
+        $this->validate($request, [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6|confirmed',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // Criação do usuário
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+        // Criar o usuário
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
         ]);
 
-        // Login automático após registro
-        Auth::login($user);
-
-        return redirect('/dashboard');
+        // Redirecionar após o registro
+        return redirect()->route('dashboard')->with('success', 'Usuário registrado com sucesso!');
     }
 }
+

@@ -7,7 +7,7 @@
 
 @section('content')
     <div class="container">
-        <h1 class="my-4">Bem-vindo ao Dashboard</h1>
+        <h1 class="my-4">Bem-vindo, {{ auth()->user()->name ?? 'Usuário' }}!</h1>
 
         <!-- Content Row -->
         <div class="row">

@@ -28,3 +28,7 @@ body {
 .table-orange tr {
     background-color: orange !important;
 }
+
+.icon{
+    font-size: 30px;
+}

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProcessoController;
+use App\Http\Controllers\Auth\RegisterController;
 
 // Página inicial (Welcome)
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -25,6 +26,13 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/{id}', [ProcessoController::class, 'destroy'])->name('destroy'); // Excluir processo
     });
 });
+
+// Rotas de autenticação
+Auth::routes();
+
+// Página de registro de novo usuário
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
 
 // Rotas de autenticação
 require __DIR__.'/auth.php';

@@ -93,48 +93,79 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-3">
-                                <div class="col">
-                                    <div class="card text-white bg-primary mb-3">
-                                        <div class="card-header">Total de Contratos</div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ $totalProcessos }}</h5>
+
+                                <!-- Total de Contratos -->
+                                <div class="card mb-3 bg-primary text-white">
+                                    <div class="row g-0">
+                                        <div class="col-md-3 icon">
+                                            <i class="bi bi-file-earmark-medical"></i>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Total de Contratos</h5>
+                                                <p class="card-text">{{ $totalProcessos }}</p>
+                                                <hr>
+                                                <p class="card-text"><small class="text-body-secondary">100% Contratos ativos</small></p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col">
-                                    <div class="card text-white bg-success mb-3">
-                                        <div class="card-header">Total de Consumo</div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">
-                                                {{ $totalConsumo }}
-                                                <small class="lead" style="font-size: 15px;"> - R$ {{ number_format($valorConsumo, 2, ',', '.') }}</small>
-                                            </h5>
+
+                                <!-- Total de Consumo -->
+                                <div class="card mb-3 bg-success text-white">
+                                    <div class="row g-0">
+                                        <div class="col-md-3 icon">
+                                            <i class="bi bi-file-earmark"></i>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Total de Consumo</h5>
+                                                <p class="card-text">{{ $totalConsumo }}</p>
+                                                <hr>
+                                                <p class="card-text"><small class="text-body-secondary">100% Contratos ativos</small></p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col">
-                                    <div class="card text-white bg-warning mb-3">
-                                        <div class="card-header">Total de Permanentes</div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">
-                                                {{ $totalPermanente }}
-                                                <small class="lead" style="font-size: 15px;"> - R$ {{ number_format($valorPermanente, 2, ',', '.') }}</small>
-                                            </h5>
+
+                                <!-- Total Permanentes -->
+                                <div class="card mb-3 bg-warning text-white">
+                                    <div class="row g-0">
+                                        <div class="col-md-3 icon">
+                                            <i class="bi bi-file-earmark"></i>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Total de Permanentes</h5>
+                                                <p class="card-text">{{ $totalPermanente }} <small class="lead" style="font-size: 15px;"> - R$ {{ number_format($valorPermanente, 2, ',', '.') }}</small></p>
+                                                <hr>
+                                                <p class="card-text"><small class="text-body-secondary">100% Contratos ativos</small></p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col">
-                                    <div class="card text-white bg-danger mb-3">
-                                        <div class="card-header">Total de Serviços</div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">
-                                                {{ $totalServico }}
-                                                <small class="lead" style="font-size: 15px;"> - R$ {{ number_format($valorServico, 2, ',', '.') }}</small>
-                                            </h5>
+
+                                <!-- Total Serviços -->
+                                <div class="card mb-3 bg-danger text-white">
+                                    <div class="row g-0">
+                                        <div class="col-md-3 icon">
+                                            <i class="bi bi-file-earmark"></i>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Total de Serviços</h5>
+                                                <p class="card-text">{{ $totalServico }} <small class="lead" style="font-size: 15px;"> - R$ {{ number_format($valorServico, 2, ',', '.') }}</small></p>
+                                                <hr>
+                                                <p class="card-text"><small class="text-body-secondary">100% Contratos ativos</small></p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+
+
                             </div>
+
+                            <!-- Total Global -->
                             <div class="col-md-6">
                                 <div class="card">
                                     <div class="card-header"><b>TOTAL GLOBAL DE CONTRATOS</b></div>
@@ -200,7 +231,7 @@
 
                 
 
-                <!-- Table -->
+                <!-- Tabela de Processos -->
                 <div class="row mt-4">
                     <div class="col-md-12">
                         <div class="card">

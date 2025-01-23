@@ -14,17 +14,17 @@
                             Home
                         </a>
                     </li>
-                    <li>
-                        <a href="#submenu1" data-bs-toggle="collapse" class="nav-link text-white">
+                    <li class="dropdown">
+                        <a href="#submenu1" data-bs-toggle="collapse" class="nav-link dropdown-toggle text-white">
                             <i class="fs-4 bi-table"></i>
                             Gerenciamento de Processos
                         </a>
                         <ul class="collapse nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
                             <li class="w-100">
-                                <a href="/processos" class="nav-link px-0"> <span class="d-none d-sm-inline">Visão geral</span></a>
+                                <a href="/processos" class="nav-link px-0 text-white"> <span class="d-none d-sm-inline">Todos os processos</span></a>
                             </li>
                             <li>
-                                <a href="/processos/create" class="nav-link px-0"> <span class="d-none d-sm-inline">Cadastrar novo processo</span></a>
+                                <a href="/processos/create" class="nav-link px-0 text-white"> <span class="d-none d-sm-inline">Cadastrar novo processo</span></a>
                             </li>
                         </ul>
                     </li>

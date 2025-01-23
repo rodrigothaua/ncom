@@ -89,7 +89,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <b>Valor total dos Processos</b>
+                                <b>Valor global de Processos</b>
                             </div>
                             <div class="card-body">
                                 <h4><strong>{{ number_format($valorTotal, 2, ',', '.') }}</strong></h4>

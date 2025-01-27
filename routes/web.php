@@ -16,14 +16,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/create', [DashboardController::class, 'create'])->name('dashboard.create');
 
+    // CRUD completo
+    Route::resource('processos', ProcessoController::class);
+
     // Gestão de processos
     Route::prefix('processos')->name('processos.')->group(function () {
         Route::get('/', [ProcessoController::class, 'index'])->name('index'); // Lista de processos
         Route::get('/create', [ProcessoController::class, 'create'])->name('create'); // Página de criação
         Route::post('/store', [ProcessoController::class, 'store'])->name('store'); // Salvar novo processo
-        Route::get('/{id}/edit', [ProcessoController::class, 'edit'])->name('edit'); // Página de edição
-        Route::put('/{id}', [ProcessoController::class, 'update'])->name('update'); // Atualizar processo
-        Route::delete('/{id}', [ProcessoController::class, 'destroy'])->name('destroy'); // Excluir processo
+        Route::get('/{id}/edit', [ProcessoController::class, 'edit'])->name('processos.edit'); // Página de edição
+        Route::put('/{id}', [ProcessoController::class, 'update'])->name('processos.update'); // Atualizar processo
+        Route::delete('/{id}', [ProcessoController::class, 'destroy'])->name('processos.destroy'); // Excluir processo
     });
 });
 

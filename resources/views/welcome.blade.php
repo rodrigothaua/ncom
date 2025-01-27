@@ -120,7 +120,7 @@
                                         <div class="col-md-9">
                                             <div class="card-body">
                                                 <h5 class="card-title">Total de Consumo</h5>
-                                                <p class="card-text">{{ $totalConsumo }}</p>
+                                                <p class="card-text">{{ $totalConsumo }} <small class="lead" style="font-size: 15px;"> - R$ {{ number_format($valorConsumo, 2, ',', '.') }}</small></p>
                                                 <hr>
                                                 <p class="card-text"><small class="text-body-secondary">100% Contratos ativos</small></p>
                                             </div>

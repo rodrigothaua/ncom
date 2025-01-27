@@ -9,7 +9,7 @@ class ProcessoController extends Controller
 {
     public function index()
     {
-        $processos = Processo::all();
+        $processos = Processo::all(); // Recupera todos os processos
         return view('processos.index', compact('processos'));
     }
 
@@ -30,7 +30,7 @@ class ProcessoController extends Controller
         ]);
 
         Processo::create($request->all());
-        return redirect()->route('processos.index')->with('success', 'Processo criado com sucesso!');
+        return redirect()->route('processos')->with('success', 'Processo criado com sucesso!');
     }
 
     public function edit($id)
@@ -42,11 +42,15 @@ class ProcessoController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nome' => 'required|string|max:255',
+            'numero_processo' => 'required|string|max:255',
+            'descricao' => 'required|string|max:1000',
             'categoria' => 'required|string',
             'valor_total' => 'required|numeric',
+            'data_inicio' => 'required|date',
+            'data_vencimento' => 'required|date|after_or_equal:data_inicio',
         ]);
 
+        // Buscar o processo e atualizar os dados
         $processo = Processo::findOrFail($id);
         $processo->update($request->all());
 

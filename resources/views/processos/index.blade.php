@@ -51,6 +51,7 @@
                 <th scope="col">Data de Início</th>
                 <th scope="col">Data de Vencimento</th>
                 <th scope="col">Status</th>
+                <th scope="col">Funções</th>
             </tr>
         </thead>
         <tbody class="table-group-divider">
@@ -79,6 +80,15 @@
                             + 12 meses
                         @endif
                     </td>
+                    <td>
+                    <td>
+                        <a href="{{ route('processos.edit', $processo->id) }}" class="btn btn-primary btn-sm">Editar</a>
+                        <form action="{{ route('processos.destroy', $processo->id) }}" method="POST" style="display: inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este processo?')">Excluir</button>
+                        </form>
+                    </td>
                 </tr>
             @endforeach
         </tbody>
@@ -104,6 +114,19 @@
                     <div class="form-group">
                         <label for="descricao">Descrição</label>
                         <textarea id="descricao" name="descricao" class="form-control" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="categoria" class="form-label">Categoria</label>
+                        <select class="form-select" name="categoria" id="categoria" require>
+                            <option selected>Selecione a categoria</option>
+                            <option value="consumo">Consumo</option>
+                            <option value="permanente">Permanente</option>
+                            <option value="serviço">Serviço</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="valor_contrato" class="form-label">Valor do contrato</label>
+                        <input type="number" step="0.01" class="form-control" id="valor_total" name="valor_total" placeholder="Digite o valor do contrato" required>
                     </div>
                     <div class="form-group">
                         <label for="data_inicio">Data de Início</label>

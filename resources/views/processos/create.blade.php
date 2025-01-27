@@ -1,6 +1,10 @@
 <!-- resources/views/processos/create.blade.php -->
 @extends('layouts.app')
 
+@if (request()->is('processos*')) 
+    @include('layouts.navbar')
+@endif
+
 @section('content')
     <div class="container">
         <h1 class="my-4">Cadastrar Novo Processo</h1>

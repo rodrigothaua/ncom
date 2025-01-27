@@ -15,9 +15,9 @@ class Processo extends Model
     protected $fillable = [
         'numero_processo',
         'descricao',
-        'data_inicio',
-        'data_vencimento',
         'categoria',
         'valor_total',
+        'data_inicio',
+        'data_vencimento',
     ];
 }

@@ -36,7 +36,7 @@
                 <div id="filtro" class="col-lg-12">
                     <div class="card">
                         <div class="card-header">
-                            <b>FILTRO</b>
+                            <b><i class="bi bi-search"></i> FILTRO</b>
                         </div>
                         <div class="card-body">
                             <fieldset class="form-group">
@@ -168,17 +168,17 @@
                             <!-- Total Global -->
                             <div class="col-md-6">
                                 <div class="card">
-                                    <div class="card-header"><b>TOTAL GLOBAL DE CONTRATOS</b></div>
+                                    <div class="card-header"><b><i class="bi bi-currency-dollar"></i> TOTAL GLOBAL DE CONTRATOS</b></div>
                                     <div class="card-body text-center">
-                                        <h4><strong>{{ number_format($valorTotal, 2, ',', '.') }}</strong></h4>
+                                        <h4><strong>R${{ number_format($valorTotal, 2, ',', '.') }}</strong></h4>
                                     </div>
                                 </div>
                                 <br>
                                 <div class="card">
-                                    <div class="card-header"><b>CATEGORIA CONTRATOS</b></div>
+                                    <div class="card-header"><b><i class="bi bi-pie-chart-fill"></i> CATEGORIA CONTRATOS</b></div>
                                     <div class="card-body">
                                         <!-- Chart -->
-                                        <canvas id="processosChart" width="400" height="200"></canvas>
+                                        <canvas id="processosChart" width="400" height="400"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -235,7 +235,7 @@
                 <div class="row mt-4">
                     <div class="col-md-12">
                         <div class="card">
-                            <div class="card-header"><b>LISTA DE PROCESSOS</b></div>
+                            <div class="card-header"><b><i class="bi bi-list-task"></i> LISTA DE PROCESSOS</b></div>
                             <div class="card-body">
                                 <table class="table table-striped">
                                     <thead>
@@ -282,8 +282,10 @@
                 data: processosChartData,
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false, // Permite controlar a largura e altura manualmente
                     plugins: {
                         legend: {
+                            display: true,
                             position: 'top',
                         },
                         title: {

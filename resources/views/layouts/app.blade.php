@@ -19,8 +19,6 @@
     
 </head>
 <body>
-    <!-- Inclusão do Navbar 
-    @include('layouts.navbar')-->
 
     <div class="container mt-4">
         <!-- Conteúdo da página -->

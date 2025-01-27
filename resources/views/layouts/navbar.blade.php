@@ -3,10 +3,15 @@
     <nav class="bg-dark text-white p-3" style="width: 250px; height: 100vh; position: fixed;">
         <h4 class="text-center mb-4">NCOM</h4>
         <ul class="nav flex-column">
-            <!-- Link simples -->
+            <!-- Link Home -->
+            <li class="nav-item">
+                <a class="nav-link text-white" href="{{ route('home') }}">
+                    <i class="bi bi-house-door"></i> Home
+                </a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link text-white" href="{{ route('dashboard') }}">
-                    <i class="bi bi-house-door"></i> Dashboard
+                    <i class="bi bi-speedometer2"></i> Dashboard
                 </a>
             </li>
 

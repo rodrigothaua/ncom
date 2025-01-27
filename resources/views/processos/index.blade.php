@@ -50,7 +50,7 @@
                 <th scope="col">Valor Total</th>
                 <th scope="col">Data de Início</th>
                 <th scope="col">Data de Vencimento</th>
-                <th scope="col">Status</th>
+                <!--<th scope="col">Status</th>-->
                 <th scope="col">Funções</th>
             </tr>
         </thead>
@@ -69,6 +69,7 @@
                     <td>R$ {{ number_format($processo->valor_total, 2, ',', '.') }}</td>
                     <td>{{ \Carbon\Carbon::parse($processo->data_inicio)->format('d/m/Y') }}</td>
                     <td>{{ \Carbon\Carbon::parse($processo->data_vencimento)->format('d/m/Y') }}</td>
+                    <!--
                     <td>
                         @if (\Carbon\Carbon::parse($processo->data_vencimento)->isPast())
                             Vencido
@@ -79,8 +80,7 @@
                         @else
                             + 12 meses
                         @endif
-                    </td>
-                    <td>
+                    </td>-->
                     <td>
                         <a href="{{ route('processos.edit', $processo->id) }}" class="btn btn-primary btn-sm">Editar</a>
                         <form action="{{ route('processos.destroy', $processo->id) }}" method="POST" style="display: inline;">
@@ -93,6 +93,20 @@
             @endforeach
         </tbody>
     </table>
+    <div class="legenda">
+        <div class="badge" style="width: 6rem; background:rgb(253, 143, 152); color: #000;">
+            Vencido
+        </div>
+        <div class="badge" style="width: 6rem; background: #FFF3CD; color: #000;">
+            + 3 meses
+        </div>
+        <div class="badge" style="width: 6rem; background: #CFF4FC; color: #000;">
+            + 6 meses
+        </div>
+        <div class="badge" style="width: 6rem; background: #FFF; color: #000;">
+            + 12 meses
+        </div>
+    </div>
 </div>
 
 <!-- Modal para Novo Processo -->

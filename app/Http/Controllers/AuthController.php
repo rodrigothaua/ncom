@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
     // Exibe o formulário de login
-    public function showLoginForm()
+    public function create()
     {
         return view('auth.login');
     }

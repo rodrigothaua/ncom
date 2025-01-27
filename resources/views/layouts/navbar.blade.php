@@ -66,7 +66,7 @@
                 @endauth
             </a>
             <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                <li><a class="dropdown-item" href="/register">Cadastrar novo usuario</a></li>
+                <li><a class="dropdown-item" href="{{ route('register') }}">Cadastrar novo usuario</a></li>
                 <li><a class="dropdown-item" href="#">Perfil</a></li>
                 <li>
                     <hr class="dropdown-divider">

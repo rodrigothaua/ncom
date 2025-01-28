@@ -4,230 +4,251 @@
 
 @section('content')
     <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar
-            <nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark"">
-                <div class="position-sticky">
-                    <ul class="nav flex-column text-white p-3">
-                        <li class="nav-item">
-                            <h4 class="text-white">Home</h4>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="#">Consulta</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="{{ route('processos.index') }}">Entrar</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>-->
-
-            <!-- Main Content -->
-            <main class="container-fluid ms-sm-auto col-lg-10 px-md-4">
-                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Visão Geral</h1>
-                    <ul class="nav justify-content-end">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/login">Entrar</a>
-                        </li>
-                    </ul>
-                </div>
-
-                <div id="filtro" class="col-lg-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <b><i class="bi bi-search"></i> FILTRO</b>
-                        </div>
-                        <div class="card-body">
-                            <fieldset class="form-group">
-                                <form method="GET" action="#">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="orgao" class="control-label">
-                                                    Órgão
-                                                </label>
-                                                <select class="form-select select2" id="orgao" name="orgao"></select>    
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="unidade" class="control-label">
-                                                    Unidade Gestora
-                                                </label>
-                                                <select class="form-select select2" id="unidade" name="unidade"></select>    
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group"  >
-                                                <label for="fornecedor" class="control-label">
-                                                    Fornecedor
-                                                </label>
-                                                <select class="form-select select2" id="fornecedor" name="fornecedor"></select>    
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group"  >
-                                                <label for="contrato" class="control-label">
-                                                    Contrato
-                                                </label>
-                                                <select class="form-select select2" id="contrato" name="contrato"></select>    
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <br>
-                                    <button class="btn btn-success text-right" type="submit"><i class="fa fa-search"></i> Filtrar</button>         
-                                </form>
-                            </fieldset>
-                        </div>
+        <nav class="navbar bg-body-tertiary fixed-top">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Visão geral</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/login">Entrar</a>
+                            </li>
+                            <!--
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Dropdown
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Action</a></li>
+                                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                       
+                        <form class="d-flex mt-3" role="search">
+                            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-outline-success" type="submit">Search</button>
+                        </form>-->
                     </div>
                 </div>
+            </div>
+        </nav>
+        <!-- Main Content -->
+        <main>
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Visão Geral</h1>
+                <ul class="nav justify-content-end">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/login">Entrar</a>
+                    </li>
+                </ul>
+            </div>
 
-                <br>
-
-                <!-- Cards -->
+            <div id="filtro" class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <b>RESUMO/CONTRATOS</b>
+                        <b><i class="bi bi-search"></i> FILTRO</b>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-3">
-
-                                <!-- Total de Contratos -->
-                                <div class="card mb-3 bg-primary text-white">
-                                    <div class="row g-0">
-                                        <div class="col-md-3 icon">
-                                            <i class="bi bi-file-earmark-medical"></i>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Total de Contratos</h5>
-                                                <p class="card-text">{{ $totalProcessos }}</p>
-                                                <hr>
-                                                <p class="card-text"><small class="text-body-secondary">100% Contratos ativos</small></p>
-                                            </div>
+                        <fieldset class="form-group">
+                            <form method="GET" action="#">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="orgao" class="control-label">
+                                                Órgão
+                                            </label>
+                                            <select class="form-select select2" id="orgao" name="orgao"></select>    
                                         </div>
                                     </div>
-                                </div>
-
-                                <!-- Total de Consumo -->
-                                <div class="card mb-3 bg-success text-white">
-                                    <div class="row g-0">
-                                        <div class="col-md-3 icon">
-                                            <i class="bi bi-file-earmark"></i>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Total de Consumo</h5>
-                                                <p class="card-text">{{ $totalConsumo }} <small class="lead" style="font-size: 15px;"> - R$ {{ number_format($valorConsumo, 2, ',', '.') }}</small></p>
-                                                <hr>
-                                                <p class="card-text"><small class="text-body-secondary">100% Contratos ativos</small></p>
-                                            </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="unidade" class="control-label">
+                                                Unidade Gestora
+                                            </label>
+                                            <select class="form-select select2" id="unidade" name="unidade"></select>    
                                         </div>
                                     </div>
-                                </div>
-
-                                <!-- Total Permanentes -->
-                                <div class="card mb-3 bg-warning text-white">
-                                    <div class="row g-0">
-                                        <div class="col-md-3 icon">
-                                            <i class="bi bi-file-earmark"></i>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Total de Permanentes</h5>
-                                                <p class="card-text">{{ $totalPermanente }} <small class="lead" style="font-size: 15px;"> - R$ {{ number_format($valorPermanente, 2, ',', '.') }}</small></p>
-                                                <hr>
-                                                <p class="card-text"><small class="text-body-secondary">100% Contratos ativos</small></p>
-                                            </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group"  >
+                                            <label for="fornecedor" class="control-label">
+                                                Fornecedor
+                                            </label>
+                                            <select class="form-select select2" id="fornecedor" name="fornecedor"></select>    
                                         </div>
                                     </div>
-                                </div>
-
-                                <!-- Total Serviços -->
-                                <div class="card mb-3 bg-danger text-white">
-                                    <div class="row g-0">
-                                        <div class="col-md-3 icon">
-                                            <i class="bi bi-file-earmark"></i>
+                                    <div class="col-md-6">
+                                        <div class="form-group"  >
+                                            <label for="contrato" class="control-label">
+                                                Contrato
+                                            </label>
+                                            <select class="form-select select2" id="contrato" name="contrato"></select>    
                                         </div>
-                                        <div class="col-md-9">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Total de Serviços</h5>
-                                                <p class="card-text">{{ $totalServico }} <small class="lead" style="font-size: 15px;"> - R$ {{ number_format($valorServico, 2, ',', '.') }}</small></p>
-                                                <hr>
-                                                <p class="card-text"><small class="text-body-secondary">100% Contratos ativos</small></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                            </div>
-
-                            <!-- Total Global -->
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header"><b><i class="bi bi-currency-dollar"></i> TOTAL GLOBAL DE CONTRATOS</b></div>
-                                    <div class="card-body text-center">
-                                        <h4><strong>R${{ number_format($valorTotal, 2, ',', '.') }}</strong></h4>
                                     </div>
                                 </div>
                                 <br>
-                                <div class="card">
-                                    <div class="card-header"><b><i class="bi bi-pie-chart-fill"></i> CATEGORIA CONTRATOS</b></div>
-                                    <div class="card-body">
-                                        <!-- Chart -->
-                                        <canvas id="processosChart" width="400" height="400"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="col">
-                                    <div class="card text-white bg-danger mb-3">
-                                        <div class="card-header">VENCEM(-30 DIAS)</div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ $totalMenos30Dias }}</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card text-white mb-3" style="background: #FF7701;">
-                                        <div class="card-header">VENCEM (30 A 60 DIAS)</div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ $totalEntre30e60Dias }}</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card text-white bg-warning mb-3">
-                                        <div class="card-header">VENCEM(60 A 90 DIAS)</div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ $totalEntre60e90Dias }}</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card text-white bg-success mb-3">
-                                        <div class="card-header">VENCEM(90 A 180 DIAS)</div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ $totalEntre90e180Dias }}</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card text-white bg-primary mb-3">
-                                        <div class="card-header">VENCEM(+ 180 DIAS)</div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ $totalMais180Dias }}</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> 
+                                <button class="btn btn-success text-right" type="submit"><i class="fa fa-search"></i> Filtrar</button>         
+                            </form>
+                        </fieldset>
                     </div>
-                    
+                </div>        
+            </div>
+
+            <br>
+
+            <!-- Cards -->
+            <div class="card">
+                <div class="card-header">
+                    <b>RESUMO/CONTRATOS</b>
                 </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <!-- Total de Contratos -->
+                            <div class="card mb-3 bg-primary text-white">
+                                <div class="row g-0">
+                                    <div class="col-md-3 icon">
+                                        <i class="bi bi-file-earmark-medical"></i>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Total de Contratos</h5>
+                                            <p class="card-text">{{ $totalProcessos }}</p>
+                                            <hr>
+                                            <p class="card-text"><small class="text-body-secondary">100% Contratos ativos</small></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Total de Consumo -->
+                            <div class="card mb-3 bg-success text-white">
+                                <div class="row g-0">
+                                    <div class="col-md-3 icon">
+                                        <i class="bi bi-file-earmark"></i>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Total de Consumo</h5>
+                                            <p class="card-text">{{ $totalConsumo }} <small class="lead" style="font-size: 15px;"> - R$ {{ number_format($valorConsumo, 2, ',', '.') }}</small></p>
+                                            <hr>
+                                            <p class="card-text"><small class="text-body-secondary">100% Contratos ativos</small></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Total Permanentes -->
+                            <div class="card mb-3 bg-warning text-white">
+                                <div class="row g-0">
+                                    <div class="col-md-3 icon">
+                                        <i class="bi bi-file-earmark"></i>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Total de Permanentes</h5>
+                                            <p class="card-text">{{ $totalPermanente }} <small class="lead" style="font-size: 15px;"> - R$ {{ number_format($valorPermanente, 2, ',', '.') }}</small></p>
+                                            <hr>
+                                            <p class="card-text"><small class="text-body-secondary">100% Contratos ativos</small></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Total Serviços -->
+                            <div class="card mb-3 bg-danger text-white">
+                                <div class="row g-0">
+                                    <div class="col-md-3 icon">
+                                        <i class="bi bi-file-earmark"></i>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Total de Serviços</h5>
+                                            <p class="card-text">{{ $totalServico }} <small class="lead" style="font-size: 15px;"> - R$ {{ number_format($valorServico, 2, ',', '.') }}</small></p>
+                                            <hr>
+                                            <p class="card-text"><small class="text-body-secondary">100% Contratos ativos</small></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Total Global -->
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header"><b><i class="bi bi-currency-dollar"></i> TOTAL GLOBAL DE CONTRATOS</b></div>
+                                <div class="card-body text-center">
+                                    <h4><strong>R${{ number_format($valorTotal, 2, ',', '.') }}</strong></h4>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="card">
+                                <div class="card-header"><b><i class="bi bi-pie-chart-fill"></i> CATEGORIA CONTRATOS</b></div>
+                                <div class="card-body">
+                                    <!-- Chart -->
+                                    <canvas id="processosChart" width="400" height="400"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="col">
+                                <div class="card text-white bg-danger mb-3">
+                                    <div class="card-header">VENCEM(-30 DIAS)</div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ $totalMenos30Dias }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card text-white mb-3" style="background: #FF7701;">
+                                    <div class="card-header">VENCEM (30 A 60 DIAS)</div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ $totalEntre30e60Dias }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card text-white bg-warning mb-3">
+                                    <div class="card-header">VENCEM(60 A 90 DIAS)</div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ $totalEntre60e90Dias }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card text-white bg-success mb-3">
+                                    <div class="card-header">VENCEM(90 A 180 DIAS)</div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ $totalEntre90e180Dias }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card text-white bg-primary mb-3">
+                                    <div class="card-header">VENCEM(+ 180 DIAS)</div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ $totalMais180Dias }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                </div>                
+            </div>
 
                 
 
@@ -267,9 +288,7 @@
                         </div>
                     </div>
                 </div>
-
             </main>
-        </div>
     </div>
 
     <script>

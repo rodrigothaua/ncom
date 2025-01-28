@@ -20,17 +20,21 @@ class ProcessoController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        // Validação
+        $validatedData = $request->validate([
             'numero_processo' => 'required|string|max:255',
-            'descricao' => 'required|string',
+            'descricao' => 'required|string|max:500',
             'categoria' => 'required|string',
             'valor_total' => 'required|numeric',
             'data_inicio' => 'required|date',
-            'data_vencimento' => 'required|date|after_or_equal:data_inicio',
+            'data_vencimento' => 'required|date',
         ]);
 
-        Processo::create($request->all());
-        return redirect()->route('processos')->with('success', 'Processo criado com sucesso!');
+        // Criação do processo
+        Processo::create($validatedData);
+
+        // Redirecionar com sucesso
+        return redirect()->route('processos.index')->with('success', 'Processo criado com sucesso!');
     }
 
     public function edit($id)

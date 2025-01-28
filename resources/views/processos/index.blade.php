@@ -5,7 +5,7 @@
 @endif
 
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <h1 class="mb-4">Gerenciamento de Processos</h1>
 
     <div class="row">
@@ -40,59 +40,80 @@
         </div>
     @endif
 
-    <table class="table table-striped">
-        <thead class="table-light">
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Número do Processo</th>
-                <th scope="col">Descrição</th>
-                <th scope="col">Categoria</th>
-                <th scope="col">Valor Total</th>
-                <th scope="col">Data de Início</th>
-                <th scope="col">Data de Vencimento</th>
-                <!--<th scope="col">Status</th>-->
-                <th scope="col">Funções</th>
-            </tr>
-        </thead>
-        <tbody class="table-group-divider">
-                @foreach ($processos as $processo)
-                <tr 
-                    @if (\Carbon\Carbon::parse($processo->data_vencimento)->isPast()) class="table-danger" 
-                    @elseif (\Carbon\Carbon::parse($processo->data_vencimento)->diffInMonths() <= 3) class="table-warning" 
-                    @elseif (\Carbon\Carbon::parse($processo->data_vencimento)->diffInMonths() <= 6) class="table-info" 
-                    @endif
-                >
-                    <th>{{ $processo->id }}</th>
-                    <td>{{ $processo->numero_processo }}</td>
-                    <td>{{ $processo->descricao }}</td>
-                    <td>{{ ucfirst($processo->categoria) }}</td>
-                    <td>R$ {{ number_format($processo->valor_total, 2, ',', '.') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($processo->data_inicio)->format('d/m/Y') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($processo->data_vencimento)->format('d/m/Y') }}</td>
-                    <!--
-                    <td>
-                        @if (\Carbon\Carbon::parse($processo->data_vencimento)->isPast())
-                            Vencido
-                        @elseif (\Carbon\Carbon::parse($processo->data_vencimento)->diffInMonths() <= 3)
-                            + 3 meses
-                        @elseif (\Carbon\Carbon::parse($processo->data_vencimento)->diffInMonths() <= 6)
-                            + 6 meses
-                        @else
-                            + 12 meses
-                        @endif
-                    </td>-->
-                    <td>
-                        <a href="{{ route('processos.edit', $processo->id) }}" class="btn btn-primary btn-sm">Editar</a>
-                        <form action="{{ route('processos.destroy', $processo->id) }}" method="POST" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este processo?')">Excluir</button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <!-- Tabela de Processos -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header"><b><i class="bi bi-list-task"></i> LISTA DE PROCESSOS</b></div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Número do Processo</th>
+                                <th scope="col">Descrição</th>
+                                <th scope="col">Categoria</th>
+                                <th scope="col" style="width: 200px;">Valor Total</th>
+                                <th scope="col">Data de Início</th>
+                                <th scope="col">Data de Vencimento</th>
+                                <!--<th scope="col">Status</th>-->
+                                <th scope="col" style="width: 200px;">Funções</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-group-divider">
+                                @foreach ($processos as $processo)
+                                <tr 
+                                    @if (\Carbon\Carbon::parse($processo->data_vencimento)->isPast()) class="table-danger" 
+                                    @elseif (\Carbon\Carbon::parse($processo->data_vencimento)->diffInMonths() <= 3) class="table-warning" 
+                                    @elseif (\Carbon\Carbon::parse($processo->data_vencimento)->diffInMonths() <= 6) class="table-info" 
+                                    @endif
+                                >
+                                    <th>{{ $processo->id }}</th>
+                                    <td>{{ $processo->numero_processo }}</td>
+                                    <td>
+                                        {{ \Illuminate\Support\Str::limit($processo->descricao, 50) }}
+                                        @if (strlen($processo->descricao) > 50)
+                                            <button 
+                                                class="btn btn-link p-0 text-primary" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#descricaoModal" 
+                                                onclick="carregarDescricao('{{ $processo->descricao }}')">
+                                                Ver Completo
+                                            </button>
+                                        @endif
+                                    </td>
+                                    <td>{{ ucfirst($processo->categoria) }}</td>
+                                    <td>R$ {{ number_format($processo->valor_total, 2, ',', '.') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($processo->data_inicio)->format('d/m/Y') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($processo->data_vencimento)->format('d/m/Y') }}</td>
+                                    <!--
+                                    <td>
+                                        @if (\Carbon\Carbon::parse($processo->data_vencimento)->isPast())
+                                            Vencido
+                                        @elseif (\Carbon\Carbon::parse($processo->data_vencimento)->diffInMonths() <= 3)
+                                            + 3 meses
+                                        @elseif (\Carbon\Carbon::parse($processo->data_vencimento)->diffInMonths() <= 6)
+                                            + 6 meses
+                                        @else
+                                            + 12 meses
+                                        @endif
+                                    </td>-->
+                                    <td>
+                                        <a href="{{ route('processos.edit', $processo->id) }}" class="btn btn-primary btn-sm">Editar</a>
+                                        <form action="{{ route('processos.destroy', $processo->id) }}" method="POST" style="display: inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este processo?')">Excluir</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="legenda">
         <div class="badge" style="width: 6rem; background:rgb(253, 143, 152); color: #000;">
             Vencido
@@ -158,4 +179,29 @@
         </div>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="descricaoModal" tabindex="-1" aria-labelledby="descricaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="descricaoModalLabel">Descrição Completa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="descricaoCompleta"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function carregarDescricao(descricao) {
+        // Atualiza o conteúdo do modal com a descrição completa
+        document.getElementById('descricaoCompleta').textContent = descricao;
+    }
+</script>
 @endsection

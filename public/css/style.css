@@ -63,3 +63,9 @@ body {
 .btn-link:hover {
     text-decoration: none;
 }
+
+.total-categoria{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

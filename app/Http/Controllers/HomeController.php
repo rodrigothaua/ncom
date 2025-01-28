@@ -37,10 +37,21 @@ class HomeController extends Controller
                 [
                     'label' => 'Total de Processos',
                     'data' => [$totalConsumo, $totalPermanente, $totalServico],
-                    'backgroundColor' => ['#28a745', '#ffc107', '#dc3545'], // Verde, Amarelo, Vermelho
+                    'backgroundColor' => ['#198754', '#FFC107', '#DC3545'], // Verde, Amarelo, Vermelho
                 ],
             ],
         ];
+
+        // Agrupar processos por ano e contar o total
+        $processosPorAno = DB::table('processo_compras')
+            ->selectRaw('YEAR(data_inicio) as ano, COUNT(*) as total')
+            ->groupBy('ano')
+            ->orderBy('ano', 'asc')
+            ->get();
+
+        // Preparar dados para o gráfico
+        $labels = $processosPorAno->pluck('ano'); // Pega os anos
+        $data = $processosPorAno->pluck('total'); // Pega os totais
 
         //VENCIMENTOS
         // Obtenha a data atual
@@ -73,7 +84,9 @@ class HomeController extends Controller
             'totalEntre30e60Dias',
             'totalEntre60e90Dias',
             'totalEntre90e180Dias',
-            'totalMais180Dias'
+            'totalMais180Dias',
+            'labels',
+            'data'
         ));
     }
 }

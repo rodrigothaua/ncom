@@ -58,6 +58,7 @@
                 </ul>
             </div>
 
+            <!--
             <div id="filtro" class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
@@ -107,7 +108,7 @@
                     </div>
                 </div>        
             </div>
-
+-->
             <br>
 
             <!-- Cards -->
@@ -126,61 +127,84 @@
                                     </div>
                                     <div class="col-md-9">
                                         <div class="card-body">
-                                            <h5 class="card-title">Total de Contratos</h5>
-                                            <p class="card-text">{{ $totalProcessos }}</p>
+                                            <h5 class="card-title">Total de Contratos: {{ $totalProcessos }}</h5>
                                             <hr>
-                                            <p class="card-text"><small class="text-body-secondary">100% Contratos ativos</small></p>
+                                            <p class="card-text"><small class="text-body-primary">100% Contratos ativos</small></p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Total de Consumo -->
-                            <div class="card mb-3 bg-success text-white">
-                                <div class="row g-0">
-                                    <div class="col-md-3 icon">
-                                        <i class="bi bi-file-earmark"></i>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Total de Consumo</h5>
-                                            <p class="card-text">{{ $totalConsumo }} <small class="lead" style="font-size: 15px;"> - R$ {{ number_format($valorConsumo, 2, ',', '.') }}</small></p>
-                                            <hr>
-                                            <p class="card-text"><small class="text-body-secondary">100% Contratos ativos</small></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Total Permanentes -->
-                            <div class="card mb-3 bg-warning text-white">
-                                <div class="row g-0">
-                                    <div class="col-md-3 icon">
-                                        <i class="bi bi-file-earmark"></i>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Total de Permanentes</h5>
-                                            <p class="card-text">{{ $totalPermanente }} <small class="lead" style="font-size: 15px;"> - R$ {{ number_format($valorPermanente, 2, ',', '.') }}</small></p>
-                                            <hr>
-                                            <p class="card-text"><small class="text-body-secondary">100% Contratos ativos</small></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Total Serviços -->
+                            <!-- VENCEM -30 DIAS -->
                             <div class="card mb-3 bg-danger text-white">
                                 <div class="row g-0">
                                     <div class="col-md-3 icon">
                                         <i class="bi bi-file-earmark"></i>
                                     </div>
                                     <div class="col-md-9">
+                                        <div class="card-header">VENCEM(-30 DIAS)</div>
                                         <div class="card-body">
-                                            <h5 class="card-title">Total de Serviços</h5>
-                                            <p class="card-text">{{ $totalServico }} <small class="lead" style="font-size: 15px;"> - R$ {{ number_format($valorServico, 2, ',', '.') }}</small></p>
-                                            <hr>
-                                            <p class="card-text"><small class="text-body-secondary">100% Contratos ativos</small></p>
+                                            <h5 class="card-title">{{ $totalMenos30Dias }}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- VENCEM 30 A 60 DIAS -->
+                            <div class="card mb-3 text-white" style="background: #FF7701;">
+                                <div class="row g-0">
+                                    <div class="col-md-3 icon">
+                                        <i class="bi bi-file-earmark"></i>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="card-header">VENCEM(60 A 90 DIAS)</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ $totalEntre30e60Dias }}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- VENCEM 60 A 90 DIAS -->
+                            <div class="card mb-3 bg-warning text-white">
+                                <div class="row g-0">
+                                    <div class="col-md-3 icon">
+                                        <i class="bi bi-file-earmark"></i>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="card-header">VENCEM(60 A 90 DIAS)</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ $totalEntre60e90Dias }}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- VENCEM 90 A 180 DIAS -->
+                            <div class="card mb-3 bg-success text-white">
+                                <div class="row g-0">
+                                    <div class="col-md-3 icon">
+                                        <i class="bi bi-file-earmark"></i>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="card-header">VENCEM(90 A 180 DIAS)</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ $totalEntre90e180Dias }}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- VENCEM + 180 DIAS -->
+                            <div class="card mb-3 bg-primary text-white">
+                                <div class="row g-0">
+                                    <div class="col-md-3 icon">
+                                        <i class="bi bi-file-earmark"></i>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="card-header">VENCEM(+ 180 DIAS)</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ $totalMais180Dias }}</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -199,96 +223,93 @@
                             <div class="card">
                                 <div class="card-header"><b><i class="bi bi-pie-chart-fill"></i> CATEGORIA CONTRATOS</b></div>
                                 <div class="card-body">
-                                    <!-- Chart -->
-                                    <canvas id="processosChart" width="400" height="400"></canvas>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <!-- Chart -->
+                                            <canvas id="processosChart" width="400" height="400"></canvas>
+                                        </div>
+                                        <div class="col-6 total-categoria">
+                                            <div class="card text-bg-success mb-3">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">Consumo: {{ $totalConsumo }}</h5>
+                                                    <p class="card-text">Total: R$ {{ number_format($valorConsumo, 2, ',', '.') }}</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="card text-bg-warning mb-3">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">Permanente: {{ $totalPermanente }}</h5>
+                                                    <p class="card-text">Total: R$ {{ number_format($valorPermanente, 2, ',', '.') }}</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="card text-bg-danger mb-3">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">Serviço: {{ $totalServico }}</h5>
+                                                    <p class="card-text">Total: R$ {{ number_format($valorServico, 2, ',', '.') }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="col">
-                                <div class="card text-white bg-danger mb-3">
-                                    <div class="card-header">VENCEM(-30 DIAS)</div>
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ $totalMenos30Dias }}</h5>
+                            <div class="card">
+                                <div class="card-header"><b><i class="bi bi-graph-up"></i> POR ANO</b></div>
+                                <div class="card-body text-center">
+                                    <canvas id="barChart"></canvas>
+
+                                    <!-- Div escondida para passar os dados para o JavaScript -->
+                                    <div id="barChartData" 
+                                        data-labels="{{ json_encode($labels) }}" 
+                                        data-data="{{ json_encode($data) }}" 
+                                        style="display: none;"></div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col">
-                                <div class="card text-white mb-3" style="background: #FF7701;">
-                                    <div class="card-header">VENCEM (30 A 60 DIAS)</div>
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ $totalEntre30e60Dias }}</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="card text-white bg-warning mb-3">
-                                    <div class="card-header">VENCEM(60 A 90 DIAS)</div>
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ $totalEntre60e90Dias }}</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="card text-white bg-success mb-3">
-                                    <div class="card-header">VENCEM(90 A 180 DIAS)</div>
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ $totalEntre90e180Dias }}</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="card text-white bg-primary mb-3">
-                                    <div class="card-header">VENCEM(+ 180 DIAS)</div>
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ $totalMais180Dias }}</h5>
-                                    </div>
-                                </div>
-                            </div>
+                            </div>                          
                         </div>
                     </div> 
                 </div>                
             </div>
 
-                
-
-                <!-- Tabela de Processos -->
-                <div class="row mt-4">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header"><b><i class="bi bi-list-task"></i> LISTA DE PROCESSOS</b></div>
-                            <div class="card-body">
-                                <table class="table table-striped">
-                                    <thead>
+            <!-- Tabela de Processos -->
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header"><b><i class="bi bi-list-task"></i> LISTA DE PROCESSOS</b></div>
+                        <div class="card-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Número</th>
+                                        <th>Descrição</th>
+                                        <th>Categoria</th>
+                                        <th>Valor Total</th>
+                                        <th>Data de Início</th>
+                                        <th>Data de Vencimento</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($processos as $processo)
                                         <tr>
-                                            <th>#</th>
-                                            <th>Número</th>
-                                            <th>Descrição</th>
-                                            <th>Categoria</th>
-                                            <th>Valor Total</th>
-                                            <th>Data de Início</th>
-                                            <th>Data de Vencimento</th>
+                                            <td>{{ $processo->id }}</td>
+                                            <td>{{ $processo->numero_processo }}</td>
+                                            <td>{{ $processo->descricao }}</td>
+                                            <td>{{ ucfirst($processo->categoria) }}</td>
+                                            <td>R$ {{ number_format($processo->valor_total, 2, ',', '.') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($processo->data_inicio)->format('d/m/Y') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($processo->data_vencimento)->format('d/m/Y') }}</td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($processos as $processo)
-                                            <tr>
-                                                <td>{{ $processo->id }}</td>
-                                                <td>{{ $processo->numero_processo }}</td>
-                                                <td>{{ $processo->descricao }}</td>
-                                                <td>{{ ucfirst($processo->categoria) }}</td>
-                                                <td>R$ {{ number_format($processo->valor_total, 2, ',', '.') }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($processo->data_inicio)->format('d/m/Y') }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($processo->data_vencimento)->format('d/m/Y') }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-            </main>
+            </div>
+        </main>
     </div>
 
     <script>
@@ -316,7 +337,6 @@
             });
         });
     </script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>

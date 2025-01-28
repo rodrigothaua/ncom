@@ -1,41 +1,34 @@
-fetch('/processos-pie-chart-data')
-    .then(response => response.json())
-    .then(data => {
-        const ctx = document.getElementById('processosPieChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: ['Verde', 'Amarelo', 'Vermelho'],
-                datasets: [{
-                    label: 'Processos',
-                    data: [data.verde, data.amarelo, data.vermelho],
-                    backgroundColor: ['#28a745', '#ffc107', '#dc3545']
-                }]
-            },
-            options: {
-                responsive: true
-            }
-        });
-    })
-    .catch(error => console.error('Erro ao carregar os dados do gráfico:', error));
-;
+// Obter os dados enviados pelo backend
+const labels = JSON.parse(document.getElementById('barChartData').dataset.labels); // Anos
+const data = JSON.parse(document.getElementById('barChartData').dataset.data);    // Totais de processos
 
+// Configurar o gráfico
+const ctx = document.getElementById('barChart').getContext('2d');
 new Chart(ctx, {
-    type: 'pie',
+    type: 'bar',
     data: {
-        labels: ['Consumo', 'Permanente', 'Serviço'],
+        labels: labels, // Anos no eixo Y
         datasets: [{
-            data: processosData,
-            backgroundColor: ['#007bff', '#ffc107', '#28a745']
+            label: 'Total de Processos',
+            data: data, // Totais de processos
+            backgroundColor: 'rgba(54, 162, 235, 0.5)', // Cor das barras
+            borderColor: 'rgba(54, 162, 235, 1)',       // Cor da borda
+            borderWidth: 1
         }]
     },
     options: {
+        indexAxis: 'y', // Exibir como gráfico horizontal
         responsive: true,
         plugins: {
             legend: {
+                display: true,
                 position: 'top'
+            }
+        },
+        scales: {
+            x: {
+                beginAtZero: true // Começa do zero no eixo X
             }
         }
     }
 });
-    

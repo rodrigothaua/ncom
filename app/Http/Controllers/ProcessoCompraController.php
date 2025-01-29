@@ -29,6 +29,7 @@ class ProcessoCompraController extends Controller
         $validated = $request->validate([
             'numero_processo' => 'required|string|max:255',
             'descricao' => 'required|string',
+            'requisitante' => 'required|string|max:255',
             'data_inicio' => 'required|date',
             'data_vencimento' => 'required|date|after_or_equal:data_inicio',
             'categoria' => 'required|in:consumo,permanente,serviço',
@@ -39,6 +40,7 @@ class ProcessoCompraController extends Controller
         ProcessoCompra::create([
             'numero_processo' => $validated['numero_processo'],
             'descricao' => $validated['descricao'],
+            'requisitante' => 'required|string|max:255',
             'data_inicio' => $validated['data_inicio'],
             'data_vencimento' => $validated['data_vencimento'],
             'categoria' => $validated['categoria'],

@@ -52,6 +52,43 @@ class HomeController extends Controller
         // Preparar dados para o gráfico
         $labels = $processosPorAno->pluck('ano'); // Pega os anos
         $data = $processosPorAno->pluck('total'); // Pega os totais
+        
+        // Obter o primeiro e o último mês com base no banco de dados
+        $primeiroMes = DB::table('processo_compras')->min('data_inicio');
+        $ultimoMes = DB::table('processo_compras')->max('data_inicio');
+
+        if (!$primeiroMes || !$ultimoMes) {
+            $labelsBarVertical = [];
+            $dataBarVertical = [];
+            $mediaEixoYBarVertical = 0;
+        } else {
+            // Criar intervalos de meses
+            $inicio = Carbon::parse($primeiroMes)->startOfMonth();
+            $fim = Carbon::parse($ultimoMes)->endOfMonth();
+
+            $periodo = Carbon::parse($inicio);
+            $labelsBarVertical = [];
+            $dataBarVertical = [];
+
+            while ($periodo->lte($fim)) {
+                // Nome do mês (ex.: Janeiro 2025)
+                $labelsBarVertical[] = $periodo->translatedFormat('F Y');
+
+                // Total dos processos para o mês atual
+                $totalMensal = DB::table('processo_compras')
+                    ->whereYear('data_inicio', $periodo->year)
+                    ->whereMonth('data_inicio', $periodo->month)
+                    ->sum('valor_total');
+
+                $dataBarVertical[] = $totalMensal ?: 0; // Garantir que meses sem dados sejam 0
+
+                $periodo->addMonth(); // Ir para o próximo mês
+            }
+
+            // Calcular a média do eixo Y
+            $maxValor = !empty($dataBarVertical) ? max($dataBarVertical) : 0;
+            $mediaEixoYBarVertical = $maxValor > 0 ? ceil($maxValor / 5) : 1;
+        }
 
         //VENCIMENTOS
         // Obtenha a data atual
@@ -86,7 +123,10 @@ class HomeController extends Controller
             'totalEntre90e180Dias',
             'totalMais180Dias',
             'labels',
-            'data'
+            'data',
+            'labelsBarVertical',
+            'dataBarVertical',
+            'mediaEixoYBarVertical'
         ));
     }
 }

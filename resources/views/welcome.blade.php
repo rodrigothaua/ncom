@@ -226,27 +226,25 @@
                                     <div class="row">
                                         <div class="col-6">
                                             <!-- Chart -->
-                                            <canvas id="processosChart" width="400" height="400"></canvas>
+                                            <canvas id="processosChart" width="600" height="400"></canvas>
                                         </div>
                                         <div class="col-6 total-categoria">
                                             <div class="card text-bg-success mb-3">
                                                 <div class="card-body">
-                                                    <h5 class="card-title">Consumo: {{ $totalConsumo }}</h5>
-                                                    <p class="card-text">Total: R$ {{ number_format($valorConsumo, 2, ',', '.') }}</p>
+                                                    <h5 class="card-title">R$ {{ number_format($valorConsumo, 2, ',', '.') }}</h5>
+                                                    <!--<p class="card-text">{{ $totalConsumo }}</p>-->
                                                 </div>
                                             </div>
 
                                             <div class="card text-bg-warning mb-3">
                                                 <div class="card-body">
-                                                    <h5 class="card-title">Permanente: {{ $totalPermanente }}</h5>
-                                                    <p class="card-text">Total: R$ {{ number_format($valorPermanente, 2, ',', '.') }}</p>
+                                                    <h5 class="card-title">R$ {{ number_format($valorPermanente, 2, ',', '.') }}</h5>
                                                 </div>
                                             </div>
 
                                             <div class="card text-bg-danger mb-3">
                                                 <div class="card-body">
-                                                    <h5 class="card-title">Serviço: {{ $totalServico }}</h5>
-                                                    <p class="card-text">Total: R$ {{ number_format($valorServico, 2, ',', '.') }}</p>
+                                                    <h5 class="card-title">R$ {{ number_format($valorServico, 2, ',', '.') }}</h5>
                                                 </div>
                                             </div>
                                         </div>
@@ -273,42 +271,67 @@
                 </div>                
             </div>
 
-            <!-- Tabela de Processos -->
-            <div class="row mt-4">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header"><b><i class="bi bi-list-task"></i> LISTA DE PROCESSOS</b></div>
-                        <div class="card-body">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Número</th>
-                                        <th>Descrição</th>
-                                        <th>Categoria</th>
-                                        <th>Valor Total</th>
-                                        <th>Data de Início</th>
-                                        <th>Data de Vencimento</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($processos as $processo)
+            <!-- Cronograma Mensal -->
+            <div class="container-fluid">
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header"><b><i class="bi bi-graph-up"></i> CRONOGRAMA MENSAL</b></div>
+                            <div class="card-body">
+                                <canvas id="barVerticalChart" style="max-width: 100%; height: 200px;"></canvas>
+
+                                <!-- Dados específicos para o gráfico -->
+                                <div id="barVerticalChartData" 
+                                    data-labels="{{ json_encode($labelsBarVertical) }}" 
+                                    data-data="{{ json_encode($dataBarVertical) }}" 
+                                    data-media="{{ $mediaEixoYBarVertical }}" 
+                                    style="display: none;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabela de Processos -->
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header"><b><i class="bi bi-list-task"></i> LISTA DE PROCESSOS</b></div>
+                            <div class="card-body">
+                                <table class="table table-striped">
+                                    <thead>
                                         <tr>
-                                            <td>{{ $processo->id }}</td>
-                                            <td>{{ $processo->numero_processo }}</td>
-                                            <td>{{ $processo->descricao }}</td>
-                                            <td>{{ ucfirst($processo->categoria) }}</td>
-                                            <td>R$ {{ number_format($processo->valor_total, 2, ',', '.') }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($processo->data_inicio)->format('d/m/Y') }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($processo->data_vencimento)->format('d/m/Y') }}</td>
+                                            <th>#</th>
+                                            <th>Número</th>
+                                            <th>Descrição</th>
+                                            <th>Requisitante</th>
+                                            <th>Categoria</th>
+                                            <th>Valor Total</th>
+                                            <th>Data de Início</th>
+                                            <th>Data de Vencimento</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($processos as $processo)
+                                            <tr>
+                                                <td>{{ $processo->id }}</td>
+                                                <td>{{ $processo->numero_processo }}</td>
+                                                <td>{{ $processo->descricao }}</td>
+                                                <td>{{ $processo->requisitante }}</td>
+                                                <td>{{ ucfirst($processo->categoria) }}</td>
+                                                <td>R$ {{ number_format($processo->valor_total, 2, ',', '.') }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($processo->data_inicio)->format('d/m/Y') }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($processo->data_vencimento)->format('d/m/Y') }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            
         </main>
     </div>
 

@@ -52,6 +52,7 @@
                                 <th scope="col">#</th>
                                 <th scope="col">Número do Processo</th>
                                 <th scope="col">Descrição</th>
+                                <th scope="col">Requisitante</th>
                                 <th scope="col">Categoria</th>
                                 <th scope="col" style="width: 200px;">Valor Total</th>
                                 <th scope="col">Data de Início</th>
@@ -82,6 +83,7 @@
                                             </button>
                                         @endif
                                     </td>
+                                    <td>{{ $processo->requisitante }}</td>
                                     <td>{{ ucfirst($processo->categoria) }}</td>
                                     <td>R$ {{ number_format($processo->valor_total, 2, ',', '.') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($processo->data_inicio)->format('d/m/Y') }}</td>

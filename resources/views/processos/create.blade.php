@@ -37,8 +37,13 @@
         <div class="mb-3">
             <label for="descricao" class="form-label">Descrição</label>
             <textarea class="form-control" id="descricao" name="descricao" rows="4"
-                placeholder="Informe resumidamente a descrição do processo" required></textarea>
+                placeholder="Informe resumidamente a descrição do processo" required>
+            </textarea>
+        </div>
 
+        <div class="mb-3">
+            <label for="requisitante" class="form-label">Requisitante</label>
+            <input type="text" name="requisitante" class="form-control" required>
         </div>
 
         <div class="mb-3">

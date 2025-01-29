@@ -42,6 +42,21 @@ class HomeController extends Controller
             ],
         ];
 
+        // Obtém todos os processos
+        $processos = Processo::all();
+
+        // Obtém os números dos processos distintos
+        $numerosProcessos = DB::table('processo_compras')
+            ->select('numero_processo') // Substitua pelo nome correto do campo no banco
+            ->distinct()
+            ->get();
+
+        // Obtém os requisitantes distintos
+        $requisitantes = DB::table('processo_compras')
+            ->select('requisitante')
+            ->distinct()
+            ->get();
+
         // Agrupar processos por ano e contar o total
         $processosPorAno = DB::table('processo_compras')
             ->selectRaw('YEAR(data_inicio) as ano, COUNT(*) as total')
@@ -126,7 +141,9 @@ class HomeController extends Controller
             'data',
             'labelsBarVertical',
             'dataBarVertical',
-            'mediaEixoYBarVertical'
+            'mediaEixoYBarVertical',
+            'numerosProcessos',
+            'requisitantes'
         ));
     }
 }

@@ -47,293 +47,291 @@
                 </div>
             </div>
         </nav>
-        <!-- Main Content -->
-        <main>
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">Visão Geral</h1>
-                <ul class="nav justify-content-end">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/login">Entrar</a>
-                    </li>
-                </ul>
-            </div>
-
-            <!--
-            <div id="filtro" class="col-lg-12">
-                <div class="card">
-                    <div class="card-header">
-                        <b><i class="bi bi-search"></i> FILTRO</b>
-                    </div>
-                    <div class="card-body">
-                        <fieldset class="form-group">
-                            <form method="GET" action="#">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="orgao" class="control-label">
-                                                Órgão
-                                            </label>
-                                            <select class="form-select select2" id="orgao" name="orgao"></select>    
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="unidade" class="control-label">
-                                                Unidade Gestora
-                                            </label>
-                                            <select class="form-select select2" id="unidade" name="unidade"></select>    
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group"  >
-                                            <label for="fornecedor" class="control-label">
-                                                Fornecedor
-                                            </label>
-                                            <select class="form-select select2" id="fornecedor" name="fornecedor"></select>    
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group"  >
-                                            <label for="contrato" class="control-label">
-                                                Contrato
-                                            </label>
-                                            <select class="form-select select2" id="contrato" name="contrato"></select>    
-                                        </div>
-                                    </div>
-                                </div>
-                                <br>
-                                <button class="btn btn-success text-right" type="submit"><i class="fa fa-search"></i> Filtrar</button>         
-                            </form>
-                        </fieldset>
-                    </div>
-                </div>        
-            </div>
--->
-            <br>
-
-            <!-- Cards -->
+    </div>
+    <!-- Main Content -->
+    <main class="container-fluid">
+        <div id="filtro" class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <b>RESUMO/CONTRATOS</b>
+                    <b><i class="bi bi-search"></i> FILTRO</b>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <!-- Total de Contratos -->
-                            <div class="card mb-3 bg-primary text-white">
-                                <div class="row g-0">
-                                    <div class="col-md-3 icon">
-                                        <i class="bi bi-file-earmark-medical"></i>
+                    <fieldset class="form-group">
+                        <form method="GET" action="{{ route('processos.index') }}">
+                            <div class="row">
+                                <!-- Número do Processo -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="numero_processo" class="control-label">Número do Processo</label>
+                                        <select class="form-select select2" id="numero_processo" name="numero_processo">
+                                            <option selected>Selecione...</option>
+                                            @foreach ($processos as $processo)
+                                                <option value="{{ $processo->id }}" {{ request('processo') == $processo->id ? 'selected' : '' }}>
+                                                    {{ $processo->numero_processo }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
-                                    <div class="col-md-9">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Total de Contratos: {{ $totalProcessos }}</h5>
-                                            <hr>
-                                            <p class="card-text"><small class="text-body-primary">100% Contratos ativos</small></p>
-                                        </div>
-                                    </div>
+                                </div>
+
+                                <!-- Valor -->
+                                <div class="col-md-6">
+                                    <label for="valor" class="control-label">Valor</label>
+                                    <input type="number" class="form-control" id="valor" name="valor" value="{{ request('valor') }}">
+                                </div>
+
+                                <!-- Requisitante -->
+                                <div class="col-md-6">
+                                    <label for="requisitante" class="control-label">Requisitante</label>
+                                    <select class="form-select select2" id="requisitante" name="requisitante">
+                                        <option value="">Selecione...</option>
+                                        @foreach ($requisitantes as $requisitante)
+                                            <option value="{{ $requisitante->requisitante }}" {{ request('requisitante') == $requisitante->requisitante ? 'selected' : '' }}>
+                                                {{ $requisitante->requisitante }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <!-- Data Início -->
+                                <div class="col-md-6">
+                                    <label for="data_inicio" class="control-label">Data Início</label>
+                                    <input type="date" class="form-control" id="data_inicio" name="data_inicio" value="{{ request('data_inicio') }}">
                                 </div>
                             </div>
 
-                            <!-- VENCEM -30 DIAS -->
-                            <div class="card mb-3 bg-danger text-white">
-                                <div class="row g-0">
-                                    <div class="col-md-3 icon">
-                                        <i class="bi bi-file-earmark"></i>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <div class="card-header">VENCEM(-30 DIAS)</div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ $totalMenos30Dias }}</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- VENCEM 30 A 60 DIAS -->
-                            <div class="card mb-3 text-white" style="background: #FF7701;">
-                                <div class="row g-0">
-                                    <div class="col-md-3 icon">
-                                        <i class="bi bi-file-earmark"></i>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <div class="card-header">VENCEM(60 A 90 DIAS)</div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ $totalEntre30e60Dias }}</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- VENCEM 60 A 90 DIAS -->
-                            <div class="card mb-3 bg-warning text-white">
-                                <div class="row g-0">
-                                    <div class="col-md-3 icon">
-                                        <i class="bi bi-file-earmark"></i>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <div class="card-header">VENCEM(60 A 90 DIAS)</div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ $totalEntre60e90Dias }}</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- VENCEM 90 A 180 DIAS -->
-                            <div class="card mb-3 bg-success text-white">
-                                <div class="row g-0">
-                                    <div class="col-md-3 icon">
-                                        <i class="bi bi-file-earmark"></i>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <div class="card-header">VENCEM(90 A 180 DIAS)</div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ $totalEntre90e180Dias }}</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- VENCEM + 180 DIAS -->
-                            <div class="card mb-3 bg-primary text-white">
-                                <div class="row g-0">
-                                    <div class="col-md-3 icon">
-                                        <i class="bi bi-file-earmark"></i>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <div class="card-header">VENCEM(+ 180 DIAS)</div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ $totalMais180Dias }}</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Total Global -->
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header"><b><i class="bi bi-currency-dollar"></i> TOTAL GLOBAL DE CONTRATOS</b></div>
-                                <div class="card-body text-center">
-                                    <h4><strong>R${{ number_format($valorTotal, 2, ',', '.') }}</strong></h4>
-                                </div>
-                            </div>
                             <br>
-                            <div class="card">
-                                <div class="card-header"><b><i class="bi bi-pie-chart-fill"></i> CATEGORIA CONTRATOS</b></div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <!-- Chart -->
-                                            <canvas id="processosChart" width="600" height="400"></canvas>
+                            <button class="btn btn-success text-right" type="submit">
+                                <i class="fa fa-search"></i> Filtrar
+                            </button>
+                        </form>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+
+            
+        <br>
+
+        <!-- Cards -->
+        <div class="card">
+            <div class="card-header">
+                <b>RESUMO/CONTRATOS</b>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <!-- Total de Contratos -->
+                        <div class="card mb-3 bg-primary text-white">
+                            <div class="row g-0">
+                                <div class="col-md-3 icon">
+                                    <i class="bi bi-file-earmark-medical"></i>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Total de Contratos: {{ $totalProcessos }}</h5>
+                                        <hr>
+                                        <p class="card-text"><small class="text-body-primary">100% Contratos ativos</small></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- VENCEM -30 DIAS -->
+                        <div class="card mb-3 bg-danger text-white">
+                            <div class="row g-0">
+                                <div class="col-md-3 icon">
+                                    <i class="bi bi-file-earmark"></i>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="card-header">VENCEM(-30 DIAS)</div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ $totalMenos30Dias }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- VENCEM 30 A 60 DIAS -->
+                        <div class="card mb-3 text-white" style="background: #FF7701;">
+                            <div class="row g-0">
+                                <div class="col-md-3 icon">
+                                    <i class="bi bi-file-earmark"></i>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="card-header">VENCEM(60 A 90 DIAS)</div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ $totalEntre30e60Dias }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- VENCEM 60 A 90 DIAS -->
+                        <div class="card mb-3 bg-warning text-white">
+                            <div class="row g-0">
+                                <div class="col-md-3 icon">
+                                    <i class="bi bi-file-earmark"></i>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="card-header">VENCEM(60 A 90 DIAS)</div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ $totalEntre60e90Dias }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- VENCEM 90 A 180 DIAS -->
+                        <div class="card mb-3 bg-success text-white">
+                            <div class="row g-0">
+                                <div class="col-md-3 icon">
+                                    <i class="bi bi-file-earmark"></i>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="card-header">VENCEM(90 A 180 DIAS)</div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ $totalEntre90e180Dias }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- VENCEM + 180 DIAS -->
+                        <div class="card mb-3 bg-primary text-white">
+                            <div class="row g-0">
+                                <div class="col-md-3 icon">
+                                    <i class="bi bi-file-earmark"></i>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="card-header">VENCEM(+ 180 DIAS)</div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ $totalMais180Dias }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Global -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header"><b><i class="bi bi-currency-dollar"></i> TOTAL GLOBAL DE CONTRATOS</b></div>
+                            <div class="card-body text-center">
+                                <h4><strong>R${{ number_format($valorTotal, 2, ',', '.') }}</strong></h4>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="card">
+                            <div class="card-header"><b><i class="bi bi-pie-chart-fill"></i> CATEGORIA CONTRATOS</b></div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <!-- Chart -->
+                                        <canvas id="processosChart" width="600" height="400"></canvas>
+                                    </div>
+                                    <div class="col-6 total-categoria">
+                                        <div class="card text-bg-success mb-3">
+                                            <div class="card-body">
+                                                <h5 class="card-title">R$ {{ number_format($valorConsumo, 2, ',', '.') }}</h5>
+                                                <!--<p class="card-text">{{ $totalConsumo }}</p>-->
+                                            </div>
                                         </div>
-                                        <div class="col-6 total-categoria">
-                                            <div class="card text-bg-success mb-3">
-                                                <div class="card-body">
-                                                    <h5 class="card-title">R$ {{ number_format($valorConsumo, 2, ',', '.') }}</h5>
-                                                    <!--<p class="card-text">{{ $totalConsumo }}</p>-->
-                                                </div>
-                                            </div>
 
-                                            <div class="card text-bg-warning mb-3">
-                                                <div class="card-body">
-                                                    <h5 class="card-title">R$ {{ number_format($valorPermanente, 2, ',', '.') }}</h5>
-                                                </div>
+                                        <div class="card text-bg-warning mb-3">
+                                            <div class="card-body">
+                                                <h5 class="card-title">R$ {{ number_format($valorPermanente, 2, ',', '.') }}</h5>
                                             </div>
+                                        </div>
 
-                                            <div class="card text-bg-danger mb-3">
-                                                <div class="card-body">
-                                                    <h5 class="card-title">R$ {{ number_format($valorServico, 2, ',', '.') }}</h5>
-                                                </div>
+                                        <div class="card text-bg-danger mb-3">
+                                            <div class="card-body">
+                                                <h5 class="card-title">R$ {{ number_format($valorServico, 2, ',', '.') }}</h5>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="card">
-                                <div class="card-header"><b><i class="bi bi-graph-up"></i> POR ANO</b></div>
-                                <div class="card-body text-center">
-                                    <canvas id="barChart"></canvas>
-
-                                    <!-- Div escondida para passar os dados para o JavaScript -->
-                                    <div id="barChartData" 
-                                        data-labels="{{ json_encode($labels) }}" 
-                                        data-data="{{ json_encode($data) }}" 
-                                        style="display: none;"></div>
-                                    </div>
-                                </div>
-                            </div>                          
-                        </div>
-                    </div> 
-                </div>                
-            </div>
-
-            <!-- Cronograma Mensal -->
-            <div class="container-fluid">
-                <div class="row mt-4">
-                    <div class="col-md-12">
+                    </div>
+                    <div class="col-md-3">
                         <div class="card">
-                            <div class="card-header"><b><i class="bi bi-graph-up"></i> CRONOGRAMA MENSAL</b></div>
-                            <div class="card-body">
-                                <canvas id="barVerticalChart" style="max-width: 100%; height: 200px;"></canvas>
+                            <div class="card-header"><b><i class="bi bi-graph-up"></i> POR ANO</b></div>
+                            <div class="card-body text-center">
+                                <canvas id="barChart"></canvas>
 
-                                <!-- Dados específicos para o gráfico -->
-                                <div id="barVerticalChartData" 
-                                    data-labels="{{ json_encode($labelsBarVertical) }}" 
-                                    data-data="{{ json_encode($dataBarVertical) }}" 
-                                    data-media="{{ $mediaEixoYBarVertical }}" 
+                                <!-- Div escondida para passar os dados para o JavaScript -->
+                                <div id="barChartData" 
+                                    data-labels="{{ json_encode($labels) }}" 
+                                    data-data="{{ json_encode($data) }}" 
                                     style="display: none;"></div>
                                 </div>
                             </div>
-                        </div>
+                        </div>                          
                     </div>
-                </div>
+                </div> 
+            </div>                
+        </div>
 
-                <!-- Tabela de Processos -->
-                <div class="row mt-4">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header"><b><i class="bi bi-list-task"></i> LISTA DE PROCESSOS</b></div>
-                            <div class="card-body">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Número</th>
-                                            <th>Descrição</th>
-                                            <th>Requisitante</th>
-                                            <th>Categoria</th>
-                                            <th>Valor Total</th>
-                                            <th>Data de Início</th>
-                                            <th>Data de Vencimento</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($processos as $processo)
-                                            <tr>
-                                                <td>{{ $processo->id }}</td>
-                                                <td>{{ $processo->numero_processo }}</td>
-                                                <td>{{ $processo->descricao }}</td>
-                                                <td>{{ $processo->requisitante }}</td>
-                                                <td>{{ ucfirst($processo->categoria) }}</td>
-                                                <td>R$ {{ number_format($processo->valor_total, 2, ',', '.') }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($processo->data_inicio)->format('d/m/Y') }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($processo->data_vencimento)->format('d/m/Y') }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+        <!-- Cronograma Mensal -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header"><b><i class="bi bi-graph-up"></i> CRONOGRAMA MENSAL</b></div>
+                    <div class="card-body">
+                        <canvas id="barVerticalChart" style="max-width: 100%; height: 200px;"></canvas>
+
+                        <!-- Dados específicos para o gráfico -->
+                        <div id="barVerticalChartData" 
+                            data-labels="{{ json_encode($labelsBarVertical) }}" 
+                            data-data="{{ json_encode($dataBarVertical) }}" 
+                            data-media="{{ $mediaEixoYBarVertical }}" 
+                            style="display: none;"></div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-        </main>
-    </div>
+        </div>
+
+        <!-- Tabela de Processos -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header"><b><i class="bi bi-list-task"></i> LISTA DE PROCESSOS</b></div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Número</th>
+                                    <th>Descrição</th>
+                                    <th>Requisitante</th>
+                                    <th>Categoria</th>
+                                    <th>Valor Total</th>
+                                    <th>Data de Início</th>
+                                    <th>Data de Vencimento</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($processos as $processo)
+                                    <tr>
+                                        <td>{{ $processo->id }}</td>
+                                        <td>{{ $processo->numero_processo }}</td>
+                                        <td>{{ $processo->descricao }}</td>
+                                        <td>{{ $processo->requisitante }}</td>
+                                        <td>{{ ucfirst($processo->categoria) }}</td>
+                                        <td>R$ {{ number_format($processo->valor_total, 2, ',', '.') }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($processo->data_inicio)->format('d/m/Y') }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($processo->data_vencimento)->format('d/m/Y') }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>    
+    </main>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -360,7 +358,5 @@
             });
         });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>

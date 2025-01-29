@@ -73,3 +73,7 @@ body {
 #barVerticalChart canvas{
     height: 800px;
 }
+
+main{
+    margin-top: 4rem;
+}

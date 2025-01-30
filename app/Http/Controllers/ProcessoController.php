@@ -23,7 +23,8 @@ class ProcessoController extends Controller
         // Validação
         $validatedData = $request->validate([
             'numero_processo' => 'required|string|max:255',
-            'descricao' => 'required|string|max:500',
+            'descricao' => 'required|string|max:1000',
+            'requisitante' => 'required|string|max:500',
             'categoria' => 'required|string',
             'valor_total' => 'required|numeric',
             'data_inicio' => 'required|date',
@@ -48,6 +49,7 @@ class ProcessoController extends Controller
         $request->validate([
             'numero_processo' => 'required|string|max:255',
             'descricao' => 'required|string|max:1000',
+            'requisitante' => 'required|string|max:500',
             'categoria' => 'required|string',
             'valor_total' => 'required|numeric',
             'data_inicio' => 'required|date',

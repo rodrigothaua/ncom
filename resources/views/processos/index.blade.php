@@ -5,6 +5,7 @@
 @endif
 
 @section('content')
+@include('layouts.partials.alerts')
 <div class="container-fluid">
     <h1 class="mb-4">Gerenciamento de Processos</h1>
 
@@ -33,12 +34,6 @@
     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
         <a href="#" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalNovoProcesso">Novo Processo</a>
     </div>
-
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
 
     <!-- Tabela de Processos -->
     <div class="row mt-4">
@@ -182,6 +177,10 @@
                     <div class="form-group">
                         <label for="descricao">Descrição</label>
                         <textarea id="descricao" name="descricao" class="form-control" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="descricao">Requisitante</label>
+                        <input type="text" id="requisitante" name="requisitante" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label for="categoria" class="form-label">Categoria</label>

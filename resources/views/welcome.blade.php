@@ -57,7 +57,7 @@
                 </div>
                 <div class="card-body">
                     <fieldset class="form-group">
-                        <form method="GET" action="{{ route('processos.index') }}">
+                        <form method="GET" action="{{ route('home') }}">
                             <div class="row">
                                 <!-- Número do Processo -->
                                 <div class="col-md-6">
@@ -107,7 +107,6 @@
                 </div>
             </div>
         </div>
-
             
         <br>
 

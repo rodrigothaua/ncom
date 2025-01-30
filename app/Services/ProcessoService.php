@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Http\Request;
 use App\Models\Processo;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -137,5 +138,28 @@ class ProcessoService
             'dataBarVertical' => $dataBarVertical,
             'mediaEixoYBarVertical' => $mediaEixoYBarVertical
         ];
+    }
+
+    public function getFiltro(Request $request)
+    {
+        $query = Processo::query();
+
+        if ($request->filled('numero_processo')) {
+            $query->where('id', $request->numero_processo);
+        }
+
+        if ($request->filled('valor')) {
+            $query->where('valor_total', $request->valor);
+        }
+
+        if ($request->filled('requisitante')) {
+            $query->where('requisitante', $request->requisitante);
+        }
+
+        if ($request->filled('data_inicio')) {
+            $query->whereDate('data_inicio', '>=', $request->data_inicio);
+        }
+
+        return ['processosFiltrados' => $query->get()];
     }
 }

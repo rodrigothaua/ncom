@@ -23,6 +23,7 @@
     <div class="container mt-4">
         <!-- Conteúdo da página -->
         @yield('content')
+        @include('layouts.partials.alerts')
     </div>
 
     <div class="container mt-4">

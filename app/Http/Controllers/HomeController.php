@@ -14,7 +14,7 @@ class HomeController extends Controller
         $this->processoService = $processoService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         // Obtém os processos e cálculos via Service
         $processos = $this->processoService->getProcessos();
@@ -24,6 +24,7 @@ class HomeController extends Controller
         $requisitantesENumeros = $this->processoService->getRequisitantesENumerosProcessos();
         $processosPorAno = $this->processoService->getProcessosPorAno();
         $graficoMensal = $this->processoService->getGraficoMensal();
+        $filtro = $this->processoService->getFiltro($request);
 
         // Retornar a view com os dados
         return view('welcome', array_merge(
@@ -32,7 +33,8 @@ class HomeController extends Controller
             $vencimentos,
             $requisitantesENumeros,
             $processosPorAno, // Inclui 'labels' e 'data'
-            $graficoMensal // Inclui 'labelsBarVertical', 'dataBarVertical' e 'mediaEixoYBarVertical'
+            $graficoMensal, // Inclui 'labelsBarVertical', 'dataBarVertical' e 'mediaEixoYBarVertical'
+            $filtro
         ));
     }
 }

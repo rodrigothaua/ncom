@@ -6,24 +6,9 @@
 @endif
 
 @section('content')
+@include('layouts.partials.alerts')
 <div class="container">
     <h1 class="my-4">Cadastrar Novo Processo</h1>
-
-    <!-- Exibe mensagens de sucesso ou erro -->
-    @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-    @endif
-    @if($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
 
     <!-- Formulário de cadastro de novo processo -->
     <form action="{{ route('processos.store') }}" method="POST">

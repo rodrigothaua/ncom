@@ -19,6 +19,10 @@
             <textarea name="descricao" class="form-control" id="descricao" rows="3" required>{{ $processo->descricao }}</textarea>
         </div>
         <div class="mb-3">
+            <label for="nome" class="form-label">Requisitante</label>
+            <input type="text" name="requisitante" class="form-control" value="{{ $processo->requisitante }}" required>
+        </div>
+        <div class="mb-3">
             <label for="categoria" class="form-label">Categoria</label>
             <select name="categoria" id="categoria" class="form-control" required>
                 <option value="Consumo" {{ $processo->categoria == 'Consumo' ? 'selected' : '' }}>Consumo</option>

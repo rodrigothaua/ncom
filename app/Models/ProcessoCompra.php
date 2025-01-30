@@ -12,11 +12,11 @@ class ProcessoCompra extends Model
     protected $fillable = [
         'numero_processo',
         'descricao',
+        'requisitante',
         'data_inicio',
         'data_vencimento',
         'categoria',
-        'valor_total',
-        'requisitante'
+        'valor_total'
     ];
 
     // Método para calcular o status com base na data de vencimento

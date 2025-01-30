@@ -45,7 +45,9 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header"><b><i class="bi bi-list-task"></i> LISTA DE PROCESSOS</b></div>
+                
                 <div class="card-body">
+                    <input class="form-control" id="myInput" type="text" placeholder="Pesquisar..">
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -61,7 +63,7 @@
                                 <th scope="col" style="width: 200px;">Funções</th>
                             </tr>
                         </thead>
-                        <tbody class="table-group-divider">
+                        <tbody class="table-group-divider" id="myTable">
                                 @foreach ($processos as $processo)
                                 <tr 
                                     @if (\Carbon\Carbon::parse($processo->data_vencimento)->isPast()) class="table-danger" 
@@ -112,25 +114,54 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <div class="legenda">
+                        <div class="badge" style="width: 6rem; background:rgb(253, 143, 152); color: #000;">
+                            Vencido
+                        </div>
+                        <div class="badge" style="width: 6rem; background: #FFF3CD; color: #000;">
+                            + 3 meses
+                        </div>
+                        <div class="badge" style="width: 6rem; background: #CFF4FC; color: #000;">
+                            + 6 meses
+                        </div>
+                        <div class="badge" style="width: 6rem; background: #FFF; color: #000;">
+                            + 12 meses
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="legenda">
-        <div class="badge" style="width: 6rem; background:rgb(253, 143, 152); color: #000;">
-            Vencido
-        </div>
-        <div class="badge" style="width: 6rem; background: #FFF3CD; color: #000;">
-            + 3 meses
-        </div>
-        <div class="badge" style="width: 6rem; background: #CFF4FC; color: #000;">
-            + 6 meses
-        </div>
-        <div class="badge" style="width: 6rem; background: #FFF; color: #000;">
-            + 12 meses
-        </div>
-    </div>
 </div>
+<br>
+<nav>
+    <ul class="pagination justify-content-center">
+        {{-- Link para a página anterior --}}
+        @if ($processos->onFirstPage())
+            <li class="page-item disabled"><span class="page-link">Anterior</span></li>
+        @else
+            <li class="page-item">
+                <a class="page-link" href="{{ $processos->previousPageUrl() }}" rel="prev">Anterior</a>
+            </li>
+        @endif
+
+        {{-- Links das páginas --}}
+        @foreach ($processos->getUrlRange(1, $processos->lastPage()) as $page => $url)
+            <li class="page-item {{ $page == $processos->currentPage() ? 'active' : '' }}">
+                <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+            </li>
+        @endforeach
+
+        {{-- Link para a próxima página --}}
+        @if ($processos->hasMorePages())
+            <li class="page-item">
+                <a class="page-link" href="{{ $processos->nextPageUrl() }}" rel="next">Próximo</a>
+            </li>
+        @else
+            <li class="page-item disabled"><span class="page-link">Próximo</span></li>
+        @endif
+    </ul>
+</nav>
 
 <!-- Modal para Novo Processo -->
 <div class="modal fade" id="modalNovoProcesso" tabindex="-1" aria-labelledby="modalNovoProcessoLabel" aria-hidden="true">

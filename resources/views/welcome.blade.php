@@ -6,7 +6,7 @@
     <div class="container-fluid">
         <nav class="navbar bg-body-tertiary fixed-top">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">Visão geral</a>
+                <a class="navbar-brand" href="/">Visão geral</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -61,32 +61,30 @@
                             <div class="row">
                                 <!-- Número do Processo -->
                                 <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="numero_processo" class="control-label">Número do Processo</label>
-                                        <select class="form-select select2" id="numero_processo" name="numero_processo">
-                                            <option selected>Selecione...</option>
-                                            @foreach ($processos as $processo)
-                                                <option value="{{ $processo->id }}" {{ request('processo') == $processo->id ? 'selected' : '' }}>
-                                                    {{ $processo->numero_processo }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                    <label for="numero_processo" class="control-label">Número do Processo</label>
+                                    <select class="form-select select2" id="numero_processo" name="numero_processo">
+                                        <option value="" selected>Selecione...</option>
+                                        @foreach ($processos as $processo)
+                                            <option value="{{ $processo->id }}" {{ old('numero_processo', request('numero_processo')) == $processo->id ? 'selected' : '' }}>
+                                                {{ $processo->numero_processo }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
 
                                 <!-- Valor -->
                                 <div class="col-md-6">
                                     <label for="valor" class="control-label">Valor</label>
-                                    <input type="number" class="form-control" id="valor" name="valor" value="{{ request('valor') }}">
+                                    <input type="number" class="form-control" id="valor" name="valor" value="{{ old('valor'), request('valor') }}">
                                 </div>
 
                                 <!-- Requisitante -->
                                 <div class="col-md-6">
                                     <label for="requisitante" class="control-label">Requisitante</label>
                                     <select class="form-select select2" id="requisitante" name="requisitante">
-                                        <option value="">Selecione...</option>
+                                        <option value="" selected>Selecione...</option>
                                         @foreach ($requisitantes as $requisitante)
-                                            <option value="{{ $requisitante->requisitante }}" {{ request('requisitante') == $requisitante->requisitante ? 'selected' : '' }}>
+                                            <option value="{{ $requisitante->requisitante }}" {{ old('requisitante'), request('requisitante') == $requisitante->requisitante ? 'selected' : '' }}>
                                                 {{ $requisitante->requisitante }}
                                             </option>
                                         @endforeach
@@ -299,6 +297,7 @@
                 <div class="card">
                     <div class="card-header"><b><i class="bi bi-list-task"></i> LISTA DE PROCESSOS</b></div>
                     <div class="card-body">
+                        <input class="form-control" id="myInput" type="text" placeholder="Pesquisar..">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
@@ -312,7 +311,7 @@
                                     <th>Data de Vencimento</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="myTable">
                                 @foreach ($processos as $processo)
                                     <tr>
                                         <td>{{ $processo->id }}</td>

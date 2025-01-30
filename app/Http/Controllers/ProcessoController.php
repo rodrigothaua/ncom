@@ -9,7 +9,7 @@ class ProcessoController extends Controller
 {
     public function index()
     {
-        $processos = Processo::all(); // Recupera todos os processos
+        $processos = Processo::paginate(10); // Define 10 registros por página
         return view('processos.index', compact('processos'));
     }
 

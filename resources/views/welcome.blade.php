@@ -297,34 +297,38 @@
                     <div class="card-header"><b><i class="bi bi-list-task"></i> LISTA DE PROCESSOS</b></div>
                     <div class="card-body">
                         <input class="form-control" id="myInput" type="text" placeholder="Pesquisar..">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Número</th>
-                                    <th>Descrição</th>
-                                    <th>Requisitante</th>
-                                    <th>Categoria</th>
-                                    <th>Valor Total</th>
-                                    <th>Data de Início</th>
-                                    <th>Data de Vencimento</th>
-                                </tr>
-                            </thead>
-                            <tbody id="myTable">
-                                @foreach ($processos as $processo)
+                        @if(isset($processosFiltrados) && count($processosFiltrados) > 0)
+                            <table class="table table-striped">
+                                <thead>
                                     <tr>
-                                        <td>{{ $processo->id }}</td>
-                                        <td>{{ $processo->numero_processo }}</td>
-                                        <td>{{ $processo->descricao }}</td>
-                                        <td>{{ $processo->requisitante }}</td>
-                                        <td>{{ ucfirst($processo->categoria) }}</td>
-                                        <td>R$ {{ number_format($processo->valor_total, 2, ',', '.') }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($processo->data_inicio)->format('d/m/Y') }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($processo->data_vencimento)->format('d/m/Y') }}</td>
+                                        <th>#</th>
+                                        <th>Número</th>
+                                        <th>Descrição</th>
+                                        <th>Requisitante</th>
+                                        <th>Categoria</th>
+                                        <th>Valor Total</th>
+                                        <th>Data de Início</th>
+                                        <th>Data de Vencimento</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody id="myTable">
+                                    @foreach ($processosFiltrados as $processo)
+                                        <tr>
+                                            <td>{{ $processo->id }}</td>
+                                            <td>{{ $processo->numero_processo }}</td>
+                                            <td>{{ $processo->descricao }}</td>
+                                            <td>{{ $processo->requisitante }}</td>
+                                            <td>{{ ucfirst($processo->categoria) }}</td>
+                                            <td>R$ {{ number_format($processo->valor_total, 2, ',', '.') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($processo->data_inicio)->format('d/m/Y') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($processo->data_vencimento)->format('d/m/Y') }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @else
+                            <p class="text-muted">Nenhum processo encontrado com os filtros aplicados.</p>
+                        @endif
                     </div>
                 </div>
             </div>

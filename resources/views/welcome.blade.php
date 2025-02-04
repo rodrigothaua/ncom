@@ -50,7 +50,7 @@
     </div>
     <!-- Main Content -->
     <main class="container-fluid">
-        <div id="filtro" class="col-lg-12">
+        <div id="filtro" class="col-lg-12" style="display: none;">
             <div class="card">
                 <div class="card-header">
                     <b><i class="bi bi-search"></i> FILTRO</b>

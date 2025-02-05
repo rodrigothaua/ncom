@@ -22,8 +22,8 @@
 
     <div class="container mt-4">
         <!-- Conteúdo da página -->
-        @yield('content')
         @include('layouts.partials.alerts')
+        @yield('content')
     </div>
 
     <div class="container mt-4">

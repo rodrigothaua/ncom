@@ -77,3 +77,11 @@ body {
 main{
     margin-top: 4rem;
 }
+
+.logo-dash{
+    margin-bottom: 20px;
+}
+
+.logo-dash h4{
+    margin: 0;
+}

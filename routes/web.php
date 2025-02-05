@@ -19,6 +19,10 @@ Route::middleware(['auth'])->group(function () {
     // CRUD completo (Evita duplicação)
     Route::resource('processos', ProcessoController::class);
 
+    // Página de registro de usuário
+    Route::get('/usuarios/create', [RegisterController::class, 'showRegistrationForm'])->name('usuarios.create');
+    Route::post('/usuarios/store', [RegisterController::class, 'register'])->name('usuarios.store');
+
     // Gestão de processos
     Route::prefix('processos')->name('processos.')->group(function () {
         Route::get('/', [ProcessoController::class, 'index'])->name('index'); // Lista de processos
@@ -31,10 +35,6 @@ Route::middleware(['auth'])->group(function () {
 
 // Rotas de autenticação
 Auth::routes();
-
-// Página de registro de novo usuário
-Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [RegisterController::class, 'register']);
 
 // Rotas de autenticação
 require __DIR__.'/auth.php';

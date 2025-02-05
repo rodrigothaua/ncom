@@ -7,7 +7,7 @@
     </div>
 
     <div class="col-6 col-md-4 text-right">
-      <div class="text-right">Desenvolvido por </div>
+      <span class="mb-3 mb-md-0 text-body-secondary">Desenvolvido por <a href="https://www.github.com/rodrigothaua" target="_blank">Rodrigo Thauã</a></span>
     </div>
 
     <!--

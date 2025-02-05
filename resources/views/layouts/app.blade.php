@@ -26,7 +26,7 @@
         @yield('content')
     </div>
 
-    <div class="container mt-4">
+    <div class="container-fluid mt-4">
         @include('layouts.footer')
     </div>
 

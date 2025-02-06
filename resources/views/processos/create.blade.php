@@ -48,7 +48,7 @@
         </div>
 
         <div class="mb-3">
-            <label for="data_inicio">Data de Início</label>
+            <label for="data_inicio">Data de Entrada</label>
             <input type="date" name="data_inicio" id="data_inicio" class="form-control">
         </div>
         <div class="mb-3">

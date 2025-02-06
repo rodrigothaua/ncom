@@ -26,9 +26,9 @@ class ProcessoController extends Controller
             'descricao' => 'required|string|max:1000',
             'requisitante' => 'required|string|max:500',
             'categoria' => 'required|string',
-            'valor_total' => 'required|numeric',
-            'data_inicio' => 'required|date',
-            'data_vencimento' => 'required|date',
+            'valor_total' => 'nullable|numeric',
+            'data_inicio' => 'nullable|date',
+            'data_vencimento' => 'nullable|date',
         ]);
 
         // Criação do processo
@@ -51,9 +51,9 @@ class ProcessoController extends Controller
             'descricao' => 'required|string|max:1000',
             'requisitante' => 'required|string|max:500',
             'categoria' => 'required|string',
-            'valor_total' => 'required|numeric',
-            'data_inicio' => 'required|date',
-            'data_vencimento' => 'required|date|after_or_equal:data_inicio',
+            'valor_total' => 'nullable|numeric',
+            'data_inicio' => 'nullable|date',
+            'data_vencimento' => 'nullable|date|after_or_equal:data_inicio',
         ]);
 
         // Buscar o processo e atualizar os dados

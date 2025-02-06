@@ -44,16 +44,16 @@
         <div class="mb-3">
             <label for="valor_contrato" class="form-label">Valor do contrato</label>
             <input type="number" step="0.01" class="form-control" id="valor_total" name="valor_total"
-                placeholder="Digite o valor do contrato" required>
+                placeholder="Digite o valor do contrato">
         </div>
 
         <div class="mb-3">
             <label for="data_inicio">Data de Início</label>
-            <input type="date" name="data_inicio" id="data_inicio" class="form-control" required>
+            <input type="date" name="data_inicio" id="data_inicio" class="form-control">
         </div>
         <div class="mb-3">
             <label for="data_vencimento">Data de Vencimento</label>
-            <input type="date" name="data_vencimento" id="data_vencimento" class="form-control" required>
+            <input type="date" name="data_vencimento" id="data_vencimento" class="form-control">
         </div>
 
         <button type="submit" class="btn btn-success">Cadastrar</button>

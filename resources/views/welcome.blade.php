@@ -78,7 +78,7 @@
                                 <!-- Valor -->
                                 <div class="col-md-6">
                                     <label for="valor" class="control-label">Valor</label>
-                                    <input type="number" class="form-control" id="valor" name="valor" value="{{ old('valor'), request('valor') }}">
+                                    <input type="number" class="form-control" id="valor" name="valor" value="{{ old('valor', request('valor')) }}">
                                 </div>
 
                                 <!-- Requisitante -->

@@ -35,128 +35,90 @@
         <a href="#" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalNovoProcesso">Novo Processo</a>
     </div>
 
-    <!-- Tabela de Processos -->
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header"><b><i class="bi bi-list-task"></i> LISTA DE PROCESSOS</b></div>
-                
-                <div class="card-body">
-                    <input class="form-control" id="myInput" type="text" placeholder="Pesquisar..">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Número do Processo</th>
-                                <th scope="col">Descrição</th>
-                                <th scope="col">Requisitante</th>
-                                <th scope="col">Categoria</th>
-                                <th scope="col" style="width: 200px;">Valor Total</th>
-                                <th scope="col">Data de Início</th>
-                                <th scope="col">Data de Vencimento</th>
-                                <!--<th scope="col">Status</th>-->
-                                <th scope="col" style="width: 200px;">Funções</th>
-                            </tr>
-                        </thead>
-                        <tbody class="table-group-divider" id="myTable">
-                                @foreach ($processos as $processo)
-                                <tr 
-                                    @if (\Carbon\Carbon::parse($processo->data_vencimento)->isPast()) class="table-danger" 
-                                    @elseif (\Carbon\Carbon::parse($processo->data_vencimento)->diffInMonths() <= 3) class="table-warning" 
-                                    @elseif (\Carbon\Carbon::parse($processo->data_vencimento)->diffInMonths() <= 6) class="table-info" 
-                                    @endif
-                                >
-                                    <th>{{ $processo->id }}</th>
-                                    <td>{{ $processo->numero_processo }}</td>
-                                    <td>
-                                        {{ \Illuminate\Support\Str::limit($processo->descricao, 50) }}
-                                        @if (strlen($processo->descricao) > 50)
-                                            <button 
-                                                class="btn btn-link p-0 text-primary" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#descricaoModal" 
-                                                onclick="carregarDescricao('{{ $processo->descricao }}')">
-                                                Ver Completo
-                                            </button>
-                                        @endif
-                                    </td>
-                                    <td>{{ $processo->requisitante }}</td>
-                                    <td>{{ ucfirst($processo->categoria) }}</td>
-                                    <td>R$ {{ number_format($processo->valor_total, 2, ',', '.') }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($processo->data_inicio)->format('d/m/Y') }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($processo->data_vencimento)->format('d/m/Y') }}</td>
-                                    <!--
-                                    <td>
-                                        @if (\Carbon\Carbon::parse($processo->data_vencimento)->isPast())
-                                            Vencido
-                                        @elseif (\Carbon\Carbon::parse($processo->data_vencimento)->diffInMonths() <= 3)
-                                            + 3 meses
-                                        @elseif (\Carbon\Carbon::parse($processo->data_vencimento)->diffInMonths() <= 6)
-                                            + 6 meses
-                                        @else
-                                            + 12 meses
-                                        @endif
-                                    </td>-->
-                                    <td>
-                                        <a href="{{ route('processos.edit', $processo->id) }}" class="btn btn-primary btn-sm">Editar</a>
-                                        <form action="{{ route('processos.destroy', $processo->id) }}" method="POST" style="display: inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este processo?')">Excluir</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    <div class="legenda">
-                        <div class="badge" style="width: 6rem; background:rgb(253, 143, 152); color: #000;">
-                            Vencido
-                        </div>
-                        <div class="badge" style="width: 6rem; background: #FFF3CD; color: #000;">
-                            + 3 meses
-                        </div>
-                        <div class="badge" style="width: 6rem; background: #CFF4FC; color: #000;">
-                            + 6 meses
-                        </div>
-                        <div class="badge" style="width: 6rem; background: #FFF; color: #000;">
-                            + 12 meses
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Número do Processo</th>
+                <th>Descrição</th>
+                <th>Requisitante</th>
+                <th>Categorias</th>
+                <th>Valor Total</th>
+                <th>Data Início</th>
+                <th>Data Vencimento</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($processos as $processo)
+            <tr>
+                <td>{{ $processo->id }}</td>
+                <td>{{ $processo->numero_processo }}</td>
+                <td>{{ $processo->descricao }}</td>
+                <td>{{ $processo->requisitante }}</td>
+                <td>
+                    @php
+                        $categorias = is_string($processo->categoria) ? json_decode($processo->categoria, true) : $processo->categoria;
+                    @endphp
+
+                    @if (!empty($categorias) && is_array($categorias))
+                        {{ implode(', ', $categorias) }}
+                    @else
+                        Nenhuma
+                    @endif
+                </td>
+                <td>{{ $processo->valor_total ? 'R$ ' . number_format($processo->valor_total, 2, ',', '.') : '-' }}</td>
+                <td>{{ $processo->data_inicio ? date('d/m/Y', strtotime($processo->data_inicio)) : '-' }}</td>
+                <td>{{ $processo->data_vencimento ? date('d/m/Y', strtotime($processo->data_vencimento)) : '-' }}</td>
+                <td>
+                    <a href="{{ route('processos.edit', $processo->id) }}" class="btn btn-sm btn-warning">Editar</a>
+                    <form action="{{ route('processos.destroy', $processo->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="9" class="text-center">Nenhum processo cadastrado.</td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
+
+    <!-- Paginação -->
+    <nav>
+        <ul class="pagination justify-content-center">
+            {{-- Link para a página anterior --}}
+            @if ($processos->onFirstPage())
+                <li class="page-item disabled"><span class="page-link">Anterior</span></li>
+            @else
+                <li class="page-item">
+                    <a class="page-link" href="{{ $processos->previousPageUrl() }}" rel="prev">Anterior</a>
+                </li>
+            @endif
+
+            {{-- Links das páginas --}}
+            @foreach ($processos->getUrlRange(1, $processos->lastPage()) as $page => $url)
+                <li class="page-item {{ $page == $processos->currentPage() ? 'active' : '' }}">
+                    <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                </li>
+            @endforeach
+
+            {{-- Link para a próxima página --}}
+            @if ($processos->hasMorePages())
+                <li class="page-item">
+                    <a class="page-link" href="{{ $processos->nextPageUrl() }}" rel="next">Próximo</a>
+                </li>
+            @else
+                <li class="page-item disabled"><span class="page-link">Próximo</span></li>
+            @endif
+        </ul>
+    </nav>
 </div>
 <br>
-<nav>
-    <ul class="pagination justify-content-center">
-        {{-- Link para a página anterior --}}
-        @if ($processos->onFirstPage())
-            <li class="page-item disabled"><span class="page-link">Anterior</span></li>
-        @else
-            <li class="page-item">
-                <a class="page-link" href="{{ $processos->previousPageUrl() }}" rel="prev">Anterior</a>
-            </li>
-        @endif
 
-        {{-- Links das páginas --}}
-        @foreach ($processos->getUrlRange(1, $processos->lastPage()) as $page => $url)
-            <li class="page-item {{ $page == $processos->currentPage() ? 'active' : '' }}">
-                <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-            </li>
-        @endforeach
-
-        {{-- Link para a próxima página --}}
-        @if ($processos->hasMorePages())
-            <li class="page-item">
-                <a class="page-link" href="{{ $processos->nextPageUrl() }}" rel="next">Próximo</a>
-            </li>
-        @else
-            <li class="page-item disabled"><span class="page-link">Próximo</span></li>
-        @endif
-    </ul>
-</nav>
 
 <!-- Modal para Novo Processo -->
 <div class="modal fade" id="modalNovoProcesso" tabindex="-1" aria-labelledby="modalNovoProcessoLabel" aria-hidden="true">

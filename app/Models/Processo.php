@@ -21,4 +21,8 @@ class Processo extends Model
         'data_inicio',
         'data_vencimento',
     ];
+
+    protected $casts = [
+        'categoria' => 'array', // Permite armazenar múltiplos valores como JSON
+    ];
 }

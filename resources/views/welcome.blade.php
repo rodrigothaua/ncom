@@ -321,7 +321,17 @@
                                             <td>{{ $processo->numero_processo }}</td>
                                             <td>{{ $processo->descricao }}</td>
                                             <td>{{ $processo->requisitante }}</td>
-                                            <td>{{ ucfirst($processo->categoria) }}</td>
+                                            <td>
+                                                @php
+                                                    $categorias = is_string($processo->categoria) ? json_decode($processo->categoria, true) : $processo->categoria;
+                                                @endphp
+
+                                                @if (!empty($categorias) && is_array($categorias))
+                                                    {{ implode(', ', $categorias) }}
+                                                @else
+                                                    Nenhuma
+                                                @endif
+                                            </td>
                                             <td>R$ {{ number_format($processo->valor_total, 2, ',', '.') }}</td>
                                             <td>{{ \Carbon\Carbon::parse($processo->data_inicio)->format('d/m/Y') }}</td>
                                             <td>{{ \Carbon\Carbon::parse($processo->data_vencimento)->format('d/m/Y') }}</td>

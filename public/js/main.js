@@ -41,3 +41,27 @@ $(document).ready(function(){
       });
     });
 });
+
+//ABRIR DATE AO CLICAR NO INPUT
+document.addEventListener("DOMContentLoaded", function () {
+    const inputsData = document.querySelectorAll('input[type="date"]');
+
+    inputsData.forEach(input => {
+        input.addEventListener("click", function () {
+            this.showPicker(); // Abre o seletor de data automaticamente
+        });
+    });
+});
+
+//ABRIR VALORES E DATAS /processos/create.blade
+document.getElementById('indeterminateCheckbox').addEventListener('change', function() {
+    const optionalFields = document.getElementById('optionalFields');
+    optionalFields.style.display = this.checked ? 'block' : 'none';
+
+    // Limpar valores se não estiver selecionado
+    if (!this.checked) {
+        document.getElementById('valor_total').value = '';
+        document.getElementById('data_inicio').value = '';
+        document.getElementById('data_vencimento').value = '';
+    }
+});

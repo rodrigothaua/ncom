@@ -25,11 +25,14 @@ class ProcessoController extends Controller
             'numero_processo' => 'required|string|max:255',
             'descricao' => 'required|string|max:1000',
             'requisitante' => 'required|string|max:500',
-            'categoria' => 'required|string',
+            'categoria' => 'nullable|array', // Permite várias categorias
             'valor_total' => 'nullable|numeric',
             'data_inicio' => 'nullable|date',
             'data_vencimento' => 'nullable|date',
         ]);
+
+        // Se nada for selecionado, salvar um array vazio
+        $validatedData['categoria'] = $request->has('categoria') ? json_encode($request->categoria) : json_encode([]);
 
         // Criação do processo
         Processo::create($validatedData);
@@ -46,11 +49,11 @@ class ProcessoController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'numero_processo' => 'required|string|max:255',
             'descricao' => 'required|string|max:1000',
             'requisitante' => 'required|string|max:500',
-            'categoria' => 'required|string',
+            'categoria' => 'nullable|array',
             'valor_total' => 'nullable|numeric',
             'data_inicio' => 'nullable|date',
             'data_vencimento' => 'nullable|date|after_or_equal:data_inicio',
@@ -58,7 +61,8 @@ class ProcessoController extends Controller
 
         // Buscar o processo e atualizar os dados
         $processo = Processo::findOrFail($id);
-        $processo->update($request->all());
+        $validatedData['categoria'] = json_encode($request->categoria);
+        $processo->update($validatedData);
 
         return redirect()->route('processos.index')->with('success', 'Processo atualizado com sucesso!');
     }

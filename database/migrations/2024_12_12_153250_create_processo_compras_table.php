@@ -16,10 +16,12 @@ class CreateProcessosComprasTable extends Migration
         Schema::create('processo_compras', function (Blueprint $table) {
             $table->id();
             $table->string('numero_processo');
-            $table->string('descricao');
-            //$table->date('data_vigente');
-            $table->date('data_inicio');
-            $table->date('data_vencimento');
+            $table->text('descricao');
+            $table->string('requisitante');
+            $table->json('categorias'); // Agora aceita múltiplas categorias
+            $table->decimal('valor_total', 10, 2)->nullable();
+            $table->date('data_inicio')->nullable();
+            $table->date('data_vencimento')->nullable();
             $table->timestamps();
         });
     }

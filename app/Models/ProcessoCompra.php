@@ -9,14 +9,21 @@ class ProcessoCompra extends Model
 {
     use HasFactory;
 
+    // Define explicitamente o nome da tabela
+    protected $table = 'processo_compras';
+
     protected $fillable = [
         'numero_processo',
         'descricao',
         'requisitante',
+        'categoria',
+        'valor_total',
         'data_inicio',
         'data_vencimento',
-        'categoria',
-        'valor_total'
+    ];
+
+    protected $casts = [
+        'categoria' => 'array', // Permite armazenar múltiplos valores como JSON
     ];
 
     // Método para calcular o status com base na data de vencimento

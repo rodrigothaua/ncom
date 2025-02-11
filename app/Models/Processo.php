@@ -16,13 +16,11 @@ class Processo extends Model
         'numero_processo',
         'descricao',
         'requisitante',
-        'categoria',
+        'valor_consumo',
+        'valor_permanente',
+        'valor_servico',
         'valor_total',
         'data_inicio',
-        'data_vencimento',
-    ];
-
-    protected $casts = [
-        'categoria' => 'array', // Permite armazenar múltiplos valores como JSON
+        'data_vencimento'
     ];
 }

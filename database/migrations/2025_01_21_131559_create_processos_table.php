@@ -4,33 +4,25 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProcessosTable extends Migration
-{
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
+return new class extends Migration {
+    public function up() {
         Schema::create('processos', function (Blueprint $table) {
             $table->id();
-            $table->string('nome');
-            $table->string('categoria'); // Ex: consumo, permanente, servico
-            $table->decimal('valor_total', 15, 2);
-            $table->date('data_inicio');
-            $table->date('data_fim');
+            $table->string('numero_processo')->unique();
+            $table->text('descricao');
+            $table->string('requisitante');
+            $table->json('categoria'); // Agora aceita múltiplas categorias
+            $table->decimal('valor_consumo', 10, 2)->nullable();
+            $table->decimal('valor_permanente', 10, 2)->nullable();
+            $table->decimal('valor_servico', 10, 2)->nullable();
+            $table->decimal('valor_total', 10, 2)->nullable();
+            $table->date('data_inicio')->nullable();
+            $table->date('data_vencimento')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
+    public function down() {
         Schema::dropIfExists('processos');
     }
-}
+};

@@ -65,3 +65,38 @@ document.getElementById('indeterminateCheckbox').addEventListener('change', func
         document.getElementById('data_vencimento').value = '';
     }
 });
+
+//script para somar os valores das categorias no valor total
+// create.blade
+document.addEventListener("DOMContentLoaded", function () {
+    // Seleciona os campos de entrada de valores
+    let consumoInput = document.getElementById('valor_consumo');
+    let permanenteInput = document.getElementById('valor_permanente');
+    let servicoInput = document.getElementById('valor_servico');
+    let valorTotalInput = document.getElementById('valor_total');
+
+    // Função que calcula e atualiza o valor total
+    function calcularTotal() {
+        let valorConsumo = parseFloat(consumoInput.value) || 0;
+        let valorPermanente = parseFloat(permanenteInput.value) || 0;
+        let valorServico = parseFloat(servicoInput.value) || 0;
+
+        // Soma os valores
+        let valorTotal = valorConsumo + valorPermanente + valorServico;
+
+        // Atualiza o campo de valor total
+        valorTotalInput.value = valorTotal.toFixed(2); // Arredonda para 2 casas decimais
+    }
+
+    // Adiciona os eventos para recalcular o valor total quando os campos forem alterados
+    consumoInput.addEventListener('input', calcularTotal);
+    permanenteInput.addEventListener('input', calcularTotal);
+    servicoInput.addEventListener('input', calcularTotal);
+
+    // Chama a função uma vez para garantir que o valor total esteja atualizado ao carregar a página
+    calcularTotal();
+});
+
+
+
+

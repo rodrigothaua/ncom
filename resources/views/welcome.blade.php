@@ -68,10 +68,10 @@
                                     <select class="form-select select2" id="numero_processo" name="numero_processo">
                                         <option value="" selected>Selecione...</option>
                                         @foreach ($processos as $processo)
-                                            <option value="{{ $processo->id }}" {{ old('numero_processo', request('numero_processo')) == $processo->id ? 'selected' : '' }}>
-                                                {{ $processo->numero_processo }}
-                                            </option>
-                                        @endforeach
+                                        <option value="{{ $processo->id }}" {{ old('numero_processo', request('numero_processo')) == $processo->id ? 'selected' : '' }}>
+                                            {{ $processo->numero_processo }}
+                                        </option>
+                                    @endforeach
                                     </select>
                                 </div>
 
@@ -352,11 +352,23 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const ctx = document.getElementById('processosChart').getContext('2d');
-            const processosChartData = @json($processosChartData);
 
+            // Recebe os dados passados pela view (PHP para JS)
+            const categorias = @json($processosChartData['labels']);
+            const quantidades = @json($processosChartData['datasets'][0]['data']);
+            const cores = @json($processosChartData['datasets'][0]['backgroundColor']);
+
+            // Criação do gráfico
             new Chart(ctx, {
                 type: 'pie', // Tipo de gráfico (torta)
-                data: processosChartData,
+                data: {
+                    labels: categorias, // Rótulos (categorias)
+                    datasets: [{
+                        label: 'Total de Processos por Categoria',
+                        data: quantidades, // Dados das quantidades
+                        backgroundColor: cores, // Cores das categorias
+                    }],
+                },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false, // Permite controlar a largura e altura manualmente

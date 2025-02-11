@@ -7,69 +7,89 @@
 
 @section('content')
 @include('layouts.partials.alerts')
-<div class="container">
+<div class="container-fluid">
     <h1 class="my-4">Cadastrar Novo Processo</h1>
 
     <!-- Formulário de cadastro de novo processo -->
     <form action="{{ route('processos.store') }}" method="POST">
         @csrf
-        <div class="mb-3">
-            <label for="numero" class="form-label">Número do Processo</label>
-            <input type="text" class="form-control" id="numero_processo" name="numero_processo"
-                placeholder="Digite o número do processo" required>
-        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Número do Processo</h5>
+                <input type="text" class="form-control" id="numero_processo" name="numero_processo"
+                placeholder="Digite o número do processo" required onFocus="">
+            </div>
+        </div><br>
 
-        <div class="mb-3">
-            <label for="descricao" class="form-label">Descrição</label>
-            <textarea class="form-control" id="descricao" name="descricao" rows="4"
-                placeholder="Informe resumidamente a descrição do processo" required>
-            </textarea>
-        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Descrição</h5>
+                <textarea class="form-control" id="descricao" name="descricao" rows="4" placeholder="Informe resumidamente a descrição do processo" required></textarea>
+            </div>
+        </div><br>
 
-        <div class="mb-3">
-            <label for="requisitante" class="form-label">Requisitante</label>
-            <input type="text" name="requisitante" class="form-control" required>
-        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Requisitante</h5>
+                <input type="text" name="requisitante" class="form-control" placeholder="Ex: SUPEL, NCOM..." required>
+            </div>
+        </div><br>
 
         <!-- Checkboxes de Categorias -->
-        <div class="mb-3">
-            <label class="form-label">Categoria</label>
-            <div>
-                <input type="checkbox" name="categoria[]" value="consumo" class="form-check-input"> Consumo
-                <input type="checkbox" name="categoria[]" value="permanente" class="form-check-input"> Permanente
-                <input type="checkbox" name="categoria[]" value="servico" class="form-check-input"> Serviço
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Valor de processo por Categoria</h5>
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label>Consumo</label>
+                        <input type="text" class="form-control currency" name="valor_consumo" id="valor_consumo" placeholder="R$ 0,00">
+                    </div>
+                    <div class="col-md-3">
+                        <label>Permanente</label>
+                        <input type="text" class="form-control currency" name="valor_permanente" id="valor_permanente" placeholder="R$ 0,00">
+                    </div>
+                    <div class="col-md-3">
+                        <label>Serviço</label>
+                        <input type="text" class="form-control currency" name="valor_servico" id="valor_servico" placeholder="R$ 0,00">
+                    </div>
+                    <div class="col-md-3">
+                        <label>Valor Total</label>
+                        <input type="text" class="form-control currency" id="valor_total" name="valor_total" placeholder="R$ 0,00" disabled readonly>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <hr>
+        </div><br>
 
         <!-- Indeterminate Checkbox -->
         <div class="form-check">
             <input class="form-check-input" type="checkbox" id="indeterminateCheckbox">
-            <label class="form-check-label">Informar valores e datas</label>
+            <label class="form-check-label">Prazo contratual</label>
         </div>
 
         <!-- Campos Opcionais -->
         <div id="optionalFields" style="display: none;">
-            <div class="mb-3">
-                <label for="valor_total" class="form-label">Valor Total</label>
-                <input type="number" class="form-control" id="valor_total" name="valor_total" step="0.01">
-            </div>
 
-            <div class="mb-3">
-                <label for="data_inicio" class="form-label">Data de Início</label>
-                <input type="date" class="form-control" id="data_inicio" name="data_inicio">
-            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Datas</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="data_inicio" class="form-label">Data de Início</label>
+                            <input type="date" class="form-control" id="data_inicio" name="data_inicio">
+                        </div>
 
-            <div class="mb-3">
-                <label for="data_vencimento" class="form-label">Data de Vencimento</label>
-                <input type="date" class="form-control" id="data_vencimento" name="data_vencimento">
+                        <div class="col-md-6">
+                            <label for="data_vencimento" class="form-label">Data de Vencimento</label>
+                            <input type="date" class="form-control" id="data_vencimento" name="data_vencimento">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <br>
 
-        <button type="submit" class="btn btn-success">Cadastrar</button>
+        <button type="submit" class="btn btn-success">Cadastrar Processo</button>
         <a href="{{ route('processos.index') }}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>

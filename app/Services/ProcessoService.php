@@ -38,21 +38,53 @@ class ProcessoService
 
     public function getChartData()
     {
+        // Contar as categorias únicas no banco de dados
+        $categorias = Processo::select('categoria')
+            ->distinct()
+            ->get()
+            ->pluck('categoria');
+    
+        // Contar o número de processos por categoria
+        $quantidades = $categorias->map(function ($categoria) {
+            return Processo::where('categoria', $categoria)->count();
+        });
+    
+        // Definir cores específicas para as categorias
+        $cores = $categorias->map(function ($categoria) {
+            switch ($categoria) {
+                case 'Consumo':
+                    return '#198754'; // Verde (success)
+                case 'Permanente':
+                    return '#FFC107'; // Amarelo (alert)
+                case 'Serviço':
+                    return '#DC3545'; // Vermelho (danger)
+                default:
+                    return '#6C757D'; // Cor padrão para outras categorias
+            }
+        });
+    
         return [
-            'labels' => ['Consumo', 'Permanente', 'Serviço'],
+            'labels' => $categorias, // As categorias
             'datasets' => [
                 [
-                    'label' => 'Total de Processos',
-                    'data' => [
-                        Processo::where('categoria', 'Consumo')->count(),
-                        Processo::where('categoria', 'Permanente')->count(),
-                        Processo::where('categoria', 'Serviço')->count()
-                    ],
-                    'backgroundColor' => ['#198754', '#FFC107', '#DC3545'], // Verde, Amarelo, Vermelho
+                    'label' => 'Total de Processos por Categoria',
+                    'data' => $quantidades, // Quantidades de processos por categoria
+                    'backgroundColor' => $cores, // Cores definidas para cada categoria
                 ],
             ],
         ];
     }
+
+    private function gerarCores($quantidade)
+    {
+        $cores = [
+            '#198754', '#FFC107', '#DC3545', '#0D6EFD', '#6F42C1', '#FF5733', '#28A745'
+        ];
+
+        // Se a quantidade de categorias for maior que o número de cores definidas, repete as cores
+        return array_merge(array_slice($cores, 0, $quantidade), array_fill(0, max(0, $quantidade - count($cores)), '#6C757D'));
+    }
+
 
     public function getVencimentos()
     {

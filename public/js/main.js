@@ -69,32 +69,30 @@ document.getElementById('indeterminateCheckbox').addEventListener('change', func
 //script para somar os valores das categorias no valor total
 // create.blade
 document.addEventListener("DOMContentLoaded", function () {
-    // Seleciona os campos de entrada de valores
-    let consumoInput = document.getElementById('valor_consumo');
-    let permanenteInput = document.getElementById('valor_permanente');
-    let servicoInput = document.getElementById('valor_servico');
-    let valorTotalInput = document.getElementById('valor_total');
+    // Seleciona os campos de valor e o campo de valor total
+    const valorConsumo = document.getElementById("valor_consumo");
+    const valorPermanente = document.getElementById("valor_permanente");
+    const valorServico = document.getElementById("valor_servico");
+    const valorTotal = document.getElementById("valor_total");
 
-    // Função que calcula e atualiza o valor total
-    function calcularTotal() {
-        let valorConsumo = parseFloat(consumoInput.value) || 0;
-        let valorPermanente = parseFloat(permanenteInput.value) || 0;
-        let valorServico = parseFloat(servicoInput.value) || 0;
+    // Função para calcular e atualizar o valor total
+    function calcularValorTotal() {
+        // Converte os valores para números, considerando que podem estar formatados como moeda
+        const consumo = parseFloat(valorConsumo.value.replace('R$', '').replace(',', '.')) || 0;
+        const permanente = parseFloat(valorPermanente.value.replace('R$', '').replace(',', '.')) || 0;
+        const servico = parseFloat(valorServico.value.replace('R$', '').replace(',', '.')) || 0;
 
         // Soma os valores
-        let valorTotal = valorConsumo + valorPermanente + valorServico;
+        const total = consumo + permanente + servico;
 
-        // Atualiza o campo de valor total
-        valorTotalInput.value = valorTotal.toFixed(2); // Arredonda para 2 casas decimais
+        // Atualiza o campo de valor total com o valor calculado
+        valorTotal.value = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
 
-    // Adiciona os eventos para recalcular o valor total quando os campos forem alterados
-    consumoInput.addEventListener('input', calcularTotal);
-    permanenteInput.addEventListener('input', calcularTotal);
-    servicoInput.addEventListener('input', calcularTotal);
-
-    // Chama a função uma vez para garantir que o valor total esteja atualizado ao carregar a página
-    calcularTotal();
+    // Adiciona ouvintes de evento para recalcular o valor total quando o valor for alterado
+    valorConsumo.addEventListener("input", calcularValorTotal);
+    valorPermanente.addEventListener("input", calcularValorTotal);
+    valorServico.addEventListener("input", calcularValorTotal);
 });
 
 

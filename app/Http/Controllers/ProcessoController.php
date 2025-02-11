@@ -20,6 +20,7 @@ class ProcessoController extends Controller
 
     public function store(Request $request)
     {
+        //dd($request->all()); // Isso exibirá todos os dados enviados pelo formulário.
         // Validação
         $validatedData = $request->validate([
             'numero_processo' => 'required|string|max:255',

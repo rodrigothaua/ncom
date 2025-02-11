@@ -66,6 +66,7 @@
             <label class="form-check-label">Prazo contratual</label>
         </div>
 
+        <br>
         <!-- Campos Opcionais -->
         <div id="optionalFields" style="display: none;">
 

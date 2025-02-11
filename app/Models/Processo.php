@@ -23,4 +23,10 @@ class Processo extends Model
         'data_inicio',
         'data_vencimento'
     ];
+
+    // Acessor para calcular o valor_total automaticamente
+    public function getValorTotalAttribute()
+    {
+        return $this->valor_consumo + $this->valor_permanente + $this->valor_servico;
+    }
 }

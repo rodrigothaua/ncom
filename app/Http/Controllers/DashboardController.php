@@ -17,13 +17,13 @@ class DashboardController extends Controller
         $totalProcessos = Processo::count();
 
         // Calcula o total de consumo (só um exemplo, ajuste conforme seu banco)
-        $totalConsumo = Processo::where('categoria', 'consumo')->sum('valor_total');
+        $totalConsumo = Processo::sum('valor_consumo');
 
         // Calcula o total de permanente
-        $totalPermanente = Processo::where('categoria', 'permanente')->sum('valor_total');
+        $totalPermanente = Processo::sum('valor_permanente');
 
         // Calcula o total de serviço
-        $totalServico = Processo::where('categoria', 'serviço')->sum('valor_total');
+        $totalServico = Processo::sum('valor_servico');
 
         // Passa as variáveis para a view
         return view('dashboard.index', compact(
@@ -44,10 +44,11 @@ class DashboardController extends Controller
         $validated = $request->validate([
             'numero_processo' => 'required|string|max:255',
             'descricao' => 'required|string',
-            'categoria' => 'required|string',
-            'valor_total' => 'required|numeric',
-            'data_inicio' => 'required|date',
-            'data_vencimento' => 'required|date|after_or_equal:data_inicio',
+            'valor_consumo' => 'nullable|numeric',
+            'valor_permanente' => 'nullable|numeric',
+            'valor_servico' => 'nullable|numeric',
+            'data_inicio' => 'nullable|date',
+            'data_vencimento' => 'nullable|date|after_or_equal:data_inicio',
         ]);
 
         Processo::create($validated);

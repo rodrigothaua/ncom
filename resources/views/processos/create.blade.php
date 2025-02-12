@@ -42,19 +42,19 @@
                 <div class="row g-3">
                     <div class="col-md-3">
                         <label>Consumo</label>
-                        <input type="text" class="form-control currency" name="valor_consumo" id="valor_consumo" placeholder="R$ 0,00">
+                        <input type="text" name="valor_consumo" class="form-control money-input" oninput="calcularTotal()">
                     </div>
                     <div class="col-md-3">
                         <label>Permanente</label>
-                        <input type="text" class="form-control currency" name="valor_permanente" id="valor_permanente" placeholder="R$ 0,00">
+                        <input type="text" name="valor_permanente" class="form-control money-input" oninput="calcularTotal()">
                     </div>
                     <div class="col-md-3">
                         <label>Serviço</label>
-                        <input type="text" class="form-control currency" name="valor_servico" id="valor_servico" placeholder="R$ 0,00">
+                        <input type="text" name="valor_servico" class="form-control money-input" oninput="calcularTotal()">
                     </div>
                     <div class="col-md-3">
                         <label>Valor Total</label>
-                        <input type="text" class="form-control currency" id="valor_total" name="valor_total" placeholder="R$ 0,00" disabled readonly>
+                        <input type="text" name="valor_total" id="valor_total" class="form-control" readonly>
                     </div>
                 </div>
             </div>

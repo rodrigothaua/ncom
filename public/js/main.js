@@ -68,32 +68,57 @@ document.getElementById('indeterminateCheckbox').addEventListener('change', func
 
 //script para somar os valores das categorias no valor total
 // create.blade
-document.addEventListener("DOMContentLoaded", function () {
-    // Seleciona os campos de valor e o campo de valor total
-    const valorConsumo = document.getElementById("valor_consumo");
-    const valorPermanente = document.getElementById("valor_permanente");
-    const valorServico = document.getElementById("valor_servico");
-    const valorTotal = document.getElementById("valor_total");
-
-    // Função para calcular e atualizar o valor total
-    function calcularValorTotal() {
-        // Converte os valores para números, considerando que podem estar formatados como moeda
-        const consumo = parseFloat(valorConsumo.value.replace('R$', '').replace(',', '.')) || 0;
-        const permanente = parseFloat(valorPermanente.value.replace('R$', '').replace(',', '.')) || 0;
-        const servico = parseFloat(valorServico.value.replace('R$', '').replace(',', '.')) || 0;
-
-        // Soma os valores
-        const total = consumo + permanente + servico;
-
-        // Atualiza o campo de valor total com o valor calculado
-        valorTotal.value = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+document.addEventListener("DOMContentLoaded", function() {
+    function formatCurrency(value) {
+        let num = parseFloat(value.replace(/\D/g, '')) / 100;
+        return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
 
-    // Adiciona ouvintes de evento para recalcular o valor total quando o valor for alterado
-    valorConsumo.addEventListener("input", calcularValorTotal);
-    valorPermanente.addEventListener("input", calcularValorTotal);
-    valorServico.addEventListener("input", calcularValorTotal);
+    function parseCurrency(value) {
+        if (!value) return 0;
+        return parseFloat(value.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+    }
+
+    function calculateTotal() {
+        let consumo = parseCurrency(document.querySelector('[name="valor_consumo"]').value);
+        let permanente = parseCurrency(document.querySelector('[name="valor_permanente"]').value);
+        let servico = parseCurrency(document.querySelector('[name="valor_servico"]').value);
+
+        let total = consumo + permanente + servico;
+        document.querySelector('[name="valor_total"]').value = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    document.querySelectorAll('[name="valor_consumo"], [name="valor_permanente"], [name="valor_servico"]').forEach(input => {
+        input.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');  // Remove all non-numeric characters
+            if (value) {
+                e.target.value = formatCurrency(value);
+            } else {
+                e.target.value = '';
+            }
+            calculateTotal();
+        });
+    });
+
+    // Limpeza antes do envio
+    document.querySelector("form").addEventListener("submit", function(e) {
+        let consumoInput = document.querySelector('[name="valor_consumo"]');
+        let permanenteInput = document.querySelector('[name="valor_permanente"]');
+        let servicoInput = document.querySelector('[name="valor_servico"]');
+
+        // Remover "R$" e vírgula
+        consumoInput.value = consumoInput.value.replace(/[^\d,]/g, '').replace(',', '.');
+        permanenteInput.value = permanenteInput.value.replace(/[^\d,]/g, '').replace(',', '.');
+        servicoInput.value = servicoInput.value.replace(/[^\d,]/g, '').replace(',', '.');
+
+        // Converter valor_total para formato correto (não vai precisar "R$")
+        let totalValue = consumoInput.value.replace(/[^\d,]/g, '').replace(',', '.');
+        document.querySelector('[name="valor_total"]').value = totalValue;
+    });
 });
+
+
+
 
 
 

@@ -46,7 +46,6 @@
                 <th>Valor Permanente</th>
                 <th>Valor Serviço</th>
                 <th>Valor Total</th>
-                <th>Valor Total</th>
                 <th>Data Início</th>
                 <th>Data Vencimento</th>
                 <th>Ações</th>
@@ -136,12 +135,12 @@
                         <textarea id="descricao" name="descricao" class="form-control" required></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="descricao">Requisitante</label>
+                        <label for="requisitante">Requisitante</label>
                         <input type="text" id="requisitante" name="requisitante" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label for="categoria" class="form-label">Categoria</label>
-                        <select class="form-select" name="categoria" id="categoria" require>
+                        <select class="form-select" name="categoria" id="categoria" required>
                             <option selected>Selecione a categoria</option>
                             <option value="consumo">Consumo</option>
                             <option value="permanente">Permanente</option>
@@ -149,8 +148,20 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="valor_contrato" class="form-label">Valor do contrato</label>
-                        <input type="number" step="0.01" class="form-control" id="valor_total" name="valor_total" placeholder="Digite o valor do contrato" required>
+                        <label for="valor_consumo" class="form-label">Valor Consumo</label>
+                        <input type="text" class="form-control" id="valor_consumo" name="valor_consumo" placeholder="Digite o valor de Consumo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="valor_permanente" class="form-label">Valor Permanente</label>
+                        <input type="text" class="form-control" id="valor_permanente" name="valor_permanente" placeholder="Digite o valor Permanente" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="valor_servico" class="form-label">Valor Serviço</label>
+                        <input type="text" class="form-control" id="valor_servico" name="valor_servico" placeholder="Digite o valor de Serviço" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="valor_total" class="form-label">Valor Total</label>
+                        <input type="text" class="form-control" id="valor_total" name="valor_total" placeholder="Valor total calculado" readonly required>
                     </div>
                     <div class="form-group">
                         <label for="data_inicio">Data de Início</label>

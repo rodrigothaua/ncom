@@ -9,8 +9,7 @@ class Processo extends Model
 {
     use HasFactory;
 
-    // Define explicitamente o nome da tabela
-    protected $table = 'processo_compras';
+    protected $table = 'processos';
 
     protected $fillable = [
         'numero_processo',
@@ -23,10 +22,4 @@ class Processo extends Model
         'data_inicio',
         'data_vencimento'
     ];
-
-    // Acessor para calcular o valor_total automaticamente
-    public function getValorTotalAttribute()
-    {
-        return $this->valor_consumo + $this->valor_permanente + $this->valor_servico;
-    }
 }

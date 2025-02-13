@@ -20,6 +20,7 @@ class Processo extends Model
         'valor_servico',
         'valor_total',
         'data_inicio',
-        'data_vencimento'
+        'data_vencimento',
+        'data_entrada'
     ];
 }

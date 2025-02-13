@@ -39,6 +39,7 @@ class ProcessoController extends Controller
             'requisitante' => 'required|string|max:500',
             'data_inicio' => 'nullable|date',
             'data_vencimento' => 'nullable|date',
+            'data_entrada' => 'nullable|date',
         ]);
 
         // Adicionar os valores calculados aos dados validados
@@ -82,6 +83,7 @@ class ProcessoController extends Controller
             'valor_total' => 'nullable|string',
             'data_inicio' => 'nullable|date',
             'data_vencimento' => 'nullable|date|after_or_equal:data_inicio',
+            'data_entrada' => 'nullable|date',
         ]);
 
         // Atualiza os valores monetários, com a conversão correta

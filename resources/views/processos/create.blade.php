@@ -35,6 +35,13 @@
             </div>
         </div><br>
 
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Data de Entrada</h5>
+                <input type="date" class="form-control" id="data_entrada" name="data_entrada" value="{{ old('data_entrada') }}">
+            </div>
+        </div><br>
+
         <!-- Checkboxes de Categorias -->
         <div class="card">
             <div class="card-body">
@@ -42,19 +49,19 @@
                 <div class="row g-3">
                     <div class="col-md-3">
                         <label>Consumo</label>
-                        <input type="text" name="valor_consumo" class="form-control money-input" oninput="calcularTotal()">
+                        <input type="text" name="valor_consumo" class="form-control money-input" placeholder="R$0,00" oninput="calcularTotal()">
                     </div>
                     <div class="col-md-3">
                         <label>Permanente</label>
-                        <input type="text" name="valor_permanente" class="form-control money-input" oninput="calcularTotal()">
+                        <input type="text" name="valor_permanente" class="form-control money-input" placeholder="R$0,00" oninput="calcularTotal()">
                     </div>
                     <div class="col-md-3">
                         <label>Serviço</label>
-                        <input type="text" name="valor_servico" class="form-control money-input" oninput="calcularTotal()">
+                        <input type="text" name="valor_servico" class="form-control money-input" placeholder="R$0,00" oninput="calcularTotal()">
                     </div>
                     <div class="col-md-3">
                         <label>Valor Total</label>
-                        <input type="text" name="valor_total" id="valor_total" class="form-control" readonly>
+                        <input type="text" name="valor_total" id="valor_total" class="form-control" placeholder="R$0,00" disabled readonly>
                     </div>
                 </div>
             </div>

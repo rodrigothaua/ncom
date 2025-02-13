@@ -42,6 +42,7 @@
                 <th>Número do Processo</th>
                 <th>Descrição</th>
                 <th>Requisitante</th>
+                <th>Data Entrada</th>
                 <th>Valor Consumo</th>
                 <th>Valor Permanente</th>
                 <th>Valor Serviço</th>
@@ -58,6 +59,7 @@
                 <td>{{ $processo->numero_processo }}</td>
                 <td>{{ $processo->descricao }}</td>
                 <td>{{ $processo->requisitante }}</td>
+                <td>{{ $processo->data_entrada ? date('d/m/Y', strtotime($processo->data_entrada)) : '-' }}</td>
                 <td>R$ {{ number_format($processo->valor_consumo, 2, ',', '.') }}</td>
                 <td>R$ {{ number_format($processo->valor_permanente, 2, ',', '.') }}</td>
                 <td>R$ {{ number_format($processo->valor_servico, 2, ',', '.') }}</td>

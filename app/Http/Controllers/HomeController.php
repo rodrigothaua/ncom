@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\ProcessoService;
+use App\Models\Processo;
 
 class HomeController extends Controller
 {
@@ -16,25 +17,25 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
+        // Obtém todos os processos do banco de dados
+        $processos = Processo::all(); // Você pode usar métodos como where(), orderBy(), etc., dependendo dos requisitos
+
         // Obtém os processos e cálculos via Service
         $processos = $this->processoService->getProcessos();
         $totais = $this->processoService->getTotais();
-        $processosChartData = $this->processoService->getChartData();
         $vencimentos = $this->processoService->getVencimentos();
-        $requisitantesENumeros = $this->processoService->getRequisitantesENumerosProcessos();
-        $processosPorAno = $this->processoService->getProcessosPorAno();
-        $graficoMensal = $this->processoService->getGraficoMensal();
-        $filtro = $this->processoService->getFiltro($request);
 
-        // Retornar a view com os dados
+        // Obtém os dados dos processos
+        $vencimentos = $this->processoService->getVencimentos();
+
+        // Obtém as quantidades de processos por categoria
+        
+    
+        // Passando dados para a view
         return view('welcome', array_merge(
-            ['processos' => $processos, 'processosChartData' => $processosChartData],
+            ['processos' => $processos],
             $totais,
-            $vencimentos,
-            $requisitantesENumeros,
-            $processosPorAno, // Inclui 'labels' e 'data'
-            $graficoMensal, // Inclui 'labelsBarVertical', 'dataBarVertical' e 'mediaEixoYBarVertical'
-            $filtro
+            $vencimentos
         ));
     }
 }

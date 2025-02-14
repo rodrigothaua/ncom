@@ -16,62 +16,38 @@ class ProcessoService
 
     public function getTotais()
     {
-        $totalConsumo = Processo::where('categoria', 'Consumo')->count();
-        $totalPermanente = Processo::where('categoria', 'Permanente')->count();
-        $totalServico = Processo::where('categoria', 'Serviço')->count();
+        // Contar os processos com base nos valores individuais
+        $totalConsumo = Processo::whereNotNull('valor_consumo')->count();
+        $totalPermanente = Processo::whereNotNull('valor_permanente')->count();
+        $totalServico = Processo::whereNotNull('valor_servico')->count();
 
-        $valorConsumo = Processo::where('categoria', 'Consumo')->sum('valor_total');
-        $valorPermanente = Processo::where('categoria', 'Permanente')->sum('valor_total');
-        $valorServico = Processo::where('categoria', 'Serviço')->sum('valor_total');
+        // Somar os valores de cada tipo
+        $valorConsumo = Processo::whereNotNull('valor_consumo')->sum('valor_consumo');
+        $valorPermanente = Processo::whereNotNull('valor_permanente')->sum('valor_permanente');
+        $valorServico = Processo::whereNotNull('valor_servico')->sum('valor_servico');
 
         return [
             'valorTotal' => Processo::sum('valor_total'),
             'totalConsumo' => $totalConsumo,
             'totalPermanente' => $totalPermanente,
             'totalServico' => $totalServico,
-            'totalProcessos' => $totalConsumo + $totalPermanente + $totalServico,
+            'totalProcessos' => Processo::count(), // Total de processos cadastrados no banco
             'valorConsumo' => $valorConsumo,
             'valorPermanente' => $valorPermanente,
             'valorServico' => $valorServico
         ];
     }
 
-    public function getChartData()
+    public function getTotaisPorCategoria()
     {
-        // Contar as categorias únicas no banco de dados
-        $categorias = Processo::select('categoria')
-            ->distinct()
-            ->get()
-            ->pluck('categoria');
-    
-        // Contar o número de processos por categoria
-        $quantidades = $categorias->map(function ($categoria) {
-            return Processo::where('categoria', $categoria)->count();
-        });
-    
-        // Definir cores específicas para as categorias
-        $cores = $categorias->map(function ($categoria) {
-            switch ($categoria) {
-                case 'Consumo':
-                    return '#198754'; // Verde (success)
-                case 'Permanente':
-                    return '#FFC107'; // Amarelo (alert)
-                case 'Serviço':
-                    return '#DC3545'; // Vermelho (danger)
-                default:
-                    return '#6C757D'; // Cor padrão para outras categorias
-            }
-        });
-    
+        $consumo = Processo::where('categoria', 'Consumo')->count();
+        $permanente = Processo::where('categoria', 'Permanente')->count();
+        $servico = Processo::where('categoria', 'Serviço')->count();
+
         return [
-            'labels' => $categorias, // As categorias
-            'datasets' => [
-                [
-                    'label' => 'Total de Processos por Categoria',
-                    'data' => $quantidades, // Quantidades de processos por categoria
-                    'backgroundColor' => $cores, // Cores definidas para cada categoria
-                ],
-            ],
+            'consumo' => $consumo,
+            'permanente' => $permanente,
+            'servico' => $servico,
         ];
     }
 
@@ -101,12 +77,12 @@ class ProcessoService
     public function getRequisitantesENumerosProcessos()
     {
         return [
-            'numerosProcessos' => \DB::table('processo_compras')
+            'numerosProcessos' => \DB::table('processos')
                 ->select('numero_processo')
                 ->distinct()
                 ->get(),
             
-            'requisitantes' => \DB::table('processo_compras')
+            'requisitantes' => \DB::table('processos')
                 ->select('requisitante')
                 ->distinct()
                 ->get(),
@@ -115,7 +91,7 @@ class ProcessoService
 
     public function getProcessosPorAno()
     {
-        $processosPorAno = DB::table('processo_compras')
+        $processosPorAno = DB::table('processos')
             ->selectRaw('YEAR(data_inicio) as ano, COUNT(*) as total')
             ->groupBy('ano')
             ->orderBy('ano', 'asc')
@@ -129,8 +105,8 @@ class ProcessoService
 
     public function getGraficoMensal()
     {
-        $primeiroMes = DB::table('processo_compras')->min('data_inicio');
-        $ultimoMes = DB::table('processo_compras')->max('data_inicio');
+        $primeiroMes = DB::table('processos')->min('data_inicio');
+        $ultimoMes = DB::table('processos')->max('data_inicio');
     
         if (!$primeiroMes || !$ultimoMes) {
             return [
@@ -152,7 +128,7 @@ class ProcessoService
             $labelsBarVertical[] = $periodo->translatedFormat('F Y');
     
             // Total dos processos para o mês atual
-            $totalMensal = DB::table('processo_compras')
+            $totalMensal = DB::table('processos')
                 ->whereYear('data_inicio', $periodo->year)
                 ->whereMonth('data_inicio', $periodo->month)
                 ->sum('valor_total');
@@ -176,22 +152,20 @@ class ProcessoService
     {
         $query = Processo::query();
 
-        if ($request->filled('numero_processo')) {
-            $query->where('id', $request->numero_processo);
+        // Filtrando pelo valor de consumo, permanente ou serviço
+        if ($request->has('valor_consumo') && $request->valor_consumo) {
+            $query->whereNotNull('valor_consumo');
         }
 
-        if ($request->filled('valor')) {
-            $query->where('valor_total', $request->valor);
+        if ($request->has('valor_permanente') && $request->valor_permanente) {
+            $query->whereNotNull('valor_permanente');
         }
 
-        if ($request->filled('requisitante')) {
-            $query->where('requisitante', $request->requisitante);
+        if ($request->has('valor_servico') && $request->valor_servico) {
+            $query->whereNotNull('valor_servico');
         }
 
-        if ($request->filled('data_inicio')) {
-            $query->whereDate('data_inicio', '>=', $request->data_inicio);
-        }
-
-        return ['processosFiltrados' => $query->get()];
+        // Retornar os resultados filtrados
+        return $query->get();
     }
 }

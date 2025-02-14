@@ -27,6 +27,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('processos')->name('processos.')->group(function () {
         Route::get('/', [ProcessoController::class, 'index'])->name('index'); // Lista de processos
         Route::get('/create', [ProcessoController::class, 'create'])->name('create'); // Página de criação
+        Route::get('/{id}', [ProcessoController::class, 'show'])->name('show'); // Rota para exibir um processo específico
         Route::get('/{id}/edit', [ProcessoController::class, 'edit'])->name('edit'); // Página de edição
         Route::put('/{id}', [ProcessoController::class, 'update'])->name('update'); // Atualizar processo
         Route::delete('/{id}', [ProcessoController::class, 'destroy'])->name('destroy'); // Excluir processo

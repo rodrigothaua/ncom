@@ -31,7 +31,22 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Requisitante</h5>
-                <input type="text" name="requisitante" class="form-control" placeholder="Ex: SUPEL, NCOM..." required>
+                <select class="form-select" name="requisitante" id="requisitante">
+                    <option selected disabled>Selecione...</option>
+                    <option value="FUNESP">FUNESP</option>
+                    <option value="GETEC">GETEC</option>
+                    <option value="GECONV">GECONV</option>
+                    <option value="GELOG">GELOG</option>
+                    <option value="GEI">GEI</option>
+                    <option value="GAVE">GAVE</option>
+                    <option value="GRH">GRH</option>
+                    <option value="GESPM">GESPM</option>
+                    <option value="GISF">GISF</option>
+                    <option value="CIOP">CIOP</option>
+                    <option value="CAF">CAF</option>
+                    <option value="GCI">GCI</option>
+                    <option value="PGE">PGE</option>
+                </select>
             </div>
         </div><br>
 
@@ -74,8 +89,8 @@
         </div>
 
         <br>
-        <!-- Campos Opcionais -->
-        <div id="optionalFields" style="display: none;">
+        <!-- Campos Opcionais 
+        <div id="optionalFields" style="display: none;">-->
 
             <div class="card">
                 <div class="card-body">
@@ -89,6 +104,30 @@
                         <div class="col-md-6">
                             <label for="data_vencimento" class="form-label">Data de Vencimento</label>
                             <input type="date" class="form-control" id="data_vencimento" name="data_vencimento">
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="data_inicio" class="form-label">Modalidade</label>
+                            <select class="form-select" name="modalidade" id="modalidade">
+                                <option selected disabled>Selecione...</option>
+                                <option value="PREGÃO">PREGÃO</option>
+                                <option value="CONCORRÊNCIA">CONCORRÊNCIA</option>
+                                <option value="GECONCURSOCONV">CONCURSO</option>
+                                <option value="LEILÃO">LEILÃO</option>
+                                <option value="DIÁLOGO COMPETITIVO">DIÁLOGO COMPETITIVO</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="data_inicio" class="form-label">Procedimentos Auxiliares</label>
+                            <select class="form-select" name="procedimentos_aux" id="procedimentos_aux">
+                                <option selected disabled>Selecione...</option>
+                                <option value="PREGÃO">CREDENCIAMENTO</option>
+                                <option value="CONCORRÊNCIA">PRÉ-QUALIFICADO</option>
+                                <option value="GECONCURSOCONV">PROCEDIMENTO DE MANIFESTAÇÃO DE INTERESSE</option>
+                                <option value="LEILÃO">SISTEMA DE REGISTRO DE PREÇÕS</option>
+                                <option value="DIÁLOGO COMPETITIVO">REGISTRO CADASTRAL</option>
+                            </select>
                         </div>
                     </div>
                 </div>

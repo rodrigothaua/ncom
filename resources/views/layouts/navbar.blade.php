@@ -1,6 +1,6 @@
 <div class="d-flex">
     <!-- Sidebar -->
-    <nav class="bg-dark text-white p-3" style="width: 250px; height: 100vh; position: fixed;">
+    <nav class="bg-dark text-white p-3" id="sidebar" style="width: 250px; height: 100vh; position: fixed;">
         <div class="logo-dash">
             <h4 class="text-left">SIGECOM  <small style="font-size: 10px;">Beta</small></h4>
             <small style="font-size: 10px;">Sistema de Gerenciamento de Compras</small>
@@ -88,4 +88,6 @@
 
     <!-- Conteúdo -->
     <div class="flex-grow-1 ms-3" style="margin-left: 250px;">
-
+        <!-- Conteúdo da página vai aqui -->
+    </div>
+</div>

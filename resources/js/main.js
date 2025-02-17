@@ -32,6 +32,34 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 });
 
+// SCRIPT DE PESQUISA
+document.getElementById("myInput").addEventListener("keyup", function() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toLowerCase();
+    table = document.querySelector(".table");
+    tr = table.getElementsByTagName("tr");
+
+    for (i = 1; i < tr.length; i++) {  // Começar em 1 para pular o cabeçalho
+        td = tr[i].getElementsByTagName("td");
+        let match = false;
+
+        // Loop sobre cada célula de cada linha
+        for (let j = 0; j < td.length; j++) {
+            if (td[j]) {
+                txtValue = td[j].textContent || td[j].innerText;
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    match = true;
+                    break;  // Se encontrar, não precisa mais verificar as outras células
+                }
+            }
+        }
+
+        // Mostrar ou esconder a linha com base no filtro
+        tr[i].style.display = match ? "" : "none";
+    }
+});
+
 //ABRIR DATE AO CLICAR NO INPUT
 document.addEventListener("DOMContentLoaded", function () {
     const inputsData = document.querySelectorAll('input[type="date"]');

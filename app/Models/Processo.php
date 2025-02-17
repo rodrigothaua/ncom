@@ -21,6 +21,13 @@ class Processo extends Model
         'valor_total',
         'data_inicio',
         'data_vencimento',
-        'data_entrada'
+        'data_entrada',
+        'modalidade',
+        'procedimentos'
     ];
+
+    public function contratos()
+    {
+        return $this->hasMany(Contrato::class);
+    }
 }

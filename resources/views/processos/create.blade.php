@@ -89,12 +89,12 @@
         </div>
 
         <br>
-        <!-- Campos Opcionais 
-        <div id="optionalFields" style="display: none;">-->
+        <!-- Campos Opcionais -->
+        <div id="optionalFields" style="display: none;">
 
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Datas</h5>
+                    <h5 class="card-title">Contratos</h5>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label for="data_inicio" class="form-label">Data de Início</label>
@@ -120,7 +120,7 @@
                         </div>
                         <div class="col-md-6">
                             <label for="data_inicio" class="form-label">Procedimentos Auxiliares</label>
-                            <select class="form-select" name="procedimentos_aux" id="procedimentos_aux">
+                            <select class="form-select" name="procedimentos" id="procedimentos">
                                 <option selected disabled>Selecione...</option>
                                 <option value="PREGÃO">CREDENCIAMENTO</option>
                                 <option value="CONCORRÊNCIA">PRÉ-QUALIFICADO</option>
@@ -129,6 +129,14 @@
                                 <option value="DIÁLOGO COMPETITIVO">REGISTRO CADASTRAL</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="row g-3">
+                    <div class="container mt-4">
+                        <h3>Adicionar Contratos</h3>
+                        <div id="contratos" class="mb-3"></div>
+
+                        <a type="button" class="icon-link icon-link-hover" onclick="adicionarContrato()">Incluir Contrato <i class="bi bi-plus-circle-dotted"></i></a>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -140,4 +148,69 @@
         <a href="{{ route('processos.index') }}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
+
+<script>
+    let contratoIndex = 0;
+
+    function adicionarContrato() {
+        contratoIndex++;
+        const contratoHTML = `
+            <div class="card mt-3 p-3 border shadow-sm" id="contrato_${contratoIndex}">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Número do Contrato</label>
+                        <input type="text" class="form-control" name="contratos[${contratoIndex}][numero_contrato]" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Valor do Contrato</label>
+                        <input type="text" class="form-control money-input" name="contratos[${contratoIndex}][valor_contrato]" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Data Inicial</label>
+                        <input type="date" class="form-control" name="contratos[${contratoIndex}][data_inicial_contrato]" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Data Final</label>
+                        <input type="date" class="form-control" name="contratos[${contratoIndex}][data_final_contrato]" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">Observações</label>
+                        <textarea class="form-control" name="contratos[${contratoIndex}][obs]" rows="2"></textarea>
+                    </div>
+                    <div class="col-12 text-end">
+                        <button type="button" class="btn btn-danger btn-sm" onclick="removerContrato(${contratoIndex})">Excluir</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('contratos').insertAdjacentHTML('beforeend', contratoHTML);
+
+        // Aplicar máscara nos inputs de valores monetários
+        document.querySelectorAll(".money-input").forEach(function (input) {
+            IMask(input, {
+                mask: "R$ num",
+                blocks: {
+                    num: {
+                        mask: Number,
+                        thousandsSeparator: ".",
+                        radix: ",",
+                        mapToRadix: ["."],
+                        scale: 2
+                    }
+                }
+            });
+        });
+
+        // Tornar os inputs de data clicáveis e focáveis
+        document.querySelectorAll("input[type='date']").forEach(input => {
+            input.addEventListener("focus", function () {
+                this.showPicker(); // Abre automaticamente o seletor de data
+            });
+        });
+    }
+
+    function removerContrato(index) {
+        document.getElementById(`contrato_${index}`).remove();
+    }
+</script>
 @endsection

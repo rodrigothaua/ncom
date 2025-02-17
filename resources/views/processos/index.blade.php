@@ -37,7 +37,7 @@
 
     <table class="table table-bordered">
         <thead class="table-dark">
-            <tr>
+            <tr class="table-th">
                 <th>ID</th>
                 <th>Número do Processo</th>
                 <th>Descrição</th>
@@ -49,6 +49,8 @@
                 <th>Valor Total</th>
                 <th>Data Início</th>
                 <th>Data Vencimento</th>
+                <th>Modalidade</th>
+                <th>Procedimentos Auxiliares</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -66,6 +68,8 @@
                 <td><strong>R$ {{ number_format($processo->valor_total, 2, ',', '.') }}</strong></td>
                 <td>{{ $processo->data_inicio ? date('d/m/Y', strtotime($processo->data_inicio)) : '-' }}</td>
                 <td>{{ $processo->data_vencimento ? date('d/m/Y', strtotime($processo->data_vencimento)) : '-' }}</td>
+                <td>{{ $processo->modalidade }}</td>
+                <td>{{ $processo->procedimentos }}</td>
                 <td>
                     <a href="{{ route('processos.edit', $processo->id) }}" class="btn btn-sm btn-warning">Editar</a>
                     <form action="{{ route('processos.destroy', $processo->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir?')">

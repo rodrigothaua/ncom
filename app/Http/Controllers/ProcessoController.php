@@ -11,7 +11,7 @@ class ProcessoController extends Controller
 {
     public function index()
     {
-        $processos = Processo::paginate(10);
+        $processos = Processo::with('contratos')->paginate(10);
         return view('processos.index', compact('processos'));
     }
 
@@ -23,7 +23,6 @@ class ProcessoController extends Controller
     public function store(Request $request)
     {
         //dd($request->all()); // Exibe todos os dados enviados no formulário
-
         // Limpar e formatar os valores removendo o símbolo de moeda
         $valor_consumo = $this->parseCurrency($request->valor_consumo);
         $valor_permanente = $this->parseCurrency($request->valor_permanente);
@@ -40,6 +39,14 @@ class ProcessoController extends Controller
             'data_inicio' => 'nullable|date',
             'data_vencimento' => 'nullable|date',
             'data_entrada' => 'nullable|date',
+            'modalidade' => 'required|string',
+            'procedimentos' => 'required|string',
+            'contratos' => 'nullable|array',
+            'contratos.*.numero_contrato' => 'required_with:contratos|string',
+            'contratos.*.valor_contrato' => 'required_with:contratos|string',
+            'contratos.*.data_inicial_contrato' => 'required_with:contratos|date',
+            'contratos.*.data_final_contrato' => 'required_with:contratos|date',
+            'contratos.*.obs' => 'nullable|string',
         ]);
 
         // Adicionar os valores calculados aos dados validados
@@ -49,7 +56,23 @@ class ProcessoController extends Controller
         $validatedData['valor_total'] = $valor_total;
 
         // Criar o processo no banco de dados
-        Processo::create($validatedData);
+        $processo = Processo::create($validatedData);
+
+        // Se houver contratos, salvar na tabela correta
+        if ($request->has('contratos')) {
+            $contratos = array_values($validatedData['contratos']); // 🔵 Corrige os índices dos contratos
+
+            foreach ($contratos as $contrato) {
+                Contrato::create([
+                    'processo_id' => $processo->id,
+                    'numero_contrato' => $contrato['numero_contrato'],
+                    'valor_contrato' => $this->parseCurrency($contrato['valor_contrato']), // 🔹 Remove "R$" e converte
+                    'data_inicial_contrato' => $contrato['data_inicial_contrato'],
+                    'data_final_contrato' => $contrato['data_final_contrato'],
+                    'obs' => $contrato['obs'] ?? null,
+                ]);
+            }
+        }
 
         return redirect()->route('processos.index')->with('success', 'Processo criado com sucesso!');
     }
@@ -65,7 +88,7 @@ class ProcessoController extends Controller
 
     public function edit($id)
     {
-        $processo = Processo::findOrFail($id);
+        $processo = Processo::with('contratos')->findOrFail($id);
         return view('processos.edit', compact('processo'));
     }
 

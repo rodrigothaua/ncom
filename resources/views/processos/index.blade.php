@@ -38,38 +38,22 @@
     <table class="table table-bordered">
         <thead class="table-dark">
             <tr class="table-th">
-                <th>ID</th>
                 <th>Número do Processo</th>
                 <th>Descrição</th>
                 <th>Requisitante</th>
                 <th>Data Entrada</th>
-                <th>Valor Consumo</th>
-                <th>Valor Permanente</th>
-                <th>Valor Serviço</th>
                 <th>Valor Total</th>
-                <th>Data Início</th>
-                <th>Data Vencimento</th>
-                <th>Modalidade</th>
-                <th>Procedimentos Auxiliares</th>
                 <th>Ações</th>
             </tr>
         </thead>
         <tbody>
             @forelse($processos as $processo)
             <tr>
-                <td>{{ $processo->id }}</td>
                 <td>{{ $processo->numero_processo }}</td>
                 <td>{{ $processo->descricao }}</td>
                 <td>{{ $processo->requisitante }}</td>
                 <td>{{ $processo->data_entrada ? date('d/m/Y', strtotime($processo->data_entrada)) : '-' }}</td>
-                <td>R$ {{ number_format($processo->valor_consumo, 2, ',', '.') }}</td>
-                <td>R$ {{ number_format($processo->valor_permanente, 2, ',', '.') }}</td>
-                <td>R$ {{ number_format($processo->valor_servico, 2, ',', '.') }}</td>
                 <td><strong>R$ {{ number_format($processo->valor_total, 2, ',', '.') }}</strong></td>
-                <td>{{ $processo->data_inicio ? date('d/m/Y', strtotime($processo->data_inicio)) : '-' }}</td>
-                <td>{{ $processo->data_vencimento ? date('d/m/Y', strtotime($processo->data_vencimento)) : '-' }}</td>
-                <td>{{ $processo->modalidade }}</td>
-                <td>{{ $processo->procedimentos }}</td>
                 <td>
                     <a href="{{ route('processos.edit', $processo->id) }}" class="btn btn-sm btn-warning">Editar</a>
                     <form action="{{ route('processos.destroy', $processo->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir?')">
@@ -77,15 +61,44 @@
                         @method('DELETE')
                         <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
                     </form>
+                    <button class="btn btn-sm btn-info" onclick="mostrarDetalhes({{ $processo }})">Detalhes</button>
                 </td>
             </tr>
             @empty
             <tr>
-                <td colspan="9" class="text-center">Nenhum processo cadastrado.</td>
+                <td colspan="6" class="text-center">Nenhum processo cadastrado.</td>
             </tr>
             @endforelse
         </tbody>
     </table>
+
+    <!-- Modal de Detalhes -->
+    <div class="modal fade" id="modalDetalhes" tabindex="-1" aria-labelledby="modalDetalhesLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDetalhesLabel">Detalhes do Processo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Número do Processo:</strong> <span id="det-numero"></span></p>
+                    <p><strong>Descrição:</strong> <span id="det-descricao"></span></p>
+                    <p><strong>Requisitante:</strong> <span id="det-requisitante"></span></p>
+                    <p><strong>Data de Entrada:</strong> <span id="det-data-entrada"></span></p>
+                    <p><strong>Data Início:</strong> <span id="det-data-inicio"></span></p>
+                    <p><strong>Data Vencimento:</strong> <span id="det-data-vencimento"></span></p>
+                    <p><strong>Modalidade:</strong> <span id="det-modalidade"></span></p>
+                    <p><strong>Procedimentos:</strong> <span id="det-procedimentos"></span></p>
+                    <p><strong>Valor Consumo:</strong> R$ <span id="det-valor-consumo"></span></p>
+                    <p><strong>Valor Permanente:</strong> R$ <span id="det-valor-permanente"></span></p>
+                    <p><strong>Valor Serviço:</strong> R$ <span id="det-valor-servico"></span></p>
+                    <p><strong>Valor Total:</strong> R$ <span id="det-valor-total"></span></p>
+                    <h5 class="mt-3">Contratos</h5>
+                    <ul id="det-contratos" class="list-group"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Paginação -->
     <nav>
@@ -119,73 +132,6 @@
 </div>
 <br>
 
-
-<!-- Modal para Novo Processo -->
-<div class="modal fade" id="modalNovoProcesso" tabindex="-1" aria-labelledby="modalNovoProcessoLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5">
-                    Cadastrar novo processo
-                </h1>
-            </div>
-            <div class="modal-body">
-                <form action="{{ route('processos.store') }}" method="POST">
-                    @csrf
-                    <div class="form-group">
-                        <label for="numero_processo">Número do Processo</label>
-                        <input type="text" id="numero_processo" name="numero_processo" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="descricao">Descrição</label>
-                        <textarea id="descricao" name="descricao" class="form-control" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="requisitante">Requisitante</label>
-                        <input type="text" id="requisitante" name="requisitante" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="categoria" class="form-label">Categoria</label>
-                        <select class="form-select" name="categoria" id="categoria" required>
-                            <option selected>Selecione a categoria</option>
-                            <option value="consumo">Consumo</option>
-                            <option value="permanente">Permanente</option>
-                            <option value="serviço">Serviço</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="valor_consumo" class="form-label">Valor Consumo</label>
-                        <input type="text" class="form-control" id="valor_consumo" name="valor_consumo" placeholder="Digite o valor de Consumo" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="valor_permanente" class="form-label">Valor Permanente</label>
-                        <input type="text" class="form-control" id="valor_permanente" name="valor_permanente" placeholder="Digite o valor Permanente" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="valor_servico" class="form-label">Valor Serviço</label>
-                        <input type="text" class="form-control" id="valor_servico" name="valor_servico" placeholder="Digite o valor de Serviço" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="valor_total" class="form-label">Valor Total</label>
-                        <input type="text" class="form-control" id="valor_total" name="valor_total" placeholder="Valor total calculado" readonly required>
-                    </div>
-                    <div class="form-group">
-                        <label for="data_inicio">Data de Início</label>
-                        <input type="date" id="data_inicio" name="data_inicio" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="data_vencimento">Data de Vencimento</label>
-                        <input type="date" id="data_vencimento" name="data_vencimento" class="form-control" required>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Cadastrar Processo</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Modal -->
 <div class="modal fade" id="descricaoModal" tabindex="-1" aria-labelledby="descricaoModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -204,10 +150,38 @@
     </div>
 </div>
 
+<!-- Script para carregar os dados no modal -->
 <script>
-    function carregarDescricao(descricao) {
-        // Atualiza o conteúdo do modal com a descrição completa
-        document.getElementById('descricaoCompleta').textContent = descricao;
+    function mostrarDetalhes(processo) {
+        document.getElementById("det-numero").innerText = processo.numero_processo;
+        document.getElementById("det-descricao").innerText = processo.descricao;
+        document.getElementById("det-requisitante").innerText = processo.requisitante;
+        document.getElementById("det-data-entrada").innerText = processo.data_entrada ? new Date(processo.data_entrada).toLocaleDateString("pt-BR") : '-';
+        document.getElementById("det-data-inicio").innerText = processo.data_inicio ? new Date(processo.data_inicio).toLocaleDateString("pt-BR") : '-';
+        document.getElementById("det-data-vencimento").innerText = processo.data_vencimento ? new Date(processo.data_vencimento).toLocaleDateString("pt-BR") : '-';
+        document.getElementById("det-modalidade").innerText = processo.modalidade;
+        document.getElementById("det-procedimentos").innerText = processo.procedimentos;
+        document.getElementById("det-valor-consumo").innerText = Number(processo.valor_consumo).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+        document.getElementById("det-valor-permanente").innerText = Number(processo.valor_permanente).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+        document.getElementById("det-valor-servico").innerText = Number(processo.valor_servico).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+        document.getElementById("det-valor-total").innerText = Number(processo.valor_total).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+
+        // Adicionando contratos ao modal
+        let contratosLista = document.getElementById("det-contratos");
+        contratosLista.innerHTML = ""; // Limpar lista antes de adicionar novos contratos
+        if (processo.contratos.length > 0) {
+            processo.contratos.forEach(contrato => {
+                let li = document.createElement("li");
+                li.className = "list-group-item";
+                li.innerHTML = `<strong>Nº:</strong> ${contrato.numero_contrato} | <strong>Valor:</strong> R$ ${Number(contrato.valor_contrato).toLocaleString("pt-BR", { minimumFractionDigits: 2 })} | <strong>Data Inicial:</strong> ${new Date(contrato.data_inicial_contrato).toLocaleDateString("pt-BR")} | <strong>Data Final:</strong> ${new Date(contrato.data_final_contrato).toLocaleDateString("pt-BR")}`;
+                contratosLista.appendChild(li);
+            });
+        } else {
+            contratosLista.innerHTML = "<li class='list-group-item text-muted'>Nenhum contrato</li>";
+        }
+
+        var modal = new bootstrap.Modal(document.getElementById('modalDetalhes'));
+        modal.show();
     }
 </script>
 @endsection

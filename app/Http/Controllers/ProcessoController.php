@@ -41,6 +41,7 @@ class ProcessoController extends Controller
             'data_entrada' => 'nullable|date',
             'modalidade' => 'required|string',
             'procedimentos' => 'required|string',
+            // Validando os campos dos contratos
             'contratos' => 'nullable|array',
             'contratos.*.numero_contrato' => 'required_with:contratos|string',
             'contratos.*.valor_contrato' => 'required_with:contratos|string',
@@ -55,18 +56,20 @@ class ProcessoController extends Controller
         $validatedData['valor_servico'] = $valor_servico;
         $validatedData['valor_total'] = $valor_total;
 
-        // Criar o processo no banco de dados
+        // Criação do processo
         $processo = Processo::create($validatedData);
 
-        // Se houver contratos, salvar na tabela correta
+        // Verificação e salvamento dos contratos
         if ($request->has('contratos')) {
-            $contratos = array_values($validatedData['contratos']); // 🔵 Corrige os índices dos contratos
+            foreach ($request->contratos as $contrato) {
+                // Limpar o valor do contrato para garantir que esteja no formato correto
+                $valor_contrato = preg_replace('/[^0-9,]/', '', $contrato['valor_contrato']); // Remover tudo, exceto números e vírgulas
+                $valor_contrato = str_replace(',', '.', $valor_contrato); // Substituir vírgula por ponto decimal
 
-            foreach ($contratos as $contrato) {
-                Contrato::create([
-                    'processo_id' => $processo->id,
+                // Salvar o contrato
+                $processo->contratos()->create([
                     'numero_contrato' => $contrato['numero_contrato'],
-                    'valor_contrato' => $this->parseCurrency($contrato['valor_contrato']), // 🔹 Remove "R$" e converte
+                    'valor_contrato' => $valor_contrato,
                     'data_inicial_contrato' => $contrato['data_inicial_contrato'],
                     'data_final_contrato' => $contrato['data_final_contrato'],
                     'obs' => $contrato['obs'] ?? null,

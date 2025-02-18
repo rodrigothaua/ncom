@@ -1,4 +1,5 @@
-<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4">
+<div class="container">
+  <div class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 footer navbar-fixed-bottom">
     <div class="col-md-8 d-flex align-items-center">
       <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
         <svg class="bi" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
@@ -17,4 +18,5 @@
       <li class="ms-3"><a class="text-body-secondary" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#facebook"/></svg></a></li>
     </ul>
     -->
-</footer>
+  </div>
+</div>

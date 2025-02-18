@@ -89,3 +89,35 @@ main{
 .table-th{
     text-align: center;
 }
+
+/* Garante que o sidebar tenha uma largura fixa */
+#sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: #343a40; /* Cor de fundo do sidebar */
+    color: white;
+    padding-top: 20px;
+}
+
+/* O conteúdo ocupa o restante da tela */
+.conteudo {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    padding: 20px;
+}
+
+/* Responsividade: sidebar vira topo em telas menores */
+@media (max-width: 768px) {
+    #sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+    .conteudo {
+        margin-left: 0;
+        width: 100%;
+    }
+}

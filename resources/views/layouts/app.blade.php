@@ -21,16 +21,21 @@
     
 </head>
 <body>
+    <div class="wrapper d-flex">
+        <!-- Sidebar -->
+        @include('layouts.sidebar')
 
-    <div class="container mt-4">
-        <!-- Conteúdo da página -->
-        @include('layouts.partials.alerts')
-        @yield('content')
+        <!-- Conteúdo Principal -->
+        <div class="conteudo container-fluid p-4">
+            @include('layouts.partials.alerts')
+            @yield('content')  <!-- Apenas exibe o conteúdo da página, sem duplicação -->
+        </div>
     </div>
 
-    <div class="container-fluid mt-4">
+    <!-- Footer -->
+    <footer class="footer">
         @include('layouts.footer')
-    </div>
+    </footer>
 
 <!-- Adicionando jQuery (requerido pelo Bootstrap para dropdowns) -->
 <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>

@@ -9,6 +9,10 @@ use App\Http\Controllers\Auth\RegisterController;
 // Página inicial (Welcome)
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Página de registro de usuário
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
+
 // Rotas protegidas pelo middleware "auth"
 Route::middleware(['auth'])->group(function () {
 
@@ -18,10 +22,6 @@ Route::middleware(['auth'])->group(function () {
 
     // CRUD completo (Evita duplicação)
     Route::resource('processos', ProcessoController::class);
-
-    // Página de registro de usuário
-    Route::get('/usuarios/create', [RegisterController::class, 'showRegistrationForm'])->name('usuarios.create');
-    Route::post('/usuarios/store', [RegisterController::class, 'register'])->name('usuarios.store');
 
     // Gestão de processos
     Route::prefix('processos')->name('processos.')->group(function () {

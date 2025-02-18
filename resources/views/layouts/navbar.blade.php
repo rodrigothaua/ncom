@@ -1,6 +1,6 @@
 <div class="d-flex">
     <!-- Sidebar -->
-    <nav class="bg-dark text-white p-3" id="sidebar" style="width: 250px; height: 100vh; position: fixed;">
+    <nav class="bg-dark text-white p-3 d-none d-md-block" id="sidebar" style="width: 250px; height: 100vh; position: fixed; overflow-y: auto;">
         <div class="logo-dash">
             <h4 class="text-left">SIGECOM  <small style="font-size: 10px;">Beta</small></h4>
             <small style="font-size: 10px;">Sistema de Gerenciamento de Compras</small>
@@ -69,7 +69,9 @@
                 @endauth
             </a>
             <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                <li><a class="dropdown-item" href="{{ route('usuarios.create') }}">Cadastrar novo usuario</a></li>
+                @auth
+                <li><a class="dropdown-item" href="{{ route('register') }}">Cadastrar novo usuario</a></li>
+                @endauth
                 <li><a class="dropdown-item" href="#">Perfil</a></li>
                 <li>
                     <hr class="dropdown-divider">

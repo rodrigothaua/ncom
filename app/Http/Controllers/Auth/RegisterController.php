@@ -37,6 +37,9 @@ class RegisterController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        // Autenticar o usuário automaticamente
+        Auth::login($user);
+
         // Redirecionar após o registro
         return redirect()->route('dashboard')->with('success', 'Usuário registrado com sucesso!');
     }

@@ -35,12 +35,36 @@
             <input type="number" name="valor_total" class="form-control" id="valor_total" value="{{ $processo->valor_total }}" required>
         </div>
         <div class="mb-3">
-            <label for="data_vencimento" class="form-label">Data início</label>
-            <input type="date" name="data_inicio" class="form-control" id="data_inicio" value="{{ $processo->data_inicio }}" required>
-        </div>
-        <div class="mb-3">
-            <label for="data_vencimento" class="form-label">Data de Vencimento</label>
-            <input type="date" name="data_vencimento" class="form-control" id="data_vencimento" value="{{ $processo->data_vencimento }}" required>
+            <label class="form-label">Contratos</label>
+            <div id="contratos-container">
+                @foreach($processo->contratos as $index => $contrato)
+                    <div class="contrato-item border p-3 mb-2">
+                        <input type="hidden" name="contratos[{{ $index }}][id]" value="{{ $contrato->id }}">
+                        <div class="mb-2">
+                            <label class="form-label">Número do Contrato</label>
+                            <input type="text" name="contratos[{{ $index }}][numero_contrato]" class="form-control" value="{{ $contrato->numero_contrato }}" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Valor do Contrato</label>
+                            <input type="text" name="contratos[{{ $index }}][valor_contrato]" class="form-control money" value="{{ $contrato->valor_contrato }}" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Data Inicial</label>
+                            <input type="date" name="contratos[{{ $index }}][data_inicial_contrato]" class="form-control" value="{{ $contrato->data_inicial_contrato }}" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Data Final</label>
+                            <input type="date" name="contratos[{{ $index }}][data_final_contrato]" class="form-control" value="{{ $contrato->data_final_contrato }}" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Observações</label>
+                            <input type="text" name="contratos[{{ $index }}][obs]" class="form-control" value="{{ $contrato->obs }}">
+                        </div>
+                        <button type="button" class="btn btn-danger remove-contrato">Remover</button>
+                    </div>
+                @endforeach
+            </div>
+            <button type="button" id="add-contrato" class="btn btn-success mt-2">Adicionar Contrato</button>
         </div>
         <button type="submit" class="btn btn-primary">Atualizar</button>
         <a href="{{ route('processos.index') }}" class="btn btn-secondary">Voltar</a>

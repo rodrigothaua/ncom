@@ -81,18 +81,19 @@
             </ul>
         </div>
     </nav>
-
-    <!-- Conteúdo -->
-    <div class="flex-grow-1 p-4" id="content">
-        <button class="btn btn-dark d-md-none" id="toggleSidebar">☰</button>
-        
-    </div>
 </div>
+
 
 <!-- Script para Toggle Sidebar -->
 <script>
-    document.getElementById('toggleSidebar').addEventListener('click', function () {
-        document.getElementById('sidebar').classList.toggle('collapsed');
-        document.getElementById('content').classList.toggle('ml-0');
+    document.addEventListener("DOMContentLoaded", function () {
+        let toggleButton = document.getElementById("toggleSidebar");
+        let sidebar = document.getElementById("sidebar");
+        let content = document.getElementById("content");
+
+        toggleButton.addEventListener("click", function () {
+            sidebar.classList.toggle("active");
+            content.classList.toggle("active");
+        });
     });
 </script>

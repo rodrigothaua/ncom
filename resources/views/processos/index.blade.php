@@ -85,8 +85,6 @@
                     <p><strong>Descrição:</strong> <span id="det-descricao"></span></p>
                     <p><strong>Requisitante:</strong> <span id="det-requisitante"></span></p>
                     <p><strong>Data de Entrada:</strong> <span id="det-data-entrada"></span></p>
-                    <p><strong>Data Início:</strong> <span id="det-data-inicio"></span></p>
-                    <p><strong>Data Vencimento:</strong> <span id="det-data-vencimento"></span></p>
                     <p><strong>Modalidade:</strong> <span id="det-modalidade"></span></p>
                     <p><strong>Procedimentos:</strong> <span id="det-procedimentos"></span></p>
                     <p><strong>Valor Consumo:</strong> R$ <span id="det-valor-consumo"></span></p>
@@ -157,8 +155,6 @@
         document.getElementById("det-descricao").innerText = processo.descricao;
         document.getElementById("det-requisitante").innerText = processo.requisitante;
         document.getElementById("det-data-entrada").innerText = processo.data_entrada ? new Date(processo.data_entrada).toLocaleDateString("pt-BR") : '-';
-        document.getElementById("det-data-inicio").innerText = processo.data_inicio ? new Date(processo.data_inicio).toLocaleDateString("pt-BR") : '-';
-        document.getElementById("det-data-vencimento").innerText = processo.data_vencimento ? new Date(processo.data_vencimento).toLocaleDateString("pt-BR") : '-';
         document.getElementById("det-modalidade").innerText = processo.modalidade;
         document.getElementById("det-procedimentos").innerText = processo.procedimentos;
         document.getElementById("det-valor-consumo").innerText = Number(processo.valor_consumo).toLocaleString("pt-BR", { minimumFractionDigits: 2 });

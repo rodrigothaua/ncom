@@ -23,11 +23,15 @@
 <body>
     <div class="wrapper d-flex">
         <!-- Sidebar -->
-        @include('layouts.sidebar')
+
+        @if (!Request::is('/'))
+            @include('layouts.sidebar')
+        @endif
 
         <!-- Conteúdo Principal -->
         <div class="conteudo container-fluid p-4">
             @include('layouts.partials.alerts')
+            <button class="btn btn-dark d-md-none" id="toggleSidebar">☰</button>
             @yield('content')  <!-- Apenas exibe o conteúdo da página, sem duplicação -->
         </div>
     </div>

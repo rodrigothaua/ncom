@@ -109,6 +109,10 @@ main{
     padding: 20px;
 }
 
+#content {
+    transition: margin-left 0.3s ease-in-out;
+}
+
 /* Responsividade: sidebar vira topo em telas menores */
 @media (max-width: 768px) {
     #sidebar {
@@ -116,6 +120,7 @@ main{
         height: auto;
         position: relative;
     }
+    
     .conteudo {
         margin-left: 0;
         width: 100%;

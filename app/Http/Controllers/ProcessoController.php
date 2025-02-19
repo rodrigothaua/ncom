@@ -36,8 +36,6 @@ class ProcessoController extends Controller
             'numero_processo' => 'required|string|max:255',
             'descricao' => 'required|string|max:1000',
             'requisitante' => 'required|string|max:500',
-            'data_inicio' => 'nullable|date',
-            'data_vencimento' => 'nullable|date',
             'data_entrada' => 'nullable|date',
             'modalidade' => 'required|string',
             'procedimentos' => 'required|string',
@@ -107,9 +105,16 @@ class ProcessoController extends Controller
             'valor_permanente' => 'nullable|numeric',
             'valor_servico' => 'nullable|numeric',
             'valor_total' => 'nullable|string',
-            'data_inicio' => 'nullable|date',
-            'data_vencimento' => 'nullable|date|after_or_equal:data_inicio',
             'data_entrada' => 'nullable|date',
+
+            // Validação dos contratos
+            'contratos' => 'nullable|array',
+            'contratos.*.id' => 'nullable|exists:contratos,id',
+            'contratos.*.numero_contrato' => 'required_with:contratos|string',
+            'contratos.*.valor_contrato' => 'required_with:contratos|string',
+            'contratos.*.data_inicial_contrato' => 'required_with:contratos|date',
+            'contratos.*.data_final_contrato' => 'required_with:contratos|date',
+            'contratos.*.obs' => 'nullable|string',
         ]);
 
         // Atualiza os valores monetários, com a conversão correta
@@ -122,6 +127,37 @@ class ProcessoController extends Controller
 
         // Atualiza o processo
         $processo->update($validatedData);
+
+        // Atualização dos contratos
+        if ($request->has('contratos')) {
+            $ids_contratos_enviados = collect($request->contratos)->pluck('id')->filter()->toArray();
+
+            // Excluir contratos que não estão mais no formulário
+            $processo->contratos()->whereNotIn('id', $ids_contratos_enviados)->delete();
+
+            foreach ($request->contratos as $contrato) {
+                $valor_contrato = preg_replace('/[^0-9,]/', '', $contrato['valor_contrato']);
+                $valor_contrato = str_replace(',', '.', $valor_contrato);
+
+                if (isset($contrato['id'])) {
+                    $processo->contratos()->where('id', $contrato['id'])->update([
+                        'numero_contrato' => $contrato['numero_contrato'],
+                        'valor_contrato' => $valor_contrato,
+                        'data_inicial_contrato' => $contrato['data_inicial_contrato'],
+                        'data_final_contrato' => $contrato['data_final_contrato'],
+                        'obs' => $contrato['obs'] ?? null,
+                    ]);
+                } else {
+                    $processo->contratos()->create([
+                        'numero_contrato' => $contrato['numero_contrato'],
+                        'valor_contrato' => $valor_contrato,
+                        'data_inicial_contrato' => $contrato['data_inicial_contrato'],
+                        'data_final_contrato' => $contrato['data_final_contrato'],
+                        'obs' => $contrato['obs'] ?? null,
+                    ]);
+                }
+            }
+        }
 
         return redirect()->route('processos.index')->with('success', 'Processo atualizado com sucesso!');
     }

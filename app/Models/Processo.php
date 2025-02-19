@@ -19,8 +19,6 @@ class Processo extends Model
         'valor_permanente',
         'valor_servico',
         'valor_total',
-        'data_inicio',
-        'data_vencimento',
         'data_entrada',
         'modalidade',
         'procedimentos'

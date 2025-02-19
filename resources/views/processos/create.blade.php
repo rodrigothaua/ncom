@@ -17,19 +17,21 @@
             <div class="card-body">
                 <h5 class="card-title">Dados do processo</h5>
                 <div class="row">
-                    <!-- Input Número do Processo -->
-                    <div class="col-md-2">
-                        <label for="">Número do Processo</label>
-                        <input type="text" class="form-control" id="numero_processo" name="numero_processo"
-                        placeholder="Digite o número do processo" required onFocus="">
-                    </div>
-                    <!-- input Data de Entrada -->
-                    <div class="col-md-2">
-                        <label for="">Data de Entrada</label>
-                        <input type="date" class="form-control" id="data_entrada" name="data_entrada" value="{{ old('data_entrada') }}">
+                    <div class="col-md-4">
+                        <!-- Input Número do Processo -->
+                        <div class="col">
+                            <label for="">Número do Processo</label>
+                            <input type="text" class="form-control" id="numero_processo" name="numero_processo"
+                            placeholder="Digite o número do processo" required onFocus="">
+                        </div>
+                        <!-- input Data de Entrada -->
+                        <div class="col">
+                            <label for="">Data de Entrada</label>
+                            <input type="date" class="form-control" id="data_entrada" name="data_entrada" value="{{ old('data_entrada') }}">
+                        </div>
                     </div>
                     <!-- select Requisitante -->
-                    <div class="col-md-2">
+                    <div class="col-md-4">
                         <label for="">Requisitante</label>
                         <select class="form-select" name="requisitante" id="requisitante">
                             <option selected disabled>Selecione...</option>
@@ -52,7 +54,7 @@
                             <option value="POLITEC">POLITEC</option>
                         </select>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label for="">Descrição do processo</label>
                         <textarea class="form-control" id="descricao" name="descricao" rows="4" placeholder="Informe resumidamente a descrição do processo" required></textarea>
                     </div>
@@ -97,17 +99,6 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Contratos</h5>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="data_inicio" class="form-label">Data de Início</label>
-                            <input type="date" class="form-control" id="data_inicio" name="data_inicio">
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="data_vencimento" class="form-label">Data de Vencimento</label>
-                            <input type="date" class="form-control" id="data_vencimento" name="data_vencimento">
-                        </div>
-                    </div>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label for="data_inicio" class="form-label">Modalidade</label>
@@ -159,6 +150,9 @@
         const contratoHTML = `
             <div class="card mt-3 p-3 border shadow-sm" id="contrato_${contratoIndex}">
                 <div class="row g-3">
+                    <div class="col-12">
+                        <h5>Contrato ${contratoIndex}</h5>
+                    </div>
                     <div class="col-md-3">
                         <label class="form-label">Número do Contrato</label>
                         <input type="text" class="form-control" name="contratos[${contratoIndex}][numero_contrato]" required>

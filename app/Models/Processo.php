@@ -28,4 +28,10 @@ class Processo extends Model
     {
         return $this->hasMany(Contrato::class);
     }
+
+    public function paNumeros()
+    {
+        return $this->hasMany(PaNumero::class, 'processo_id');
+    }
+
 }

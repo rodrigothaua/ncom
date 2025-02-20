@@ -22,7 +22,7 @@ class ProcessoController extends Controller
 
     public function store(Request $request)
     {
-        //dd($request->all()); // Exibe todos os dados enviados no formulário
+        dd($request->all()); // Exibe todos os dados enviados no formulário
         // Limpar e formatar os valores removendo o símbolo de moeda
         $valor_consumo = $this->parseCurrency($request->valor_consumo);
         $valor_permanente = $this->parseCurrency($request->valor_permanente);
@@ -46,6 +46,9 @@ class ProcessoController extends Controller
             'contratos.*.data_inicial_contrato' => 'required_with:contratos|date',
             'contratos.*.data_final_contrato' => 'required_with:contratos|date',
             'contratos.*.obs' => 'nullable|string',
+            // Número de PAs
+            'pa_numeros.*.tipo' => 'required|string',
+            'pa_numeros.*.numero_pa' => 'required|string',
         ]);
 
         // Adicionar os valores calculados aos dados validados
@@ -74,6 +77,25 @@ class ProcessoController extends Controller
                 ]);
             }
         }
+
+        function formatarNumeroPA($valor) {
+            // Remove todos os pontos
+            $valor = str_replace('.', '', $valor);
+        
+            // Substitui a última vírgula por ponto (caso exista)
+            $valor = str_replace(',', '.', $valor);
+        
+            return $valor;
+        }
+        
+        // Aplicando a correção aos PAs antes de salvar
+        $request->merge([
+            'pa_consumo' => array_map('formatarNumeroPA', $request->pa_consumo ?? []),
+            'pa_permanente' => array_map('formatarNumeroPA', $request->pa_permanente ?? []),
+            'pa_servico' => array_map('formatarNumeroPA', $request->pa_servico ?? []),
+        ]);
+        
+        
 
         return redirect()->route('processos.index')->with('success', 'Processo criado com sucesso!');
     }
@@ -115,6 +137,10 @@ class ProcessoController extends Controller
             'contratos.*.data_inicial_contrato' => 'required_with:contratos|date',
             'contratos.*.data_final_contrato' => 'required_with:contratos|date',
             'contratos.*.obs' => 'nullable|string',
+
+            // Validação de PAs
+            'pa_numeros.*.tipo' => 'required|string',
+            'pa_numeros.*.numero_pa' => 'required|string',
         ]);
 
         // Atualiza os valores monetários, com a conversão correta
@@ -154,6 +180,26 @@ class ProcessoController extends Controller
                         'data_inicial_contrato' => $contrato['data_inicial_contrato'],
                         'data_final_contrato' => $contrato['data_final_contrato'],
                         'obs' => $contrato['obs'] ?? null,
+                    ]);
+                }
+            }
+        }
+
+        // Atualização de PA
+        if ($request->has('pa_numeros')) {
+            $idsPAsEnviados = collect($request->pa_numeros)->pluck('id')->filter()->toArray();
+            $processo->paNumeros()->whereNotIn('id', $idsPAsEnviados)->delete();
+
+            foreach ($request->pa_numeros as $pa) {
+                if (isset($pa['id'])) {
+                    $processo->paNumeros()->where('id', $pa['id'])->update([
+                        'tipo' => $pa['tipo'],
+                        'numero_pa' => $pa['numero_pa']
+                    ]);
+                } else {
+                    $processo->paNumeros()->create([
+                        'tipo' => $pa['tipo'],
+                        'numero_pa' => $pa['numero_pa']
                     ]);
                 }
             }

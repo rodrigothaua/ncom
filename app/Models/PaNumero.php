@@ -11,7 +11,11 @@ class PaNumero extends Model
 
     protected $table = 'pa_numeros';
 
-    protected $fillable = ['processo_id', 'tipo', 'numero_pa'];
+    protected $fillable = [
+        'processo_id',
+        'tipo',
+        'numero_pa',
+    ];
 
     public function processo()
     {

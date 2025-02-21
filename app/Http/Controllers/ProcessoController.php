@@ -47,6 +47,7 @@ class ProcessoController extends Controller
             'contratos.*.data_final_contrato' => 'required_with:contratos|date',
             'contratos.*.obs' => 'nullable|string',
             // Número de PAs
+            'pa_numeros' => 'required|array', // Valida o array pa_numeros
             'pa_numeros.*.tipo' => 'required|string',
             'pa_numeros.*.numero_pa' => 'required|string',
         ]);
@@ -78,24 +79,16 @@ class ProcessoController extends Controller
             }
         }
 
-        function formatarNumeroPA($valor) {
-            // Remove todos os pontos
-            $valor = str_replace('.', '', $valor);
-        
-            // Substitui a última vírgula por ponto (caso exista)
-            $valor = str_replace(',', '.', $valor);
-        
-            return $valor;
+        // Salva os números de PA na tabela pa_processos
+        if ($request->has('pa_numeros')) {
+            foreach ($request->pa_numeros as $pa) {
+                $processo->paProcessos()->create([
+                    'tipo' => $pa['tipo'],
+                    'numero_pa' => $pa['numero_pa'],
+                ]);
+            }
         }
-        
-        // Aplicando a correção aos PAs antes de salvar
-        $request->merge([
-            'pa_consumo' => array_map('formatarNumeroPA', $request->pa_consumo ?? []),
-            'pa_permanente' => array_map('formatarNumeroPA', $request->pa_permanente ?? []),
-            'pa_servico' => array_map('formatarNumeroPA', $request->pa_servico ?? []),
-        ]);
-        
-        
+
 
         return redirect()->route('processos.index')->with('success', 'Processo criado com sucesso!');
     }
@@ -139,6 +132,7 @@ class ProcessoController extends Controller
             'contratos.*.obs' => 'nullable|string',
 
             // Validação de PAs
+            'pa_numeros' => 'required|array',
             'pa_numeros.*.tipo' => 'required|string',
             'pa_numeros.*.numero_pa' => 'required|string',
         ]);
@@ -185,23 +179,16 @@ class ProcessoController extends Controller
             }
         }
 
-        // Atualização de PA
+        // Atualização de PAs
         if ($request->has('pa_numeros')) {
-            $idsPAsEnviados = collect($request->pa_numeros)->pluck('id')->filter()->toArray();
-            $processo->paNumeros()->whereNotIn('id', $idsPAsEnviados)->delete();
+            // Sincroniza os números de PA
+            $processo->paProcessos()->sync([]); // Limpa os PAs existentes
 
             foreach ($request->pa_numeros as $pa) {
-                if (isset($pa['id'])) {
-                    $processo->paNumeros()->where('id', $pa['id'])->update([
-                        'tipo' => $pa['tipo'],
-                        'numero_pa' => $pa['numero_pa']
-                    ]);
-                } else {
-                    $processo->paNumeros()->create([
-                        'tipo' => $pa['tipo'],
-                        'numero_pa' => $pa['numero_pa']
-                    ]);
-                }
+                $processo->paProcessos()->create([
+                    'tipo' => $pa['tipo'],
+                    'numero_pa' => $pa['numero_pa'],
+                ]);
             }
         }
 

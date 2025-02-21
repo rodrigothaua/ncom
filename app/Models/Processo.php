@@ -21,7 +21,7 @@ class Processo extends Model
         'valor_total',
         'data_entrada',
         'modalidade',
-        'procedimentos'
+        'procedimentos',
     ];
 
     public function contratos()
@@ -31,7 +31,7 @@ class Processo extends Model
 
     public function paNumeros()
     {
-        return $this->hasMany(PaNumero::class, 'processo_id');
+        return $this->hasMany(PaProcesso::class);
     }
 
 }

@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
+
 use App\Models\Processo;
+use App\Models\ProcessoPA;
+use App\Models\Contrato;
 
 class ProcessoController extends Controller
 {
@@ -22,73 +25,70 @@ class ProcessoController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all()); // Exibe todos os dados enviados no formulário
-        // Limpar e formatar os valores removendo o símbolo de moeda
+        //dd($request->all()); // Exibe todos os dados enviados no formulário
+
+        $validatedData = $request->validate([
+            'numero_processo' => 'required|string|max:255|unique:processos,numero_processo,',
+            'descricao' => 'required|string|max:1000',
+            'requisitante' => 'required|string|max:255',
+            'valor_consumo' => 'nullable|numeric',
+            'valor_permanente' => 'nullable|numeric',
+            'valor_servico' => 'nullable|numeric',
+            'valor_total' => 'nullable|numeric', // Alterado para numeric
+            'data_entrada' => 'nullable|date',
+        
+            // Validação dos contratos
+            'contratos' => 'nullable|array',
+            'contratos.*.numero_contrato' => 'required_with:contratos|string',
+            'contratos.*.valor_contrato' => 'required_with:contratos|numeric',
+            'contratos.*.data_inicial_contrato' => 'required_with:contratos|date',
+            'contratos.*.data_final_contrato' => 'required_with:contratos|date',
+            'contratos.*.obs' => 'nullable|string',
+            'contratos.*.modalidade' => 'required_with:contratos|string',
+            'contratos.*.procedimentos_auxiliares' => 'required_with:contratos|string',
+        ]);
+
+        // Convertendo os valores monetários corretamente
         $valor_consumo = $this->parseCurrency($request->valor_consumo);
         $valor_permanente = $this->parseCurrency($request->valor_permanente);
         $valor_servico = $this->parseCurrency($request->valor_servico);
 
-        // Calcular o valor total
+        // Calcula o valor total
         $valor_total = $valor_consumo + $valor_permanente + $valor_servico;
 
-        // Validação dos dados
-        $validatedData = $request->validate([
-            'numero_processo' => 'required|string|max:255',
-            'descricao' => 'required|string|max:1000',
-            'requisitante' => 'required|string|max:500',
-            'data_entrada' => 'nullable|date',
-            'modalidade' => 'required|string',
-            'procedimentos' => 'required|string',
-            // Validando os campos dos contratos
-            'contratos' => 'nullable|array',
-            'contratos.*.numero_contrato' => 'required_with:contratos|string',
-            'contratos.*.valor_contrato' => 'required_with:contratos|string',
-            'contratos.*.data_inicial_contrato' => 'required_with:contratos|date',
-            'contratos.*.data_final_contrato' => 'required_with:contratos|date',
-            'contratos.*.obs' => 'nullable|string',
-            // Número de PAs
-            'pa_numeros' => 'required|array', // Valida o array pa_numeros
-            'pa_numeros.*.tipo' => 'required|string',
-            'pa_numeros.*.numero_pa' => 'required|string',
-        ]);
-
-        // Adicionar os valores calculados aos dados validados
+        // Atualiza os valores no array validado
         $validatedData['valor_consumo'] = $valor_consumo;
         $validatedData['valor_permanente'] = $valor_permanente;
         $validatedData['valor_servico'] = $valor_servico;
         $validatedData['valor_total'] = $valor_total;
 
-        // Criação do processo
-        $processo = Processo::create($validatedData);
+        // Criando o Processo
+        $processo = Processo::create([
+            'numero_processo' => $validatedData['numero_processo'],
+            'requisitante' => $validatedData['requisitante'],
+            'descricao' => $validatedData['descricao'],
+            'data_entrada' => $validatedData['data_entrada'],
+            'valor_consumo' => $valor_consumo,
+            'valor_permanente' => $valor_permanente,
+            'valor_servico' => $valor_servico,
+            'valor_total' => $validatedData['valor_total']
+        ]);
 
-        // Verificação e salvamento dos contratos
+        // Salvando contratos (se existirem)
         if ($request->has('contratos')) {
             foreach ($request->contratos as $contrato) {
-                // Limpar o valor do contrato para garantir que esteja no formato correto
-                $valor_contrato = preg_replace('/[^0-9,]/', '', $contrato['valor_contrato']); // Remover tudo, exceto números e vírgulas
-                $valor_contrato = str_replace(',', '.', $valor_contrato); // Substituir vírgula por ponto decimal
-
-                // Salvar o contrato
-                $processo->contratos()->create([
+                Contrato::create([
+                    'processo_id' => $processo->id,
                     'numero_contrato' => $contrato['numero_contrato'],
-                    'valor_contrato' => $valor_contrato,
+                    'valor_contrato' => $contrato['valor_contrato'],
                     'data_inicial_contrato' => $contrato['data_inicial_contrato'],
                     'data_final_contrato' => $contrato['data_final_contrato'],
-                    'obs' => $contrato['obs'] ?? null,
+                    'obs' => $contrato['obs'], // Ajustado para "obs"
+                    'modalidade' => $contrato['modalidade'],
+                    'procedimentos_auxiliares' => $contrato['procedimentos_auxiliares']
                 ]);
             }
         }
-
-        // Salva os números de PA na tabela pa_processos
-        if ($request->has('pa_numeros')) {
-            foreach ($request->pa_numeros as $pa) {
-                $processo->paProcessos()->create([
-                    'tipo' => $pa['tipo'],
-                    'numero_pa' => $pa['numero_pa'],
-                ]);
-            }
-        }
-
 
         return redirect()->route('processos.index')->with('success', 'Processo criado com sucesso!');
     }
@@ -96,10 +96,14 @@ class ProcessoController extends Controller
     private function parseCurrency($value)
     {
         // Remove tudo que não for número ou vírgula
-        $value = preg_replace('/[^\d,]/', '', $value);
+        if ($value) {
+            // Remove "R$" e espaços
+            $value = preg_replace('/[^\d,]/', '', $value);
+            // Substitui vírgula decimal por ponto
+            return (float) str_replace(',', '.', $value);
+        }
+        return 0;
         
-        // Converte a vírgula para ponto e converte para float
-        return (float)str_replace(',', '.', $value);
     }
 
     public function edit($id)
@@ -178,6 +182,8 @@ class ProcessoController extends Controller
                 }
             }
         }
+
+        $processo->paProcessos()->delete();
 
         // Atualização de PAs
         if ($request->has('pa_numeros')) {

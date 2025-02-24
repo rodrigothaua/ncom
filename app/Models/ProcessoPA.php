@@ -5,17 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PaNumero extends Model
+class ProcessoPA extends Model
 {
     use HasFactory;
 
-    protected $table = 'pa_numeros';
-
     protected $fillable = [
-        'processo_id',
-        'tipo',
-        'numero_pa',
-    ];
+        'processo_id', 
+        'tipo', 
+        'numero_pa', 
+        'valor'];
 
     public function processo()
     {

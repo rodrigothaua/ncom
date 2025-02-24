@@ -67,24 +67,27 @@
                         <div class="col-md-3">
                             <label>Consumo</label>
                             <input type="text" name="valor_consumo" id="valor_consumo" class="form-control money" placeholder="R$0,00" oninput="calcularTotal()">
-                            <div id="pa-consumo" style="display: none;">
-                                <h5 class="mt-3">Nº de PA</h5>
+                            <!-- Adicionar PA Consumo -->
+                            <div id="pa_consumo_container" class="mt-2" style="display: none;">
+                                <button type="button" class="btn btn-sm btn-success" onclick="adicionarPA('consumo')">Adicionar PA</button>
                             </div>
                         </div>
                         <!-- Valor Permanente -->
                         <div class="col-md-3">
                             <label>Permanente</label>
                             <input type="text" name="valor_permanente" id="valor_permanente" class="form-control money" placeholder="R$0,00" oninput="calcularTotal()">
-                            <div id="pa-permanente" style="display: none;">
-                                <h5 class="mt-3">Nº de PA</h5>
+                            <!-- Adicionar PA Permanente -->
+                            <div id="pa_permanente_container" class="mt-2" style="display: none;">
+                                <button type="button" class="btn btn-sm btn-success" onclick="adicionarPA('permanente')">Adicionar PA</button>
                             </div>
                         </div>
                         <!-- Valor Serviço -->
                         <div class="col-md-3">
                             <label>Serviço</label>
                             <input type="text" name="valor_servico" id="valor_servico" class="form-control money" placeholder="R$0,00" oninput="calcularTotal()">
-                            <div id="pa-servico" style="display: none;">
-                                <h5 class="mt-3">Nº de PA</h5>
+                            <!-- adiconar PA Serviço -->
+                            <div id="pa_servico_container" class="mt-2" style="display: none;">
+                                <button type="button" class="btn btn-sm btn-success" onclick="adicionarPA('servico')">Adicionar PA</button>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -225,92 +228,53 @@
 
     ///////////////////////////
     /// ADICIONAR Nº PA //////
-    document.addEventListener("DOMContentLoaded", function () {
-        function setupPAInputs(triggerInputId, containerId, inputName) {
-            let triggerInput = document.getElementById(triggerInputId);
-            let container = document.getElementById(containerId);
-
-            function updateButtons() {
-                let wrappers = container.querySelectorAll(".pa-wrapper");
-                wrappers.forEach((wrapper, index) => {
-                    let addButton = wrapper.querySelector(".add-btn");
-                    if (addButton) {
-                        addButton.style.display = index === wrappers.length - 1 ? "inline-block" : "none";
-                    }
-                });
-            }
-
-            function addPAField() {
-                let divWrapper = document.createElement("div");
-                divWrapper.className = "d-flex align-items-center mt-2 pa-wrapper";
-
-                let newField = document.createElement("input");
-                newField.type = "text";
-                newField.name = inputName + "[]";
-                newField.className = "form-control pa-input";
-                newField.placeholder = "Digite o número do PA";
-                newField.style.width = "150px";
-
-                let addButton = document.createElement("button");
-                addButton.textContent = "+";
-                addButton.type = "button";
-                addButton.className = "btn btn-success btn-sm ms-2 add-btn";
-
-                let removeButton = document.createElement("button");
-                removeButton.textContent = "🗑";
-                removeButton.type = "button";
-                removeButton.className = "btn btn-danger btn-sm ms-2";
-
-                // Adicionar novo campo ao clicar no "+"
-                addButton.addEventListener("click", function () {
-                    addPAField();
-                });
-
-                // Remover campo ao clicar no "🗑"
-                removeButton.addEventListener("click", function () {
-                    divWrapper.remove();
-                    updateButtons();
-                    if (container.querySelectorAll(".pa-wrapper").length === 0) {
-                        container.style.display = "none"; // Esconde o container se não houver mais PAs
-                    }
-                });
-
-                divWrapper.appendChild(newField);
-                divWrapper.appendChild(removeButton);
-                divWrapper.appendChild(addButton);
-                container.appendChild(divWrapper);
-
-                applyMask(newField);
-                newField.focus();
-                updateButtons();
-            }
-
-            function applyMask(input) {
-                IMask(input, {
-                    mask: "0.000.00",
-                    lazy: false
-                });
-            }
-
-            // Exibir os inputs de PA quando o usuário digitar um valor
-            triggerInput.addEventListener("input", function () {
-                if (this.value.trim() !== "") {
-                    container.style.display = "block"; // Mostra o container
-                    if (container.querySelectorAll(".pa-wrapper").length === 0) {
-                        addPAField();
-                    }
+    document.addEventListener('DOMContentLoaded', function () {
+        ['consumo', 'permanente', 'servico'].forEach(tipo => {
+            document.getElementById(`valor_${tipo}`).addEventListener('input', function () {
+                let container = document.getElementById(`pa_${tipo}_container`);
+                if (this.value.trim() !== '') {
+                    container.style.display = 'block';
+                } else {
+                    container.style.display = 'none';
+                    container.innerHTML = '<button type="button" class="btn btn-sm btn-success" onclick="adicionarPA(\'' + tipo + '\')">Adicionar PA</button>';
                 }
             });
-        }
-
-        // Configurar inputs de PA para cada tipo
-        setupPAInputs("valor_consumo", "pa-consumo", "pa_consumo");
-        setupPAInputs("valor_permanente", "pa-permanente", "pa_permanente");
-        setupPAInputs("valor_servico", "pa-servico", "pa_servico");
+        });
     });
-</script>
 
-<script>
+    function adicionarPA(tipo) {
+        let container = document.getElementById(`pa_${tipo}_container`);
+        let inputPA = document.createElement('div');
+        inputPA.classList.add('input-group', 'mt-2');
+
+        // Criando o campo de input com máscara
+        let input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'form-control pa-input';
+        input.name = `pa_${tipo}[]`;
+        input.placeholder = "Número do PA";
+        
+        // Aplicando a máscara IMask
+        setTimeout(() => {
+            IMask(input, {
+                mask: '0.0.00.00'
+            });
+        }, 100);
+
+        // Criando botão de remoção
+        let btnRemove = document.createElement('button');
+        btnRemove.type = 'button';
+        btnRemove.className = 'btn btn-danger btn-sm';
+        btnRemove.textContent = 'Remover';
+        btnRemove.onclick = function () {
+            inputPA.remove();
+        };
+
+        inputPA.appendChild(input);
+        inputPA.appendChild(btnRemove);
+        container.appendChild(inputPA);
+    }
+
 
 </script>
 @endsection

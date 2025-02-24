@@ -15,7 +15,9 @@ class Contrato extends Model
         'valor_contrato',
         'data_inicial_contrato',
         'data_final_contrato',
-        'obs'
+        'observacoes',
+        'modalidade',
+        'procedimentos_auxiliares'
     ];
 
     public function processo()
@@ -23,4 +25,3 @@ class Contrato extends Model
         return $this->belongsTo(Processo::class);
     }
 }
-

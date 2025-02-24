@@ -13,25 +13,18 @@ class Processo extends Model
 
     protected $fillable = [
         'numero_processo',
-        'descricao',
         'requisitante',
+        'descricao',
+        'data_entrada',
         'valor_consumo',
         'valor_permanente',
         'valor_servico',
-        'valor_total',
-        'data_entrada',
-        'modalidade',
-        'procedimentos',
+        'valor_total'
     ];
 
     public function contratos()
     {
         return $this->hasMany(Contrato::class);
-    }
-
-    public function paNumeros()
-    {
-        return $this->hasMany(PaProcesso::class);
     }
 
 }

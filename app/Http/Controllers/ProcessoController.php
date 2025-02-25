@@ -74,6 +74,17 @@ class ProcessoController extends Controller
             'valor_total' => $validatedData['valor_total']
         ]);
 
+        if ($request->has('pa_numeros')) {
+            foreach ($request->pa_numeros as $pa) {
+                ProcessoPA::create([
+                    'processo_id' => $processo->id,
+                    'tipo' => $pa['tipo'],
+                    'numero_pa' => $pa['numero_pa'],
+                    'valor' => $this->parseCurrency($pa['valor']),
+                ]);
+            }
+        }
+
         // Salvando contratos (se existirem)
         if ($request->has('contratos')) {
             foreach ($request->contratos as $contrato) {

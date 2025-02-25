@@ -27,4 +27,8 @@ class Processo extends Model
         return $this->hasMany(Contrato::class);
     }
 
+    public function paProcessos()
+    {
+        return $this->hasMany(ProcessoPA::class, 'processo_id');
+    }
 }

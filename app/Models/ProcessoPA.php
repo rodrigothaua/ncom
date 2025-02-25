@@ -17,6 +17,6 @@ class ProcessoPA extends Model
 
     public function processo()
     {
-        return $this->belongsTo(Processo::class);
+        return $this->belongsTo(Processo::class, 'processo_id');
     }
 }

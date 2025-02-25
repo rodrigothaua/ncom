@@ -47,19 +47,19 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">Número do Contrato</label>
-                        <input type="text" class="form-control" name="contratos[${contratoIndex}][numero_contrato]" required>
+                        <input type="text" class="form-control" name="contratos[${contratoIndex}][numero_contrato]">
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">Valor do Contrato</label>
-                        <input type="text" class="form-control money-input" name="contratos[${contratoIndex}][valor_contrato]" required>
+                        <input type="text" class="form-control money-input" name="contratos[${contratoIndex}][valor_contrato]">
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">Data Inicial</label>
-                        <input type="date" class="form-control" name="contratos[${contratoIndex}][data_inicial_contrato]" required>
+                        <input type="date" class="form-control" name="contratos[${contratoIndex}][data_inicial_contrato]">
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">Data Final</label>
-                        <input type="date" class="form-control" name="contratos[${contratoIndex}][data_final_contrato]" required>
+                        <input type="date" class="form-control" name="contratos[${contratoIndex}][data_final_contrato]">
                     </div>
                     <div class="col-md-12">
                         <label class="form-label">Observações</label>

@@ -25,7 +25,7 @@ class ProcessoController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all()); // Exibe todos os dados enviados no formulário
+        //dd($request->all()); // Exibe todos os dados enviados no formulário
 
         $validatedData = $request->validate([
             'numero_processo' => 'required|string|max:255|unique:processos,numero_processo,',
@@ -45,15 +45,6 @@ class ProcessoController extends Controller
         // Calcula o valor total
         $valor_total = $valor_consumo + $valor_permanente + $valor_servico;
 
-        // Verifica e trata os arrays de PA para evitar erro ao acessar índices inexistentes
-        $pa_consumo = $request->pa_consumo[0] ?? null;
-        $pa_permanente = $request->pa_permanente[0] ?? null;
-        $pa_servico = $request->pa_servico[0] ?? null;
-
-        $select_consumo = $request->select_consumo ?? null;
-        $select_permanente = $request->select_permanente ?? null;
-        $select_servico = $request->select_servico ?? null;
-
         // Criando o Processo
         $processo = Processo::create([
             'numero_processo' => $validatedData['numero_processo'],
@@ -64,14 +55,14 @@ class ProcessoController extends Controller
             'valor_permanente' => $valor_permanente,
             'valor_servico' => $valor_servico,
             'valor_total' => $valor_total,
-            
+
             //Salva os campos PA e Selects
-            'pa_consumo' => $pa_consumo,
-            'pa_permanente' => $pa_permanente,
-            'pa_servico' => $pa_servico,
-            'select_consumo' => $select_consumo,
-            'select_permanente' => $select_permanente,
-            'select_servico' => $select_servico,
+            //'pa_consumo' => $pa_consumo,
+            //'pa_permanente' => $pa_permanente,
+            //'pa_servico' => $pa_servico,
+            //'select_consumo' => $select_consumo,
+            //'select_permanente' => $select_permanente,
+            //'select_servico' => $select_servico,
         ]);
 
         return redirect()->route('processos.index')->with('success', 'Processo criado com sucesso!');

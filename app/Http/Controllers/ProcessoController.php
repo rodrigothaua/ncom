@@ -25,7 +25,7 @@ class ProcessoController extends Controller
 
     public function store(Request $request)
     {
-        //dd($request->all()); // Exibe todos os dados enviados no formulário
+        dd($request->all()); // Exibe todos os dados enviados no formulário
 
         $validatedData = $request->validate([
             'numero_processo' => 'required|string|max:255|unique:processos,numero_processo,',
@@ -36,31 +36,23 @@ class ProcessoController extends Controller
             'valor_servico' => 'nullable|numeric',
             'valor_total' => 'nullable|numeric', // Alterado para numeric
             'data_entrada' => 'nullable|date',
-        
-            // Validação dos contratos
-            'contratos' => 'nullable|array',
-            'contratos.*.numero_contrato' => 'required_with:contratos|string',
-            'contratos.*.valor_contrato' => 'required_with:contratos|numeric',
-            'contratos.*.data_inicial_contrato' => 'required_with:contratos|date',
-            'contratos.*.data_final_contrato' => 'required_with:contratos|date',
-            'contratos.*.obs' => 'nullable|string',
-            'contratos.*.modalidade' => 'required_with:contratos|string',
-            'contratos.*.procedimentos_auxiliares' => 'required_with:contratos|string',
         ]);
 
         // Convertendo os valores monetários corretamente
         $valor_consumo = $this->parseCurrency($request->valor_consumo);
         $valor_permanente = $this->parseCurrency($request->valor_permanente);
         $valor_servico = $this->parseCurrency($request->valor_servico);
-
         // Calcula o valor total
         $valor_total = $valor_consumo + $valor_permanente + $valor_servico;
 
-        // Atualiza os valores no array validado
-        $validatedData['valor_consumo'] = $valor_consumo;
-        $validatedData['valor_permanente'] = $valor_permanente;
-        $validatedData['valor_servico'] = $valor_servico;
-        $validatedData['valor_total'] = $valor_total;
+        // Verifica e trata os arrays de PA para evitar erro ao acessar índices inexistentes
+        $pa_consumo = $request->pa_consumo[0] ?? null;
+        $pa_permanente = $request->pa_permanente[0] ?? null;
+        $pa_servico = $request->pa_servico[0] ?? null;
+
+        $select_consumo = $request->select_consumo ?? null;
+        $select_permanente = $request->select_permanente ?? null;
+        $select_servico = $request->select_servico ?? null;
 
         // Criando o Processo
         $processo = Processo::create([
@@ -71,35 +63,16 @@ class ProcessoController extends Controller
             'valor_consumo' => $valor_consumo,
             'valor_permanente' => $valor_permanente,
             'valor_servico' => $valor_servico,
-            'valor_total' => $validatedData['valor_total']
+            'valor_total' => $valor_total,
+            
+            //Salva os campos PA e Selects
+            'pa_consumo' => $pa_consumo,
+            'pa_permanente' => $pa_permanente,
+            'pa_servico' => $pa_servico,
+            'select_consumo' => $select_consumo,
+            'select_permanente' => $select_permanente,
+            'select_servico' => $select_servico,
         ]);
-
-        if ($request->has('pa_numeros')) {
-            foreach ($request->pa_numeros as $pa) {
-                ProcessoPA::create([
-                    'processo_id' => $processo->id,
-                    'tipo' => $pa['tipo'],
-                    'numero_pa' => $pa['numero_pa'],
-                    'valor' => $this->parseCurrency($pa['valor']),
-                ]);
-            }
-        }
-
-        // Salvando contratos (se existirem)
-        if ($request->has('contratos')) {
-            foreach ($request->contratos as $contrato) {
-                Contrato::create([
-                    'processo_id' => $processo->id,
-                    'numero_contrato' => $contrato['numero_contrato'],
-                    'valor_contrato' => $contrato['valor_contrato'],
-                    'data_inicial_contrato' => $contrato['data_inicial_contrato'],
-                    'data_final_contrato' => $contrato['data_final_contrato'],
-                    'obs' => $contrato['obs'], // Ajustado para "obs"
-                    'modalidade' => $contrato['modalidade'],
-                    'procedimentos_auxiliares' => $contrato['procedimentos_auxiliares']
-                ]);
-            }
-        }
 
         return redirect()->route('processos.index')->with('success', 'Processo criado com sucesso!');
     }
@@ -144,7 +117,9 @@ class ProcessoController extends Controller
             'contratos.*.valor_contrato' => 'required_with:contratos|string',
             'contratos.*.data_inicial_contrato' => 'required_with:contratos|date',
             'contratos.*.data_final_contrato' => 'required_with:contratos|date',
-            'contratos.*.obs' => 'nullable|string',
+            'contratos.*.observacao' => 'nullable|string',
+            'contratos.*.modalidade' => 'nullable|string',
+            'contratos.*.procedimentos_auxiliares' => 'nullable|string',
 
             // Validação de PAs
             'pa_numeros' => 'required|array',
@@ -180,7 +155,7 @@ class ProcessoController extends Controller
                         'valor_contrato' => $valor_contrato,
                         'data_inicial_contrato' => $contrato['data_inicial_contrato'],
                         'data_final_contrato' => $contrato['data_final_contrato'],
-                        'obs' => $contrato['obs'] ?? null,
+                        'observacao' => $contrato['observacao'] ?? null,
                     ]);
                 } else {
                     $processo->contratos()->create([
@@ -188,7 +163,7 @@ class ProcessoController extends Controller
                         'valor_contrato' => $valor_contrato,
                         'data_inicial_contrato' => $contrato['data_inicial_contrato'],
                         'data_final_contrato' => $contrato['data_final_contrato'],
-                        'obs' => $contrato['obs'] ?? null,
+                        'observacao' => $contrato['observacao'] ?? null,
                     ]);
                 }
             }

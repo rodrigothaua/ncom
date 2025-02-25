@@ -13,7 +13,8 @@ class ProcessoPA extends Model
         'processo_id', 
         'tipo', 
         'numero_pa', 
-        'valor'];
+        'valor'
+    ];
 
     public function processo()
     {

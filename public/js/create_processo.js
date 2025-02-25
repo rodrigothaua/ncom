@@ -1,12 +1,40 @@
 function formatarNumeroProcesso(input) {
-    input.value = input.value.replace(/\D/g, ''); // Apenas números
-    if (input.value.length > 5) input.value = input.value.replace(/^(\d{5})/, '$1.');
-    if (input.value.length > 12) input.value = input.value.replace(/^(\d{5})\.(\d{6})/, '$1.$2/');
-    if (input.value.length > 17) input.value = input.value.replace(/^(\d{5})\.(\d{6})\/(\d{4})/, '$1.$2/$3-');
+    let value = input.value.replace(/\D/g, ''); // Remove tudo que não for número
+
+    if (value.length > 5) value = value.replace(/^(\d{5})/, '$1.');
+    if (value.length > 11) value = value.replace(/^(\d{5})\.(\d{6})/, '$1.$2/');
+    if (value.length > 15) value = value.replace(/^(\d{5})\.(\d{6})\/(\d{4})/, '$1.$2/$3-');
+
+    input.value = value;
 }
 
+
+document.addEventListener("DOMContentLoaded", function () {
+    const checkbox = document.getElementById("indeterminateCheckbox");
+    const optionalFields = document.getElementById("optionalFields");
+
+    checkbox.addEventListener("change", function () {
+        if (checkbox.checked) {
+            optionalFields.style.display = "block";
+            tornarCamposObrigatorios(true);
+        } else {
+            optionalFields.style.display = "none";
+            tornarCamposObrigatorios(false);
+        }
+    });
+
+    function tornarCamposObrigatorios(ativo) {
+        document.querySelectorAll("#optionalFields select, #contratos input, #contratos textarea").forEach((campo) => {
+            if (ativo) {
+                campo.setAttribute("required", "required");
+            } else {
+                campo.removeAttribute("required");
+            }
+        });
+    }
+});
 ////////////////////////
-    // ADICIONAR CONTRATO //
+// ADICIONAR CONTRATO //
     let contratoIndex = 0;
 
     function adicionarContrato() {
@@ -35,7 +63,7 @@ function formatarNumeroProcesso(input) {
                     </div>
                     <div class="col-md-12">
                         <label class="form-label">Observações</label>
-                        <textarea class="form-control" name="contratos[${contratoIndex}][obs]" rows="2"></textarea>
+                        <textarea class="form-control" name="contratos[${contratoIndex}][observacao]" rows="2"></textarea>
                     </div>
                     <div class="col-12 text-end">
                         <button type="button" class="btn btn-danger btn-sm" onclick="removerContrato(${contratoIndex})">Excluir</button>

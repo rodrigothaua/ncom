@@ -5,14 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProcessoPA extends Model
+class NumeroDespesa extends Model
 {
     use HasFactory;
 
+    protected $table = 'numero_despesa';
+
     protected $fillable = [
-        'processo_id', 
-        'tipo', 
-        'numero_pa', 
+        'processo_id',
+        'tipo',
+        'numero_pa',
+        'natureza_despesa',
         'valor'
     ];
 

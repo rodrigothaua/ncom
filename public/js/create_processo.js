@@ -103,112 +103,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
     ///////////////////////////
     /// ADICIONAR Nº PA //////
-    document.addEventListener('DOMContentLoaded', function () {
-    let categorias = ['consumo', 'permanente', 'servico'];
+    document.addEventListener("DOMContentLoaded", function() {
+        let camposValor = [
+            { input: "valor_consumo", container: "pa_consumo_container" },
+            { input: "valor_permanente", container: "pa_permanente_container" },
+            { input: "valor_servico", container: "pa_servico_container" }
+        ];
 
-    categorias.forEach(tipo => {
-        let inputValor = document.getElementById(`valor_${tipo}`);
-        let paContainer = document.getElementById(`pa_${tipo}_container`);
-        let selectContainer = document.getElementById(`select_${tipo}_container`);
+        camposValor.forEach(campo => {
+            let input = document.querySelector(`input[name='${campo.input}']`);
+            let container = document.getElementById(campo.container);
 
-        inputValor.addEventListener('input', function () {
-            if (this.value.trim() !== '') {
-                paContainer.classList.remove('d-none'); // Exibe o título e os inputs de PA
-                if (!paContainer.querySelector('.pa-group')) {
-                    criarPAContainer(paContainer, tipo);
-                }
-                selectContainer.classList.remove('d-none'); // Mostra o select
-            } else {
-                paContainer.classList.add('d-none');
-                paContainer.innerHTML = ''; // Remove os inputs de PA
-                selectContainer.classList.add('d-none'); // Oculta o select
+            if (input) {
+                input.addEventListener("input", function() {
+                    if (this.value.trim() !== "") {
+                        container.classList.remove("d-none");
+                    } else {
+                        container.classList.add("d-none");
+                    }
+                });
             }
         });
     });
-});
-
-// Função para criar a área de Número de PA
-function criarPAContainer(container, tipo) {
-    let paGroup = document.createElement('div');
-    paGroup.classList.add('pa-group');
-
-    let inputPA = criarPAInput(tipo);
-    paGroup.appendChild(inputPA);
-    container.appendChild(paGroup);
-}
-
-// Função para criar um input de PA
-function criarPAInput(tipo) {
-    let container = document.getElementById(`pa_${tipo}_container`);
-
-    let div = document.createElement('div');
-    div.classList.add('input-group', 'mt-2');
-
-    let input = document.createElement('input');
-    input.type = 'text';
-    input.className = 'form-control pa-input';
-    input.name = `pa_${tipo}[]`;
-    input.placeholder = "Número do PA";
-
-    setTimeout(() => {
-        IMask(input, { mask: '0.0.00.00' });
-    }, 100);
-
-    let btnAdicionar = document.createElement('button');
-    btnAdicionar.type = 'button';
-    btnAdicionar.className = 'btn btn-success btn-sm';
-    btnAdicionar.textContent = '+';
-    btnAdicionar.onclick = function () {
-        container.appendChild(criarPAInput(tipo));
-        atualizarBotoesPA(tipo);
-    };
-
-    let btnRemover = document.createElement('button');
-    btnRemover.type = 'button';
-    btnRemover.className = 'btn btn-danger btn-sm';
-    btnRemover.textContent = '-';
-    btnRemover.onclick = function () {
-        div.remove();
-        atualizarBotoesPA(tipo);
-    };
-
-    div.appendChild(input);
-    div.appendChild(btnAdicionar);
-    div.appendChild(btnRemover);
-
-    atualizarBotoesPA(tipo);
-    return div;
-}
-
-// Atualiza os botões para manter apenas "+" no último input
-function atualizarBotoesPA(tipo) {
-    let container = document.getElementById(`pa_${tipo}_container`);
-    let paInputs = container.getElementsByClassName("input-group");
-
-    Array.from(paInputs).forEach((inputGroup, index) => {
-        let buttons = inputGroup.querySelectorAll("button");
-        buttons.forEach(btn => btn.remove()); // Remove botões antigos
-
-        let btnRemover = document.createElement('button');
-        btnRemover.type = 'button';
-        btnRemover.className = 'btn btn-danger btn-sm';
-        btnRemover.textContent = '-';
-        btnRemover.onclick = function () {
-            inputGroup.remove();
-            atualizarBotoesPA(tipo);
-        };
-        inputGroup.appendChild(btnRemover);
-
-        if (index === paInputs.length - 1) {
-            let btnAdicionar = document.createElement('button');
-            btnAdicionar.type = 'button';
-            btnAdicionar.className = 'btn btn-success btn-sm';
-            btnAdicionar.textContent = '+';
-            btnAdicionar.onclick = function () {
-                container.appendChild(criarPAInput(tipo));
-                atualizarBotoesPA(tipo);
-            };
-            inputGroup.appendChild(btnAdicionar);
-        }
-    });
-}

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\Processo;
-use App\Models\ProcessoPA;
+use App\Models\NumeroDespesa;
 use App\Models\Contrato;
 
 class ProcessoController extends Controller
@@ -23,51 +23,7 @@ class ProcessoController extends Controller
         return view('processos.create');
     }
 
-    public function store(Request $request)
-    {
-        //dd($request->all()); // Exibe todos os dados enviados no formulário
-
-        $validatedData = $request->validate([
-            'numero_processo' => 'required|string|max:255|unique:processos,numero_processo,',
-            'descricao' => 'required|string|max:1000',
-            'requisitante' => 'required|string|max:255',
-            'valor_consumo' => 'nullable|numeric',
-            'valor_permanente' => 'nullable|numeric',
-            'valor_servico' => 'nullable|numeric',
-            'valor_total' => 'nullable|numeric', // Alterado para numeric
-            'data_entrada' => 'nullable|date',
-        ]);
-
-        // Convertendo os valores monetários corretamente
-        $valor_consumo = $this->parseCurrency($request->valor_consumo);
-        $valor_permanente = $this->parseCurrency($request->valor_permanente);
-        $valor_servico = $this->parseCurrency($request->valor_servico);
-        // Calcula o valor total
-        $valor_total = $valor_consumo + $valor_permanente + $valor_servico;
-
-        // Criando o Processo
-        $processo = Processo::create([
-            'numero_processo' => $validatedData['numero_processo'],
-            'requisitante' => $validatedData['requisitante'],
-            'descricao' => $validatedData['descricao'],
-            'data_entrada' => $validatedData['data_entrada'],
-            'valor_consumo' => $valor_consumo,
-            'valor_permanente' => $valor_permanente,
-            'valor_servico' => $valor_servico,
-            'valor_total' => $valor_total,
-
-            //Salva os campos PA e Selects
-            //'pa_consumo' => $pa_consumo,
-            //'pa_permanente' => $pa_permanente,
-            //'pa_servico' => $pa_servico,
-            //'select_consumo' => $select_consumo,
-            //'select_permanente' => $select_permanente,
-            //'select_servico' => $select_servico,
-        ]);
-
-        return redirect()->route('processos.index')->with('success', 'Processo criado com sucesso!');
-    }
-
+    // Função para converter valores monetários (remove "R$" e converte para número)
     private function parseCurrency($value)
     {
         // Remove tudo que não for número ou vírgula
@@ -78,7 +34,100 @@ class ProcessoController extends Controller
             return (float) str_replace(',', '.', $value);
         }
         return 0;
-        
+    }
+
+    public function store(Request $request)
+    {
+        //dd($request->all()); // Exibe todos os dados enviados no formulário
+
+        $validatedData = $request->validate([
+            'numero_processo' => 'required|string',
+            'descricao' => 'required|string',
+            'requisitante' => 'required|string',
+            'data_entrada' => 'required|date',
+            'valor_consumo' => 'nullable|string',
+            'valor_permanente' => 'nullable|string',
+            'valor_servico' => 'nullable|string',
+            // Numeros PA e Natureza de Despesa
+            'numero_despesa' => 'nullable|array',
+            'numero_despesa.*.tipo' => 'required_with:numero_despesa|string',
+            'numero_despesa.*.numero_pa' => 'required_with:numero_despesa|string',
+            'numero_despesa.*.natureza_despesa' => 'required_with:numero_despesa|string',
+            'numero_despesa.*.valor' => 'nullable|string',
+
+            // Validação dos contratos
+            'contratos' => 'nullable|array',
+            'contratos.*.id' => 'nullable|exists:contratos,id',
+            'contratos.*.numero_contrato' => 'required_with:contratos|string',
+            'contratos.*.valor_contrato' => 'required_with:contratos|string',
+            'contratos.*.data_inicial_contrato' => 'required_with:contratos|date',
+            'contratos.*.data_final_contrato' => 'required_with:contratos|date',
+            'contratos.*.observacao' => 'nullable|string',
+            'contratos.*.modalidade' => 'nullable|string',
+            'contratos.*.procedimentos_auxiliares' => 'nullable|string',
+        ]);
+
+        // Convertendo os valores monetários corretamente
+        $valor_consumo = $this->parseCurrency($request->valor_consumo);
+        $valor_permanente = $this->parseCurrency($request->valor_permanente);
+        $valor_servico = $this->parseCurrency($request->valor_servico);
+        // Calcula o valor total
+        $valor_total = $valor_consumo + $valor_permanente + $valor_servico;
+
+        // Adicionar os valores calculados aos dados validados
+        $validatedData['valor_consumo'] = $valor_consumo;
+        $validatedData['valor_permanente'] = $valor_permanente;
+        $validatedData['valor_servico'] = $valor_servico;
+        $validatedData['valor_total'] = $valor_total;
+
+        // Criação do processo
+        $processo = Processo::create($validatedData);
+
+        // Salvando os valores de cada tipo (consumo, permanente, serviço)
+        if ($request->has('numero_despesa')) {
+            foreach ($request->numero_despesa as $despesa) {
+                NumeroDespesa::create([
+                    'processo_id' => $processo->id,
+                    'tipo' => $despesa['tipo'] ?? null, // Garante que o índice existe
+                    'numero_pa' => $despesa['numero_pa'] ?? null,
+                    'natureza_despesa' => $despesa['natureza_despesa'] ?? null,
+                    'valor' => $this->parseCurrency($despesa['valor'] ?? 0) // Corrige a conversão do valor
+                ]);
+            }
+        }
+
+        // Atualização dos contratos
+        if ($request->has('contratos')) {
+            $ids_contratos_enviados = collect($request->contratos)->pluck('id')->filter()->toArray();
+
+            // Excluir contratos que não estão mais no formulário
+            $processo->contratos()->whereNotIn('id', $ids_contratos_enviados)->delete();
+
+            foreach ($request->contratos as $contrato) {
+                $valor_contrato = preg_replace('/[^0-9,]/', '', $contrato['valor_contrato']);
+                $valor_contrato = str_replace(',', '.', $valor_contrato);
+
+                if (isset($contrato['id'])) {
+                    $processo->contratos()->where('id', $contrato['id'])->update([
+                        'numero_contrato' => $contrato['numero_contrato'],
+                        'valor_contrato' => $valor_contrato,
+                        'data_inicial_contrato' => $contrato['data_inicial_contrato'],
+                        'data_final_contrato' => $contrato['data_final_contrato'],
+                        'observacao' => $contrato['observacao'] ?? null,
+                    ]);
+                } else {
+                    $processo->contratos()->create([
+                        'numero_contrato' => $contrato['numero_contrato'],
+                        'valor_contrato' => $valor_contrato,
+                        'data_inicial_contrato' => $contrato['data_inicial_contrato'],
+                        'data_final_contrato' => $contrato['data_final_contrato'],
+                        'observacao' => $contrato['observacao'] ?? null,
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->route('processos.index')->with('success', 'Processo criado com sucesso!');
     }
 
     public function edit($id)

@@ -33,6 +33,40 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+////////////////////////
+//// ADICIONAR PA /////
+function adicionarDespesa(tipo) {
+    const container = document.getElementById('pa_' + tipo + '_container');
+    const index = container.children.length;
+    const div = document.createElement('div');
+    div.innerHTML = `
+        <div class="row mt-1">
+            <div class="col-md-12">
+                <label>Número PA</label>
+                <select name="${tipo}_despesas[${index}][numero_pa]" class="form-control">
+                    <option value="">Selecione um PA</option>
+                    <option value="1.1.11.11">1.1.11.11</option>
+                    <option value="2.2.22.22">2.2.22.22</option>
+                    <option value="3.3.33.33">3.3.33.33</option>
+                </select>
+            </div>
+            <div class="col-md-12">
+                <label>Natureza Despesa</label>
+                <input type="text" name="${tipo}_despesas[${index}][natureza_despesa]" class="form-control">
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-sm btn-danger mt-4" onclick="removerDespesa(this)">Remover</button>
+            </div>
+        </div>
+    `;
+    container.appendChild(div);
+}
+
+function removerDespesa(button) {
+    button.parentElement.parentElement.remove();
+}
+
 ////////////////////////
 // ADICIONAR CONTRATO //
     let contratoIndex = 0;

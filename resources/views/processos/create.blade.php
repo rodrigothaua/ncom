@@ -70,14 +70,14 @@
                             <!-- PA e Natureza da Despesa para Consumo -->
                             <div id="pa_consumo_container" class="mt-2 d-none">
                                 <label for="numero_pa_consumo">Número de PA (Consumo)</label>
-                                <select name="pa_consumo_numero" id="numero_pa_consumo" class="form-control">
+                                <select name="consumo_despesa[numero_pa]" id="numero_pa_consumo" class="form-control">
                                     <option value="">Selecione um PA</option>
                                     <option value="1.1.11.11">1.1.11.11</option>
                                     <option value="2.2.22.22">2.2.22.22</option>
                                     <option value="3.3.33.33">3.3.33.33</option>
                                 </select>
                                 <label for="natureza_despesa_consumo">Natureza da Despesa (Consumo)</label>
-                                <input type="text" name="pa_consumo_natureza" id="natureza_despesa_consumo" class="form-control" placeholder="Digite a natureza da despesa">
+                                <input type="text" name="consumo_despesa[natureza_despesa]" class="form-control" placeholder="Digite a natureza da despesa">
                             </div>
                         </div>
                         <!-- Valor Permanente -->
@@ -87,14 +87,14 @@
                             <!-- PA e Natureza da Despesa para Permanente -->
                             <div id="pa_permanente_container" class="mt-2 d-none">
                                 <label for="numero_pa_permanente">Número de PA (Permanente)</label>
-                                <select name="pa_permanente_numero" id="numero_pa_permanente" class="form-control">
+                                <select name="consumo_despesa[numero_pa]" id="numero_pa_permanente" class="form-control">
                                     <option value="">Selecione um PA</option>
                                     <option value="1.1.11.11">1.1.11.11</option>
                                     <option value="2.2.22.22">2.2.22.22</option>
                                     <option value="3.3.33.33">3.3.33.33</option>
                                 </select>
                                 <label for="natureza_despesa_permanente">Natureza da Despesa (Permanente)</label>
-                                <input type="text" name="pa_permanente_natureza" id="natureza_despesa_permanente" class="form-control" placeholder="Digite a natureza da despesa">
+                                <input type="text" name="consumo_despesa[natureza_despesa]" class="form-control" placeholder="Digite a natureza da despesa">
                             </div>
                         </div>
                         <!-- Valor Serviço -->
@@ -104,14 +104,14 @@
                             <!-- PA e Natureza da Despesa para Serviço -->
                             <div id="pa_servico_container" class="mt-2 d-none">
                                 <label for="numero_pa_servico">Número de PA (Serviço)</label>
-                                <select name="pa_servico_numero" id="numero_pa_servico" class="form-control">
+                                <select name="consumo_despesa[numero_pa]" id="numero_pa_servico" class="form-control">
                                     <option value="">Selecione um PA</option>
                                     <option value="1.1.11.11">1.1.11.11</option>
                                     <option value="2.2.22.22">2.2.22.22</option>
                                     <option value="3.3.33.33">3.3.33.33</option>
                                 </select>
                                 <label for="natureza_despesa_servico">Natureza da Despesa (Serviço)</label>
-                                <input type="text" name="pa_servico_natureza" id="natureza_despesa_servico" class="form-control" placeholder="Digite a natureza da despesa">
+                                <input type="text" name="consumo_despesa[natureza_despesa]" class="form-control" placeholder="Digite a natureza da despesa">
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -137,38 +137,43 @@
 
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Contratos</h5>
+                    <h5 class="card-title">Informações do Processo</h5>
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label for="data_inicio" class="form-label">Modalidade</label>
+                            <label for="modalidade" class="form-label">Modalidade</label>
                             <select class="form-select" name="modalidade" id="modalidade">
                                 <option selected disabled>Selecione...</option>
                                 <option value="PREGÃO">PREGÃO</option>
                                 <option value="CONCORRÊNCIA">CONCORRÊNCIA</option>
-                                <option value="GECONCURSOCONV">CONCURSO</option>
+                                <option value="CONCURSO">CONCURSO</option>
                                 <option value="LEILÃO">LEILÃO</option>
                                 <option value="DIÁLOGO COMPETITIVO">DIÁLOGO COMPETITIVO</option>
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label for="data_inicio" class="form-label">Procedimentos Auxiliares</label>
-                            <select class="form-select" name="procedimentos" id="procedimentos">
+                            <label for="procedimentos_auxiliares" class="form-label">Procedimentos Auxiliares</label>
+                            <select class="form-select" name="procedimentos_auxiliares" id="procedimentos_auxiliares">
                                 <option selected disabled>Selecione...</option>
-                                <option value="PREGÃO">CREDENCIAMENTO</option>
-                                <option value="CONCORRÊNCIA">PRÉ-QUALIFICADO</option>
-                                <option value="GECONCURSOCONV">PROCEDIMENTO DE MANIFESTAÇÃO DE INTERESSE</option>
-                                <option value="LEILÃO">SISTEMA DE REGISTRO DE PREÇÕS</option>
-                                <option value="DIÁLOGO COMPETITIVO">REGISTRO CADASTRAL</option>
+                                <option value="CREDENCIAMENTO">CREDENCIAMENTO</option>
+                                <option value="PRÉ-QUALIFICADO">PRÉ-QUALIFICADO</option>
+                                <option value="PROCEDIMENTO DE MANIFESTAÇÃO DE INTERESSE">PROCEDIMENTO DE MANIFESTAÇÃO DE INTERESSE</option>
+                                <option value="SISTEMA DE REGISTRO DE PREÇÕS">SISTEMA DE REGISTRO DE PREÇÕS</option>
+                                <option value="REGISTRO CADASTRAL">REGISTRO CADASTRAL</option>
                             </select>
                         </div>
                     </div>
-                    <div class="row g-3">
-                    <div class="container mt-4">
-                        <h3>Adicionar Contratos</h3>
-                        <div id="contratos" class="mb-3"></div>
+                </div>
+            </div>
 
-                        <a type="button" class="icon-link icon-link-hover" onclick="adicionarContrato()">Incluir Contrato <i class="bi bi-plus-circle-dotted"></i></a>
-                    </div>
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">Contratos</h5>
+                    <div class="row g-3">
+                        <div class="container mt-4">
+                            <h3>Adicionar Contratos</h3>
+                            <div id="contratos" class="mb-3"></div>
+                            <a type="button" class="icon-link icon-link-hover" onclick="adicionarContrato()">Incluir Contrato <i class="bi bi-plus-circle-dotted"></i></a>
+                        </div>
                     </div>
                 </div>
             </div>

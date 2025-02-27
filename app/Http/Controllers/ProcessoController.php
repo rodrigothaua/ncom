@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\Processo;
-use App\Models\NumeroDespesa;
+use App\Models\ValoresProcesso;
 use App\Models\Contrato;
 
 class ProcessoController extends Controller
@@ -45,16 +45,8 @@ class ProcessoController extends Controller
             'descricao' => 'required|string',
             'requisitante' => 'required|string',
             'data_entrada' => 'required|date',
-            'valor_consumo' => 'nullable|string',
-            'valor_permanente' => 'nullable|string',
-            'valor_servico' => 'nullable|string',
-            // Numeros PA e Natureza de Despesa
-            'numero_despesa' => 'nullable|array',
-            'numero_despesa.*.tipo' => 'required_with:numero_despesa|string',
-            'numero_despesa.*.numero_pa' => 'required_with:numero_despesa|string',
-            'numero_despesa.*.natureza_despesa' => 'required_with:numero_despesa|string',
-            'numero_despesa.*.valor' => 'nullable|string',
-
+            'modalidade' => 'nullable|string',
+            'procedimentos_auxiliares' => 'nullable|string',
             // Validação dos contratos
             'contratos' => 'nullable|array',
             'contratos.*.id' => 'nullable|exists:contratos,id',
@@ -62,9 +54,7 @@ class ProcessoController extends Controller
             'contratos.*.valor_contrato' => 'required_with:contratos|string',
             'contratos.*.data_inicial_contrato' => 'required_with:contratos|date',
             'contratos.*.data_final_contrato' => 'required_with:contratos|date',
-            'contratos.*.observacao' => 'nullable|string',
-            'contratos.*.modalidade' => 'nullable|string',
-            'contratos.*.procedimentos_auxiliares' => 'nullable|string',
+            'contratos.*.observacao' => 'nullable|string', 
         ]);
 
         // Convertendo os valores monetários corretamente
@@ -83,37 +73,26 @@ class ProcessoController extends Controller
         // Criação do processo
         $processo = Processo::create($validatedData);
 
-        // Salvando os valores de cada tipo (consumo, permanente, serviço)
-        if ($request->has('numero_despesa')) {
-            foreach ($request->numero_despesa as $despesa) {
-                NumeroDespesa::create([
-                    'processo_id' => $processo->id,
-                    'tipo' => $despesa['tipo'] ?? null, // Garante que o índice existe
-                    'numero_pa' => $despesa['numero_pa'] ?? null,
-                    'natureza_despesa' => $despesa['natureza_despesa'] ?? null,
-                    'valor' => $this->parseCurrency($despesa['valor'] ?? 0) // Corrige a conversão do valor
-                ]);
-            }
-        }
+        ValoresProcesso::create([
+            'processo_id' => $processo->id,
+            'valor_consumo' => $this->parseCurrency($request->input('valor_consumo')),
+            'valor_permanente' => $this->parseCurrency($request->input('valor_permanente')),
+            'valor_servico' => $this->parseCurrency($request->input('valor_servico')),
+        ]);
 
-        // Atualização dos contratos
+        // Salvando os contratos
         if ($request->has('contratos')) {
-            $ids_contratos_enviados = collect($request->contratos)->pluck('id')->filter()->toArray();
-
-            // Excluir contratos que não estão mais no formulário
-            $processo->contratos()->whereNotIn('id', $ids_contratos_enviados)->delete();
-
             foreach ($request->contratos as $contrato) {
                 $valor_contrato = preg_replace('/[^0-9,]/', '', $contrato['valor_contrato']);
                 $valor_contrato = str_replace(',', '.', $valor_contrato);
-
+    
                 if (isset($contrato['id'])) {
                     $processo->contratos()->where('id', $contrato['id'])->update([
                         'numero_contrato' => $contrato['numero_contrato'],
                         'valor_contrato' => $valor_contrato,
                         'data_inicial_contrato' => $contrato['data_inicial_contrato'],
                         'data_final_contrato' => $contrato['data_final_contrato'],
-                        'observacao' => $contrato['observacao'] ?? null,
+                        'observacoes' => $contrato['observacao'] ?? null,
                     ]);
                 } else {
                     $processo->contratos()->create([
@@ -121,13 +100,29 @@ class ProcessoController extends Controller
                         'valor_contrato' => $valor_contrato,
                         'data_inicial_contrato' => $contrato['data_inicial_contrato'],
                         'data_final_contrato' => $contrato['data_final_contrato'],
-                        'observacao' => $contrato['observacao'] ?? null,
+                        'observacoes' => $contrato['observacao'] ?? null,
                     ]);
                 }
             }
         }
 
         return redirect()->route('processos.index')->with('success', 'Processo criado com sucesso!');
+    }
+
+    private function salvarValoresProcesso(Request $request, Processo $processo, $categoria)
+    {
+        $valor = $this->parseCurrency($request->input('valor_' . $categoria));
+        $despesa = $request->input($categoria . '_despesa');
+
+        if ($despesa && isset($despesa['numero_pa']) && isset($despesa['natureza_despesa'])) {
+            ValoresProcesso::create([
+                'processo_id' => $processo->id,
+                'categoria' => $categoria,
+                'valor' => $valor,
+                'numero_pa' => $despesa['numero_pa'],
+                'natureza_despesa' => $despesa['natureza_despesa'],
+            ]);
+        }
     }
 
     public function edit($id)
@@ -229,7 +224,17 @@ class ProcessoController extends Controller
 
     public function destroy($id)
     {
-        Processo::findOrFail($id)->delete();
+        $processo = Processo::findOrFail($id);
+
+        // Excluir contratos relacionados
+        $processo->contratos()->delete();
+
+        // Excluir números de despesa relacionados
+        $processo->valoresProcesso()->delete();
+
+        // Excluir o processo
+        $processo->delete();
+
         return redirect()->route('processos.index')->with('success', 'Processo removido com sucesso!');
     }
 }

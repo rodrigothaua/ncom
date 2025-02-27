@@ -16,8 +16,6 @@ class Contrato extends Model
         'data_inicial_contrato',
         'data_final_contrato',
         'observacoes',
-        'modalidade',
-        'procedimentos_auxiliares'
     ];
 
     public function processo()

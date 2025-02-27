@@ -30,10 +30,7 @@
             </div>
         </div>
     </div>
-    
-    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-        <a href="#" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalNovoProcesso">Novo Processo</a>
-    </div>
+
 
     <table class="table table-bordered">
         <thead class="table-dark">
@@ -85,13 +82,13 @@
                     <p><strong>Descrição:</strong> <span id="det-descricao"></span></p>
                     <p><strong>Requisitante:</strong> <span id="det-requisitante"></span></p>
                     <p><strong>Data de Entrada:</strong> <span id="det-data-entrada"></span></p>
-                    <p><strong>Modalidade:</strong> <span id="det-modalidade"></span></p>
-                    <p><strong>Procedimentos:</strong> <span id="det-procedimentos"></span></p>
                     <p><strong>Valor Consumo:</strong> R$ <span id="det-valor-consumo"></span></p>
                     <p><strong>Valor Permanente:</strong> R$ <span id="det-valor-permanente"></span></p>
                     <p><strong>Valor Serviço:</strong> R$ <span id="det-valor-servico"></span></p>
                     <p><strong>Valor Total:</strong> R$ <span id="det-valor-total"></span></p>
                     <h5 class="mt-3">Contratos</h5>
+                    <p><strong>Modalidade:</strong> <span id="det-modalidade"></span></p>
+                    <p><strong>Procedimentos Auxiliares:</strong> <span id="det-procedimentos"></span></p>
                     <ul id="det-contratos" class="list-group"></ul>
                 </div>
             </div>
@@ -156,7 +153,7 @@
         document.getElementById("det-requisitante").innerText = processo.requisitante;
         document.getElementById("det-data-entrada").innerText = processo.data_entrada ? new Date(processo.data_entrada).toLocaleDateString("pt-BR") : '-';
         document.getElementById("det-modalidade").innerText = processo.modalidade;
-        document.getElementById("det-procedimentos").innerText = processo.procedimentos;
+        document.getElementById("det-procedimentos").innerText = processo.procedimentos_auxiliares;
         document.getElementById("det-valor-consumo").innerText = Number(processo.valor_consumo).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
         document.getElementById("det-valor-permanente").innerText = Number(processo.valor_permanente).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
         document.getElementById("det-valor-servico").innerText = Number(processo.valor_servico).toLocaleString("pt-BR", { minimumFractionDigits: 2 });

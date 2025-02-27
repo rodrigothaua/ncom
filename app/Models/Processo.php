@@ -16,15 +16,13 @@ class Processo extends Model
         'descricao',
         'requisitante',
         'data_entrada',
-        'valor_consumo',
-        'valor_permanente',
-        'valor_servico',
-        'valor_total',
+        'modalidade',
+        'procedimentos_auxiliares'
     ];
 
-    public function numeroDespesas()
+    public function valoresProcessos()
     {
-        return $this->hasMany(NumeroDespesa::class, 'processo_id');
+        return $this->hasOne(ValoresProcesso::class);
     }
     
     public function contratos()

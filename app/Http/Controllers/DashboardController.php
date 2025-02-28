@@ -5,54 +5,28 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Services\ProcessoService;
 use App\Models\Processo;
+use App\Models\Categorias; // Adicione esta linha
 
 class DashboardController extends Controller
 {
+    protected $processoService;
+
+    public function __construct(ProcessoService $processoService)
+    {
+        $this->processoService = $processoService;
+    }
+
     public function index()
     {
-        $user = Auth::user(); // Obtém o usuário autenticado
+        $totais = $this->processoService->getTotais();
 
-        // Calcula o total de processos
-        $totalProcessos = Processo::count();
+        $totalValorConsumo = isset($totais['valorConsumo']) ? 'R$ ' . number_format($totais['valorConsumo'], 2, ',', '.') : 'R$ 0,00';
+        $totalValorPermanente = isset($totais['valorPermanente']) ? 'R$ ' . number_format($totais['valorPermanente'], 2, ',', '.') : 'R$ 0,00';
+        $totalValorServico = isset($totais['valorServico']) ? 'R$ ' . number_format($totais['valorServico'], 2, ',', '.') : 'R$ 0,00';
+        $totalProcessos = isset($totais['totalProcessos']) ? $totais['totalProcessos'] : 0;
 
-        // Calcula o total de consumo (só um exemplo, ajuste conforme seu banco)
-        $totalConsumo = Processo::sum('valor_consumo');
-
-        // Calcula o total de permanente
-        $totalPermanente = Processo::sum('valor_permanente');
-
-        // Calcula o total de serviço
-        $totalServico = Processo::sum('valor_servico');
-
-        // Passa as variáveis para a view
-        return view('dashboard.index', compact(
-            'user',
-            'totalProcessos', 
-            'totalConsumo', 
-            'totalPermanente', 
-            'totalServico'));
-    }
-
-    public function create()
-    {
-        return view('dashboard.create');
-    }
-
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'numero_processo' => 'required|string|max:255',
-            'descricao' => 'required|string',
-            'valor_consumo' => 'nullable|numeric',
-            'valor_permanente' => 'nullable|numeric',
-            'valor_servico' => 'nullable|numeric',
-            'data_inicio' => 'nullable|date',
-            'data_vencimento' => 'nullable|date|after_or_equal:data_inicio',
-        ]);
-
-        Processo::create($validated);
-
-        return redirect()->route('dashboard.index')->with('success', 'Processo criado com sucesso!');
+        return view('dashboard.index', compact('totalValorConsumo', 'totalValorPermanente', 'totalValorServico', 'totalProcessos'));
     }
 }

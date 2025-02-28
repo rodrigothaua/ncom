@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Http\Request;
 use App\Models\Processo;
+use App\Models\Categorias;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -16,22 +17,17 @@ class ProcessoService
 
     public function getTotais()
     {
-        // Contar os processos com base nos valores individuais
-        $totalConsumo = Processo::whereNotNull('valor_consumo')->count();
-        $totalPermanente = Processo::whereNotNull('valor_permanente')->count();
-        $totalServico = Processo::whereNotNull('valor_servico')->count();
+        // Busca os valores da tabela categorias
+        $valorConsumo = Categorias::sum('valor_consumo');
+        $valorPermanente = Categorias::sum('valor_permanente');
+        $valorServico = Categorias::sum('valor_servico');
 
-        // Somar os valores de cada tipo
-        $valorConsumo = Processo::whereNotNull('valor_consumo')->sum('valor_consumo');
-        $valorPermanente = Processo::whereNotNull('valor_permanente')->sum('valor_permanente');
-        $valorServico = Processo::whereNotNull('valor_servico')->sum('valor_servico');
+        // Calcula o valor total somando as categorias
+        $valorTotal = $valorConsumo + $valorPermanente + $valorServico;
 
         return [
-            'valorTotal' => Processo::sum('valor_total'),
-            'totalConsumo' => $totalConsumo,
-            'totalPermanente' => $totalPermanente,
-            'totalServico' => $totalServico,
-            'totalProcessos' => Processo::count(), // Total de processos cadastrados no banco
+            'valorTotal' => $valorTotal,
+            'totalProcessos' => Processo::count(),
             'valorConsumo' => $valorConsumo,
             'valorPermanente' => $valorPermanente,
             'valorServico' => $valorServico
@@ -40,15 +36,14 @@ class ProcessoService
 
     public function getTotaisPorCategoria()
     {
-        $consumo = Processo::where('categoria', 'Consumo')->count();
-        $permanente = Processo::where('categoria', 'Permanente')->count();
-        $servico = Processo::where('categoria', 'Serviço')->count();
+        $categorias = Processo::distinct('categoria')->pluck('categoria');
+        $totais = [];
 
-        return [
-            'consumo' => $consumo,
-            'permanente' => $permanente,
-            'servico' => $servico,
-        ];
+        foreach ($categorias as $categoria) {
+            $totais[$categoria] = Processo::where('categoria', $categoria)->count();
+        }
+
+        return $totais;
     }
 
     private function gerarCores($quantidade)
@@ -66,11 +61,7 @@ class ProcessoService
     {
         $hoje = Carbon::today();
         return [
-            'totalMenos30Dias' => Processo::where('data_vencimento', '<', $hoje->copy()->subDays(30))->count(),
-            'totalEntre30e60Dias' => Processo::whereBetween('data_vencimento', [$hoje->copy()->addDays(30), $hoje->copy()->addDays(60)])->count(),
-            'totalEntre60e90Dias' => Processo::whereBetween('data_vencimento', [$hoje->copy()->addDays(60), $hoje->copy()->addDays(90)])->count(),
-            'totalEntre90e180Dias' => Processo::whereBetween('data_vencimento', [$hoje->copy()->addDays(90), $hoje->copy()->addDays(180)])->count(),
-            'totalMais180Dias' => Processo::where('data_vencimento', '>', $hoje->copy()->addDays(180))->count(),
+            
         ];
     }
 
@@ -152,20 +143,18 @@ class ProcessoService
     {
         $query = Processo::query();
 
-        // Filtrando pelo valor de consumo, permanente ou serviço
-        if ($request->has('valor_consumo') && $request->valor_consumo) {
-            $query->whereNotNull('valor_consumo');
+        if ($request->has('requisitante') && $request->requisitante) {
+            $query->where('requisitante', 'like', '%' . $request->requisitante . '%');
         }
 
-        if ($request->has('valor_permanente') && $request->valor_permanente) {
-            $query->whereNotNull('valor_permanente');
+        if ($request->has('numero_processo') && $request->numero_processo) {
+            $query->where('numero_processo', $request->numero_processo);
         }
 
-        if ($request->has('valor_servico') && $request->valor_servico) {
-            $query->whereNotNull('valor_servico');
+        if ($request->has('categoria') && $request->categoria) {
+            $query->where('categoria', $request->categoria);
         }
 
-        // Retornar os resultados filtrados
         return $query->get();
     }
 }

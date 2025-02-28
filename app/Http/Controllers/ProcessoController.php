@@ -7,14 +7,16 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\Processo;
-use App\Models\ValoresProcesso;
+use App\Models\Categorias;
+use App\Models\DetalhesDespesa;
 use App\Models\Contrato;
+
 
 class ProcessoController extends Controller
 {
     public function index()
     {
-        $processos = Processo::with('contratos')->paginate(10);
+        $processos = Processo::with(['contratos', 'categorias', 'categorias.detalhesDespesa'])->paginate(10);
         return view('processos.index', compact('processos'));
     }
 
@@ -61,23 +63,37 @@ class ProcessoController extends Controller
         $valor_consumo = $this->parseCurrency($request->valor_consumo);
         $valor_permanente = $this->parseCurrency($request->valor_permanente);
         $valor_servico = $this->parseCurrency($request->valor_servico);
+
         // Calcula o valor total
         $valor_total = $valor_consumo + $valor_permanente + $valor_servico;
 
         // Adicionar os valores calculados aos dados validados
-        $validatedData['valor_consumo'] = $valor_consumo;
-        $validatedData['valor_permanente'] = $valor_permanente;
-        $validatedData['valor_servico'] = $valor_servico;
         $validatedData['valor_total'] = $valor_total;
 
         // Criação do processo
         $processo = Processo::create($validatedData);
 
-        ValoresProcesso::create([
+        // Criação das categorias
+        $categorias = Categorias::create([
             'processo_id' => $processo->id,
-            'valor_consumo' => $this->parseCurrency($request->input('valor_consumo')),
-            'valor_permanente' => $this->parseCurrency($request->input('valor_permanente')),
-            'valor_servico' => $this->parseCurrency($request->input('valor_servico')),
+            'valor_consumo' => $valor_consumo,
+            'valor_permanente' => $valor_permanente,
+            'valor_servico' => $valor_servico,
+        ]);
+
+        // Criação dos detalhes das despesas
+        $despesaConsumo = $request->input('consumo_despesa');
+        $despesaPermanente = $request->input('permanente_despesa');
+        $despesaServico = $request->input('servico_despesa');
+
+        DetalhesDespesa::create([
+            'categorias_id' => $categorias->id,
+            'pa_consumo' => $despesaConsumo['numero_pa'] ?? null,
+            'nd_consumo' => $despesaConsumo['natureza_despesa'] ?? null,
+            'pa_permanente' => $despesaPermanente['numero_pa'] ?? null,
+            'nd_permanente' => $despesaPermanente['natureza_despesa'] ?? null,
+            'pa_servico' => $despesaServico['numero_pa'] ?? null,
+            'nd_servico' => $despesaServico['natureza_despesa'] ?? null,
         ]);
 
         // Salvando os contratos
@@ -229,8 +245,15 @@ class ProcessoController extends Controller
         // Excluir contratos relacionados
         $processo->contratos()->delete();
 
-        // Excluir números de despesa relacionados
-        $processo->valoresProcesso()->delete();
+        // Excluir detalhes das despesas relacionados
+        if ($processo->categorias && $processo->categorias->detalhesDespesa) {
+            $processo->categorias->detalhesDespesa->delete();
+        }
+
+        // Excluir categorias relacionadas
+        if ($processo->categorias) {
+            $processo->categorias()->delete();
+        }
 
         // Excluir o processo
         $processo->delete();

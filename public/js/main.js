@@ -56,56 +56,124 @@ document.getElementById('indeterminateCheckbox').addEventListener('change', func
     }
 });
 
-//script para somar os valores das categorias no valor total
-// create.blade
-document.addEventListener("DOMContentLoaded", function() {
-    function formatCurrency(value) {
-        let num = parseFloat(value.replace(/\D/g, '')) / 100;
-        return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+function mostrarDetalhes(processo) {
+        document.getElementById("det-numero").innerText = processo.numero_processo;
+        document.getElementById("det-descricao").innerText = processo.descricao;
+        document.getElementById("det-requisitante").innerText = processo.requisitante;
+        document.getElementById("det-data-entrada").innerText = processo.data_entrada ? new Date(processo.data_entrada).toLocaleDateString("pt-BR") : '-';
+        document.getElementById("det-modalidade").innerText = processo.modalidade;
+        document.getElementById("det-procedimentos").innerText = processo.procedimentos_auxiliares;
+
+        // Categorias
+        if (processo.categorias) {
+            document.getElementById("det-valor-consumo").innerText = Number(processo.categorias.valor_consumo).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+            document.getElementById("det-valor-permanente").innerText = Number(processo.categorias.valor_permanente).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+            document.getElementById("det-valor-servico").innerText = Number(processo.categorias.valor_servico).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+            document.getElementById("det-valor-total").innerText = Number(processo.valor_total).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+        }
+
+        // Detalhes das Despesas
+        if (processo.categorias && processo.categorias.detalhes_despesa) {
+            document.getElementById("det-pa-consumo").innerText = processo.categorias.detalhes_despesa.pa_consumo || '-';
+            document.getElementById("det-nd-consumo").innerText = processo.categorias.detalhes_despesa.nd_consumo || '-';
+            document.getElementById("det-pa-permanente").innerText = processo.categorias.detalhes_despesa.pa_permanente || '-';
+            document.getElementById("det-nd-permanente").innerText = processo.categorias.detalhes_despesa.nd_permanente || '-';
+            document.getElementById("det-pa-servico").innerText = processo.categorias.detalhes_despesa.pa_servico || '-';
+            document.getElementById("det-nd-servico").innerText = processo.categorias.detalhes_despesa.nd_servico || '-';
+        }
+
+        // Contratos
+        let contratosLista = document.getElementById("det-contratos");
+        contratosLista.innerHTML = "";
+        if (processo.contratos.length > 0) {
+            processo.contratos.forEach(contrato => {
+                let li = document.createElement("li");
+                li.className = "list-group-item";
+                li.innerHTML = `<strong>Nº:</strong> ${contrato.numero_contrato} | <strong>Valor:</strong> R$ ${Number(contrato.valor_contrato).toLocaleString("pt-BR", { minimumFractionDigits: 2 })} | <strong>Data Inicial:</strong> ${new Date(contrato.data_inicial_contrato).toLocaleDateString("pt-BR")} | <strong>Data Final:</strong> ${new Date(contrato.data_final_contrato).toLocaleDateString("pt-BR")}`;
+                contratosLista.appendChild(li);
+            });
+        } else {
+            contratosLista.innerHTML = "<li class='list-group-item text-muted'>Nenhum contrato</li>";
+        }
+
+        var modal = new bootstrap.Modal(document.getElementById('modalDetalhes'));
+        modal.show();
     }
 
-    function parseCurrency(value) {
-        if (!value) return 0;
-        return parseFloat(value.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
-    }
+    document.addEventListener('DOMContentLoaded', function() {
+        atualizarValoresTotais();
+    });
 
-    function calculateTotal() {
-        let consumo = parseCurrency(document.querySelector('[name="valor_consumo"]').value);
-        let permanente = parseCurrency(document.querySelector('[name="valor_permanente"]').value);
-        let servico = parseCurrency(document.querySelector('[name="valor_servico"]').value);
-
-        let total = consumo + permanente + servico;
-        document.querySelector('[name="valor_total"]').value = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    }
-
-    document.querySelectorAll('[name="valor_consumo"], [name="valor_permanente"], [name="valor_servico"]').forEach(input => {
-        input.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');  // Remove all non-numeric characters
-            if (value) {
-                e.target.value = formatCurrency(value);
-            } else {
-                e.target.value = '';
-            }
-            calculateTotal();
+    function atualizarValoresTotais() {
+        const valoresTotais = document.querySelectorAll('.valor-total');
+        valoresTotais.forEach(valorTotal => {
+            const consumo = parseFloat(valorTotal.dataset.consumo) || 0;
+            const permanente = parseFloat(valorTotal.dataset.permanente) || 0;
+            const servico = parseFloat(valorTotal.dataset.servico) || 0;
+            const total = consumo + permanente + servico;
+            valorTotal.textContent = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total);
         });
-    });
+    }
 
-    // Limpeza antes do envio
-    document.querySelector("form").addEventListener("submit", function(e) {
-        let consumoInput = document.querySelector('[name="valor_consumo"]');
-        let permanenteInput = document.querySelector('[name="valor_permanente"]');
-        let servicoInput = document.querySelector('[name="valor_servico"]');
+// script para exibir detalhes do processo e soma do valor total
+function mostrarDetalhes(processo) {
+    document.getElementById("det-numero").innerText = processo.numero_processo;
+    document.getElementById("det-descricao").innerText = processo.descricao;
+    document.getElementById("det-requisitante").innerText = processo.requisitante;
+    document.getElementById("det-data-entrada").innerText = processo.data_entrada ? new Date(processo.data_entrada).toLocaleDateString("pt-BR") : '-';
+    document.getElementById("det-modalidade").innerText = processo.modalidade;
+    document.getElementById("det-procedimentos").innerText = processo.procedimentos_auxiliares;
 
-        // Remover "R$" e vírgula
-        consumoInput.value = consumoInput.value.replace(/[^\d,]/g, '').replace(',', '.');
-        permanenteInput.value = permanenteInput.value.replace(/[^\d,]/g, '').replace(',', '.');
-        servicoInput.value = servicoInput.value.replace(/[^\d,]/g, '').replace(',', '.');
+    // Categorias
+    if (processo.categorias) {
+        document.getElementById("det-valor-consumo").innerText = Number(processo.categorias.valor_consumo).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+        document.getElementById("det-valor-permanente").innerText = Number(processo.categorias.valor_permanente).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+        document.getElementById("det-valor-servico").innerText = Number(processo.categorias.valor_servico).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+        document.getElementById("det-valor-total").innerText = Number(processo.valor_total).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+    }
 
-        // Converter valor_total para formato correto (não vai precisar "R$")
-        let totalValue = consumoInput.value.replace(/[^\d,]/g, '').replace(',', '.');
-        document.querySelector('[name="valor_total"]').value = totalValue;
-    });
+    // Detalhes das Despesas
+    if (processo.categorias && processo.categorias.detalhes_despesa) {
+        document.getElementById("det-pa-consumo").innerText = processo.categorias.detalhes_despesa.pa_consumo || '-';
+        document.getElementById("det-nd-consumo").innerText = processo.categorias.detalhes_despesa.nd_consumo || '-';
+        document.getElementById("det-pa-permanente").innerText = processo.categorias.detalhes_despesa.pa_permanente || '-';
+        document.getElementById("det-nd-permanente").innerText = processo.categorias.detalhes_despesa.nd_permanente || '-';
+        document.getElementById("det-pa-servico").innerText = processo.categorias.detalhes_despesa.pa_servico || '-';
+        document.getElementById("det-nd-servico").innerText = processo.categorias.detalhes_despesa.nd_servico || '-';
+    }
+
+    // Contratos
+    let contratosLista = document.getElementById("det-contratos");
+    contratosLista.innerHTML = "";
+    if (processo.contratos.length > 0) {
+        processo.contratos.forEach(contrato => {
+            let li = document.createElement("li");
+            li.className = "list-group-item";
+            li.innerHTML = `<strong>Nº:</strong> ${contrato.numero_contrato} | <strong>Valor:</strong> R$ ${Number(contrato.valor_contrato).toLocaleString("pt-BR", { minimumFractionDigits: 2 })} | <strong>Data Inicial:</strong> ${new Date(contrato.data_inicial_contrato).toLocaleDateString("pt-BR")} | <strong>Data Final:</strong> ${new Date(contrato.data_final_contrato).toLocaleDateString("pt-BR")}`;
+            contratosLista.appendChild(li);
+        });
+    } else {
+        contratosLista.innerHTML = "<li class='list-group-item text-muted'>Nenhum contrato</li>";
+    }
+
+    var modal = new bootstrap.Modal(document.getElementById('modalDetalhes'));
+    modal.show();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    atualizarValoresTotais();
 });
+
+function atualizarValoresTotais() {
+    const valoresTotais = document.querySelectorAll('.valor-total');
+    valoresTotais.forEach(valorTotal => {
+        const consumo = parseFloat(valorTotal.dataset.consumo) || 0;
+        const permanente = parseFloat(valorTotal.dataset.permanente) || 0;
+        const servico = parseFloat(valorTotal.dataset.servico) || 0;
+        const total = consumo + permanente + servico;
+        valorTotal.textContent = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total);
+    });
+}
 
 
 

@@ -63,11 +63,9 @@
                 <div class="col-md-12">
                     <h5 class="card-title">Valor de processo por Categoria</h5>
                     <div class="row g-3">
-                        <!-- Valor Consumo -->
                         <div class="col-md-3">
                             <label>Consumo</label>
                             <input type="text" name="valor_consumo" id="valor_consumo" class="form-control money" placeholder="R$0,00" oninput="calcularTotal()">
-                            <!-- PA e Natureza da Despesa para Consumo -->
                             <div id="pa_consumo_container" class="mt-2 d-none">
                                 <label for="numero_pa_consumo">Número de PA (Consumo)</label>
                                 <select name="consumo_despesa[numero_pa]" id="numero_pa_consumo" class="form-control">
@@ -80,39 +78,31 @@
                                 <input type="text" name="consumo_despesa[natureza_despesa]" class="form-control" placeholder="Digite a natureza da despesa">
                             </div>
                         </div>
-                        <!-- Valor Permanente -->
                         <div class="col-md-3">
                             <label>Permanente</label>
                             <input type="text" name="valor_permanente" id="valor_permanente" class="form-control money" placeholder="R$0,00" oninput="calcularTotal()">
-                            <!-- PA e Natureza da Despesa para Permanente -->
                             <div id="pa_permanente_container" class="mt-2 d-none">
                                 <label for="numero_pa_permanente">Número de PA (Permanente)</label>
-                                <select name="consumo_despesa[numero_pa]" id="numero_pa_permanente" class="form-control">
-                                    <option value="">Selecione um PA</option>
+                                <select name="permanente_despesa[numero_pa]" id="numero_pa_permanente" class="form-control"> <option value="">Selecione um PA</option>
                                     <option value="1.1.11.11">1.1.11.11</option>
                                     <option value="2.2.22.22">2.2.22.22</option>
                                     <option value="3.3.33.33">3.3.33.33</option>
                                 </select>
                                 <label for="natureza_despesa_permanente">Natureza da Despesa (Permanente)</label>
-                                <input type="text" name="consumo_despesa[natureza_despesa]" class="form-control" placeholder="Digite a natureza da despesa">
-                            </div>
+                                <input type="text" name="permanente_despesa[natureza_despesa]" class="form-control" placeholder="Digite a natureza da despesa"> </div>
                         </div>
-                        <!-- Valor Serviço -->
                         <div class="col-md-3">
                             <label>Serviço</label>
                             <input type="text" name="valor_servico" id="valor_servico" class="form-control money" placeholder="R$0,00" oninput="calcularTotal()">
-                            <!-- PA e Natureza da Despesa para Serviço -->
                             <div id="pa_servico_container" class="mt-2 d-none">
                                 <label for="numero_pa_servico">Número de PA (Serviço)</label>
-                                <select name="consumo_despesa[numero_pa]" id="numero_pa_servico" class="form-control">
-                                    <option value="">Selecione um PA</option>
+                                <select name="servico_despesa[numero_pa]" id="numero_pa_servico" class="form-control"> <option value="">Selecione um PA</option>
                                     <option value="1.1.11.11">1.1.11.11</option>
                                     <option value="2.2.22.22">2.2.22.22</option>
                                     <option value="3.3.33.33">3.3.33.33</option>
                                 </select>
                                 <label for="natureza_despesa_servico">Natureza da Despesa (Serviço)</label>
-                                <input type="text" name="consumo_despesa[natureza_despesa]" class="form-control" placeholder="Digite a natureza da despesa">
-                            </div>
+                                <input type="text" name="servico_despesa[natureza_despesa]" class="form-control" placeholder="Digite a natureza da despesa"> </div>
                         </div>
                         <div class="col-md-3">
                             <label>Valor Total</label>

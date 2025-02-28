@@ -20,9 +20,9 @@ class Processo extends Model
         'procedimentos_auxiliares'
     ];
 
-    public function valoresProcessos()
+    public function categorias()
     {
-        return $this->hasOne(ValoresProcesso::class);
+        return $this->hasOne(Categorias::class);
     }
     
     public function contratos()

@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ValoresProcesso extends Model
+class Categorias extends Model
 {
     use HasFactory;
 
-    protected $table = 'valores_processos';
+    protected $table = 'categorias';
 
     protected $fillable = [
         'processo_id',
@@ -21,5 +21,10 @@ class ValoresProcesso extends Model
     public function processo()
     {
         return $this->belongsTo(Processo::class);
+    }
+
+    public function detalhesDespesa()
+    {
+        return $this->hasOne(DetalhesDespesa::class);
     }
 }

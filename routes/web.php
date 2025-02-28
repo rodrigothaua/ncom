@@ -9,6 +9,9 @@ use App\Http\Controllers\Auth\RegisterController;
 // Página inicial (Welcome)
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Rota filtro
+Route::post('/welcome/filter', [WelcomeController::class, 'filter'])->name('welcome.filter');
+
 // Página de registro de usuário
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);

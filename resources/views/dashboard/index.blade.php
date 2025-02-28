@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard - NCOM')
+@section('title', 'Dashboard - SIGECOM')
 
 @section('sidebar')
     @include('layouts.sidebar')

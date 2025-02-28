@@ -1,6 +1,8 @@
 <!-- resources/views/processos/create.blade.php -->
 @extends('layouts.app')
 
+@section('title', 'Cadastrar novo processo - SIGECOM')
+
 @if (request()->is('processos*'))
 @include('layouts.navbar')
 @endif

@@ -3,9 +3,9 @@
 
 @section('title', 'Cadastrar novo processo - SIGECOM')
 
-@if (request()->is('processos*'))
-@include('layouts.navbar')
-@endif
+@section('sidebar')
+    @include('layouts.sidebar')
+@endsection
 
 @section('content')
 @include('layouts.partials.alerts')
@@ -129,7 +129,7 @@
 
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Informações do Processo</h5>
+                    <h5 class="card-title">Informações do Contrato</h5>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label for="modalidade" class="form-label">Modalidade</label>

@@ -17,25 +17,15 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
-        // Obtém todos os processos do banco de dados
-        $processos = Processo::all(); // Você pode usar métodos como where(), orderBy(), etc., dependendo dos requisitos
-
-        // Obtém os processos e cálculos via Service
-        $processos = $this->processoService->getProcessos();
         $totais = $this->processoService->getTotais();
         $vencimentos = $this->processoService->getVencimentos();
 
-        // Obtém os dados dos processos
-        $vencimentos = $this->processoService->getVencimentos();
+        $totalProcessos = isset($totais['totalProcessos']) ? $totais['totalProcessos'] : 0;
+        $valorTotal = isset($totais['valorTotal']) ? $totais['valorTotal'] : 0;
 
-        // Obtém as quantidades de processos por categoria
-        
-    
-        // Passando dados para a view
-        return view('welcome', array_merge(
-            ['processos' => $processos],
-            $totais,
-            $vencimentos
-        ));
+        //Contratos por ano
+        $contratosPorAno = $this->processoService->getContratosPorAno();
+
+        return view('home', compact('totalProcessos', 'vencimentos', 'valorTotal', 'totais', 'contratosPorAno'));
     }
 }

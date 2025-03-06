@@ -2,10 +2,6 @@
 
 @section('title', 'NCON - Visão Geral')
 
-@section('navbar')
-    @include('layouts.navbar')
-@endsection
-
 @section('content')
     @include('layouts.navbar')
 
@@ -29,7 +25,7 @@
                                         </div>
                                         <div class="col-md-9">
                                             <div class="card-body">
-                                                <h5 class="card-title">Total de Contratos: {{ isset($totalContratos) ? $totalContratos : 0 }}</h5>
+                                                <h5 class="card-title">Total de Contratos: {{ $totalProcessos }}</h5>
                                                 <hr>
                                                 <p class="card-text"><small class="text-body-primary">100% Contratos ativos</small></p>
                                             </div>
@@ -46,7 +42,7 @@
                                         <div class="col-md-9">
                                             <div class="card-header">VENCEM(-30 DIAS)</div>
                                             <div class="card-body">
-                                                <h5 class="card-title"></h5>
+                                                <h5 class="card-title">{{ $vencimentos['totalMenos30Dias'] }}</h5>
                                             </div>
                                         </div>
                                     </div>
@@ -61,7 +57,7 @@
                                         <div class="col-md-9">
                                             <div class="card-header">VENCEM(30 A 60 DIAS)</div>
                                             <div class="card-body">
-                                                <h5 class="card-title"></h5>
+                                                <h5 class="card-title">{{ $vencimentos['total30a60Dias'] }}</h5>
                                             </div>
                                         </div>
                                     </div>
@@ -76,7 +72,7 @@
                                         <div class="col-md-9">
                                             <div class="card-header">VENCEM(60 A 90 DIAS)</div>
                                             <div class="card-body">
-                                                <h5 class="card-title"></h5>
+                                                <h5 class="card-title">{{ $vencimentos['total60a90Dias'] }}</h5>
                                             </div>
                                         </div>
                                     </div>
@@ -91,7 +87,7 @@
                                         <div class="col-md-9">
                                             <div class="card-header">VENCEM(90 A 180 DIAS)</div>
                                             <div class="card-body">
-                                                <h5 class="card-title"></h5>
+                                                <h5 class="card-title">{{ $vencimentos['total90a180Dias'] }}</h5>
                                             </div>
                                         </div>
                                     </div>
@@ -106,7 +102,7 @@
                                         <div class="col-md-9">
                                             <div class="card-header">VENCEM(+ 180 DIAS)</div>
                                             <div class="card-body">
-                                                <h5 class="card-title"></h5>
+                                                <h5 class="card-title">{{ $vencimentos['totalMais180Dias'] }}</h5>
                                             </div>
                                         </div>
                                     </div>
@@ -118,7 +114,19 @@
                                 <div class="card">
                                     <div class="card-header"><b><i class="bi bi-currency-dollar"></i> TOTAL GLOBAL DE CONTRATOS</b></div>
                                     <div class="card-body text-center">
-                                        <h4><strong>R$ {{ number_format($valorTotal, 2, ',', '.') }}</strong></h4>
+                                        R$ {{ number_format($valorTotal, 2, ',', '.') }}
+                                    </div>
+                                </div><br>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <b><i class="bi bi-pie-chart-fill"></i> CONTRATOS POR CATEGORIAS</b></div>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="categoriasChart"
+                                                data-consumo="{{ $totais['valorConsumo'] }}"
+                                                data-permanente="{{ $totais['valorPermanente'] }}"
+                                                data-servico="{{ $totais['valorServico'] }}">
+                                        </canvas>
                                     </div>
                                 </div>
                             </div>
@@ -126,70 +134,16 @@
                             <!-- Gráfico de Categoria -->
                             <div class="col-md-3">
                                 <div class="card">
-                                    <div class="card-header"><b><i class="bi bi-pie-chart-fill"></i> CATEGORIA CONTRATOS</b></div>
+                                    <div class="card-header"><b><i class="bi bi-pie-chart-fill"></i> Por Ano</b></div>
                                     <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <!-- Chart -->
-                                                <canvas id="processosChart" width="600" height="400"></canvas>
-                                            </div>
-                                            <div class="col-6 total-categoria">
-                                                <div class="card text-bg-success mb-3">
-                                                    <div class="card-body">
-                                                        <h5 class="card-title">R$ </h5>
-                                                    </div>
-                                                </div>
-
-                                                <div class="card text-bg-warning mb-3">
-                                                    <div class="card-body">
-                                                        <h5 class="card-title">R$ </h5>
-                                                    </div>
-                                                </div>
-
-                                                <div class="card text-bg-danger mb-3">
-                                                    <div class="card-body">
-                                                        <h5 class="card-title">R$ </h5>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <canvas id="contratosPorAnoChart"></canvas>
                                     </div>
                                 </div>
                             </div>
                         </div> 
-                    </div>                
+                    </div>           
                 </div>
             </div>
-
-            <!-- Tabela de Processos -->
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Número do Processo</th>
-                        <th>Descrição</th>
-                        <th>Requisitante</th>
-                        <th>Data de Entrada</th>
-                        <th>Valor Total</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($processos as $processo)
-                        <tr>
-                            <td>{{ $processo->numero_processo }}</td>
-                            <td>{{ $processo->descricao }}</td>
-                            <td>{{ $processo->requisitante }}</td>
-                            <td>{{ $processo->data_entrada ? date('d/m/Y', strtotime($processo->data_entrada)) : '-' }}</td>
-                            <td class="valor-total" data-consumo="{{ $processo->categorias ? $processo->categorias->valor_consumo : 0 }}" data-permanente="{{ $processo->categorias ? $processo->categorias->valor_permanente : 0 }}" data-servico="{{ $processo->categorias ? $processo->categorias->valor_servico : 0 }}"></td>
-                            <td>
-                                <button class="btn btn-primary btn-sm" onclick="mostrarDetalhes({{ json_encode($processo) }})">Detalhes</button>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
         </section>
     </main>
-
-    
 @endsection

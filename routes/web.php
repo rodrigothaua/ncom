@@ -10,7 +10,7 @@ use App\Http\Controllers\Auth\RegisterController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Rota filtro
-Route::post('/welcome/filter', [WelcomeController::class, 'filter'])->name('welcome.filter');
+Route::post('/home/filter', [HomeController::class, 'filter'])->name('home.filter');
 
 // Página de registro de usuário
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');

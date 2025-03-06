@@ -27,6 +27,6 @@ class Processo extends Model
     
     public function contratos()
     {
-        return $this->hasMany(Contrato::class);
+        return $this->hasOne(Contrato::class);
     }
 }

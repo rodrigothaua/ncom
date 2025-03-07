@@ -109,6 +109,11 @@ main{
     padding: 20px;
 }
 
+.home-page {
+    margin-left: 0;
+    width: 100%;
+}
+
 #content {
     transition: margin-left 0.3s ease-in-out;
 }
@@ -120,7 +125,7 @@ main{
         height: auto;
         position: relative;
     }
-    
+
     .conteudo {
         margin-left: 0;
         width: 100%;

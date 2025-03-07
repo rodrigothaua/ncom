@@ -2,9 +2,9 @@
 
 @section('title', 'Gerenciamento de Processos - SIGECOM')
 
-@if (request()->is('processos*')) 
-    @include('layouts.navbar')
-@endif
+@section('sidebar')
+    @include('layouts.sidebar')
+@endsection
 
 @section('content')
 @include('layouts.partials.alerts')

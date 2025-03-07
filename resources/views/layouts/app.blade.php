@@ -28,15 +28,13 @@
     
 </head>
 <body>
-    <div class="wrapper d-flex">
-        <!-- Sidebar -->
 
-        @if (!Request::is('/'))
+<div class="wrapper d-flex">
+        @if (Route::currentRouteName() !== 'home')
             @include('layouts.sidebar')
         @endif
 
-        <!-- Conteúdo Principal -->
-        <div class="conteudo container-fluid p-4">
+        <div class="conteudo container-fluid p-4 {{ Route::currentRouteName() === 'home' ? 'home-page' : '' }}">
             @include('layouts.partials.alerts')
             <button class="btn btn-dark d-md-none" id="toggleSidebar">☰</button>
             @yield('content')

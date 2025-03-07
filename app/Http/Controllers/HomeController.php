@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
 use App\Services\ProcessoService;
@@ -22,10 +23,9 @@ class HomeController extends Controller
 
         $totalProcessos = isset($totais['totalProcessos']) ? $totais['totalProcessos'] : 0;
         $valorTotal = isset($totais['valorTotal']) ? $totais['valorTotal'] : 0;
-
-        //Contratos por ano
         $contratosPorAno = $this->processoService->getContratosPorAno();
+        $dadosCategoriasPorMes = $this->processoService->getDadosCategoriasPorMes();
 
-        return view('home', compact('totalProcessos', 'vencimentos', 'valorTotal', 'totais', 'contratosPorAno'));
+        return view('home', compact('totalProcessos', 'vencimentos', 'valorTotal', 'totais', 'contratosPorAno', 'dadosCategoriasPorMes'));
     }
 }

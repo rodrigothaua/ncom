@@ -61,11 +61,30 @@ class ProcessoService
 
     public function getContratosPorAno()
     {
-        $contratosPorAno = Contrato::select(DB::raw('YEAR(data_inicial_contrato) as ano'), DB::raw('count(*) as total'))
+        return DB::table('contratos')
+            ->selectRaw('YEAR(data_inicial_contrato) as ano, COUNT(*) as total')
             ->groupBy('ano')
             ->orderBy('ano')
             ->get();
+    }
 
-        return $contratosPorAno;
+    public function getDadosCategoriasPorMes()
+    {
+        return DB::table('contratos')
+            ->join('categorias', 'contratos.processo_id', '=', 'categorias.processo_id')
+            ->selectRaw('DATE_FORMAT(contratos.data_inicial_contrato, "%Y-%m") as mes, SUM(categorias.valor_consumo) as consumo, SUM(categorias.valor_permanente) as permanente, SUM(categorias.valor_servico) as servico')
+            ->groupBy('mes')
+            ->orderBy('mes')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'mes' => $item->mes,
+                    'consumo' => (float) $item->consumo,
+                    'permanente' => (float) $item->permanente,
+                    'servico' => (float) $item->servico,
+                ];
+            })
+            ->keyBy('mes')
+            ->toArray();
     }
 }

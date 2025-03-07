@@ -9,6 +9,8 @@
     <main>
         <section id="">
             <div class="container-fluid">
+                <!-- filtro -->
+
                 <!-- Resumo de Contratos -->
                 <h5>RESUMO/CONTRATOS</h5>
                 <div class="row">
@@ -124,7 +126,7 @@
                                     data-consumo="{{ $totais['valorConsumo'] }}"
                                     data-permanente="{{ $totais['valorPermanente'] }}"
                                     data-servico="{{ $totais['valorServico'] }}"
-                                    style="height: 400px;">
+                                    style="height: 510px;">
                                 </canvas>
                             </div>
                         </div>
@@ -137,7 +139,8 @@
                                 <div class="card-body">
                                     <canvas id="contratosPorAnoExemplo"
                                             data-anos="{{ json_encode(array_column($contratosPorAno->toArray(), 'ano')) }}"
-                                            data-totais="{{ json_encode(array_column($contratosPorAno->toArray(), 'total')) }}">
+                                            data-totais="{{ json_encode(array_column($contratosPorAno->toArray(), 'total')) }}"
+                                            style="height: 650px;">
                                     </canvas>
                                 </div>
                             </div>

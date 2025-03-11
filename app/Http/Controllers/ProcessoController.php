@@ -160,8 +160,6 @@ class ProcessoController extends Controller
             'valor_servico' => 'nullable|numeric',
             'valor_total' => 'nullable|string',
             'data_entrada' => 'nullable|date',
-
-            // Validação dos contratos
             'contratos' => 'nullable|array',
             'contratos.*.id' => 'nullable|exists:contratos,id',
             'contratos.*.numero_contrato' => 'required_with:contratos|string',
@@ -169,13 +167,6 @@ class ProcessoController extends Controller
             'contratos.*.data_inicial_contrato' => 'required_with:contratos|date',
             'contratos.*.data_final_contrato' => 'required_with:contratos|date',
             'contratos.*.observacao' => 'nullable|string',
-            'contratos.*.modalidade' => 'nullable|string',
-            'contratos.*.procedimentos_auxiliares' => 'nullable|string',
-
-            // Validação de PAs
-            'pa_numeros' => 'required|array',
-            'pa_numeros.*.tipo' => 'required|string',
-            'pa_numeros.*.numero_pa' => 'required|string',
         ]);
 
         // Atualiza os valores monetários, com a conversão correta
@@ -220,19 +211,50 @@ class ProcessoController extends Controller
             }
         }
 
-        $processo->paProcessos()->delete();
+        // Atualização das categorias
+        if ($processo->categorias) {
+            $processo->categorias->update([
+                'valor_consumo' => $valor_consumo,
+                'valor_permanente' => $valor_permanente,
+                'valor_servico' => $valor_servico,
+            ]);
+        } else {
+            Categorias::create([
+                'processo_id' => $processo->id,
+                'valor_consumo' => $valor_consumo,
+                'valor_permanente' => $valor_permanente,
+                'valor_servico' => $valor_servico,
+            ]);
+        }
 
-        // Atualização de PAs
-        if ($request->has('pa_numeros')) {
-            // Sincroniza os números de PA
-            $processo->paProcessos()->sync([]); // Limpa os PAs existentes
+        // Atualização dos detalhes das despesas
+        if ($processo->categorias && $processo->categorias->detalhesDespesa) {
+            $despesaConsumo = $request->input('consumo_despesa');
+            $despesaPermanente = $request->input('permanente_despesa');
+            $despesaServico = $request->input('servico_despesa');
 
-            foreach ($request->pa_numeros as $pa) {
-                $processo->paProcessos()->create([
-                    'tipo' => $pa['tipo'],
-                    'numero_pa' => $pa['numero_pa'],
-                ]);
-            }
+            $processo->categorias->detalhesDespesa->update([
+                'pa_consumo' => $despesaConsumo['numero_pa'] ?? null,
+                'nd_consumo' => $despesaConsumo['natureza_despesa'] ?? null,
+                'pa_permanente' => $despesaPermanente['numero_pa'] ?? null,
+                'nd_permanente' => $despesaPermanente['natureza_despesa'] ?? null,
+                'pa_servico' => $despesaServico['numero_pa'] ?? null,
+                'nd_servico' => $despesaServico['natureza_despesa'] ?? null,
+            ]);
+        } else {
+            $despesaConsumo = $request->input('consumo_despesa');
+            $despesaPermanente = $request->input('permanente_despesa');
+            $despesaServico = $request->input('servico_despesa');
+
+            DetalhesDespesa::create([
+                'categorias_id' => $processo->categorias->id,
+                'pa_consumo' => $despesaConsumo['numero_pa'] ?? null,
+                'nd_consumo' => $despesaConsumo['natureza_despesa'] ?? null,
+                'pa_permanente' => $despesaPermanente['numero_pa'] ?? null,
+                'nd_permanente' => $despesaPermanente['natureza_despesa'] ?? null,
+                'pa_servico' => $despesaServico['numero_pa'] ?? null,
+                'nd_servico' => $despesaServico['natureza_despesa'] ?? null,
+            ]);
         }
 
         return redirect()->route('processos.index')->with('success', 'Processo atualizado com sucesso!');

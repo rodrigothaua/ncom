@@ -1,9 +1,10 @@
 function formatarNumeroProcesso(input) {
     let value = input.value.replace(/\D/g, ''); // Remove tudo que não for número
 
-    if (value.length > 5) value = value.replace(/^(\d{5})/, '$1.');
-    if (value.length > 11) value = value.replace(/^(\d{5})\.(\d{6})/, '$1.$2/');
-    if (value.length > 15) value = value.replace(/^(\d{5})\.(\d{6})\/(\d{4})/, '$1.$2/$3-');
+    if (value.length > 4) value = value.replace(/^(\d{4})/, '$1.');
+    if (value.length > 10) value = value.replace(/^(\d{4})\.(\d{6})/, '$1.$2/');
+    if (value.length > 14) value = value.replace(/^(\d{4})\.(\d{6})\/(\d{4})/, '$1.$2/$3-');
+    if (value.length > 16) value = value.slice(0, 19); // Limita o comprimento a 16 caracteres
 
     input.value = value;
 }

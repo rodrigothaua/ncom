@@ -2,31 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use App\Services\ProcessoService;
-use App\Models\Processo;
-use App\Models\Categorias; // Adicione esta linha
+use App\Services\ContratoService;
+use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    protected $processoService;
+    protected $contratoService;
 
-    public function __construct(ProcessoService $processoService)
+    public function __construct(ContratoService $contratoService)
     {
-        $this->processoService = $processoService;
+        $this->contratoService = $contratoService;
     }
 
-    public function index()
+    public function index(): View
     {
-        $totais = $this->processoService->getTotais();
+        $totalAtual = $this->contratoService->calcularTotalContratosMesAtual();
+        $totalAnterior = $this->contratoService->calcularTotalContratosMesAnterior();
+        $porcentagem = $this->contratoService->calcularPorcentagemCrescimento($totalAtual, $totalAnterior);
 
-        $totalValorConsumo = isset($totais['valorConsumo']) ? 'R$ ' . number_format($totais['valorConsumo'], 2, ',', '.') : 'R$ 0,00';
-        $totalValorPermanente = isset($totais['valorPermanente']) ? 'R$ ' . number_format($totais['valorPermanente'], 2, ',', '.') : 'R$ 0,00';
-        $totalValorServico = isset($totais['valorServico']) ? 'R$ ' . number_format($totais['valorServico'], 2, ',', '.') : 'R$ 0,00';
-        $totalProcessos = isset($totais['totalProcessos']) ? $totais['totalProcessos'] : 0;
-
-        return view('dashboard.index', compact('totalValorConsumo', 'totalValorPermanente', 'totalValorServico', 'totalProcessos'));
+        return view('dashboard.index', [
+            'totalAtual' => $totalAtual,
+            'porcentagem' => $porcentagem,
+        ]);
     }
 }

@@ -4,17 +4,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProcessoController;
-use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use Illuminate\Support\Facades\Auth;
 
 // Página inicial (Welcome)
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Rota filtro
 Route::post('/home/filter', [HomeController::class, 'filter'])->name('home.filter');
-
-// Página de registro de usuário
-Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [RegisterController::class, 'register']);
 
 // Rotas protegidas pelo middleware "auth"
 Route::middleware(['auth'])->group(function () {
@@ -35,8 +32,15 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/{id}', [ProcessoController::class, 'update'])->name('update'); // Atualizar processo
         Route::delete('/{id}', [ProcessoController::class, 'destroy'])->name('destroy'); // Excluir processo
     });
-});
 
+    //Cadastro de usuários
+    Route::prefix('usuarios')->name('usuarios.')->group(function () {
+        // Registro de usuário (usando RegisteredUserController padrão)
+        Route::get('/create', [RegisteredUserController::class, 'create'])->name('create');
+        Route::post('/create', [RegisteredUserController::class, 'store']);
+    });    
+});
+Route::get('/teste-cadastro', [RegisteredUserController::class, 'create'])->name('teste-cadastro');
 // Rotas de autenticação
 Auth::routes();
 

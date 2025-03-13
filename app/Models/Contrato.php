@@ -9,6 +9,8 @@ class Contrato extends Model
 {
     use HasFactory;
 
+    protected $table = 'contratos';
+
     protected $fillable = [
         'processo_id',
         'numero_contrato',

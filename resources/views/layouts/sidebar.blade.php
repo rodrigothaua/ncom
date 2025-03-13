@@ -1,56 +1,34 @@
-<div class="d-flex">
-    <nav class="bg-dark text-white p-3 d-md-block sidebar d-flex flex-column" id="sidebar">
-        <div class="logo-dash text-center">
-            <h4>SIGECOM <small style="font-size: 10px;">Beta</small></h4>
-            <small style="font-size: 10px;">Sistema de Gerenciamento de Compras</small>
+<aside id="sidebar" class="js-sidebar">
+    <!-- Content For Sidebar -->
+    <div class="h-100">
+        <div class="sidebar-logo">
+            <a href="#">SIGECOM</a>
         </div>
-        <hr>
-        <ul class="nav flex-column flex-grow-1">
-            <li class="nav-item">
-                <a class="nav-link text-white" href="{{ route('home') }}">
-                    <i class="bi bi-house-door"></i> Home
+        <ul class="sidebar-nav">
+            <li class="sidebar-header">
+                Admin Elements
+            </li>
+            <li class="sidebar-item">
+                <a href="{{ route('dashboard') }}" class="sidebar-link">
+                    <i class="bi bi-speedometer2"></i>
+                        Dashboard
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link text-white" href="{{ route('dashboard') }}">
-                    <i class="bi bi-speedometer2"></i> Dashboard
+            <li class="sidebar-item">
+                <a href="#" class="sidebar-link collapsed" data-bs-target="#pages" data-bs-toggle="collapse"
+                    aria-expanded="false"><i class="fa-solid fa-file-lines pe-2"></i>
+                        Processos
                 </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link dropdown-toggle text-white" data-bs-toggle="collapse" href="#processosMenu">
-                    <i class="bi bi-folder"></i> Processos
-                </a>
-                <div class="collapse" id="processosMenu">
-                    <ul class="list-unstyled ps-3">
-                        <li>
-                            <a class="nav-link text-white" href="{{ route('processos.index') }}">
-                                <i class="bi bi-list-ul"></i> Todos os Processos
-                            </a>
-                        </li>
-                        <li>
-                            <a class="nav-link text-white" href="{{ route('processos.create') }}">
-                                <i class="bi bi-plus-circle"></i> Novo Processo
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link dropdown-toggle text-white" data-bs-toggle="collapse" href="#relatoriosMenu">
-                    <i class="bi bi-bar-chart"></i> Relatórios
-                </a>
-                <div class="collapse" id="relatoriosMenu">
-                    <ul class="list-unstyled ps-3">
-                        <li><a class="nav-link text-white" href="#"><i class="bi bi-pie-chart"></i> Relatório 1</a></li>
-                        <li><a class="nav-link text-white" href="#"><i class="bi bi-graph-up"></i> Relatório 2</a></li>
-                    </ul>
-                </div>
+                <ul id="pages" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link"><i class="bi bi-list-ul"></i> Todos os Processos</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link"><i class="bi bi-plus-circle"></i> Novo processo</a>
+                    </li>
+                </ul>
             </li>
         </ul>
-
-        <hr>
         <div class="dropdown pb-4 text-center position-absolute bottom-0 w-100">
             <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
                 <img src="https://github.com/mdo.png" alt="User" width="30" height="30" class="rounded-circle">
@@ -63,6 +41,7 @@
                     <li><a class="dropdown-item" href="{{ route('register') }}">Cadastrar novo usuário</a></li>
                 @endauth
                 <li><a class="dropdown-item" href="#">Perfil</a></li>
+                <li><a class="dropdown-item" href="{{ route('teste-cadastro') }}">Teste Cadastro</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -74,5 +53,5 @@
                 </li>
             </ul>
         </div>
-    </nav>
-</div>
+    </div>
+</aside>

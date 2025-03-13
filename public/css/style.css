@@ -100,11 +100,11 @@ main{
     background-color: #343a40; /* Cor de fundo do sidebar */
     color: white;
     padding-top: 20px;
+    position: relative; /* Adicionado para permitir posicionamento absoluto */
 }
 
 /* O conteúdo ocupa o restante da tela */
 .conteudo {
-    margin-left: 250px;
     width: calc(100% - 250px);
     padding: 20px;
 }

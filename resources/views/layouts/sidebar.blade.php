@@ -1,14 +1,11 @@
-<!-- resources/views/layouts/sidebar.blade.php -->
 <div class="d-flex">
-    <!-- Sidebar -->
-    <nav class="bg-dark text-white p-3 d-md-block sidebar" id="sidebar">
+    <nav class="bg-dark text-white p-3 d-md-block sidebar d-flex flex-column" id="sidebar">
         <div class="logo-dash text-center">
             <h4>SIGECOM <small style="font-size: 10px;">Beta</small></h4>
             <small style="font-size: 10px;">Sistema de Gerenciamento de Compras</small>
         </div>
         <hr>
-        <ul class="nav flex-column">
-            <!-- Home -->
+        <ul class="nav flex-column flex-grow-1">
             <li class="nav-item">
                 <a class="nav-link text-white" href="{{ route('home') }}">
                     <i class="bi bi-house-door"></i> Home
@@ -20,7 +17,6 @@
                 </a>
             </li>
 
-            <!-- Processos -->
             <li class="nav-item">
                 <a class="nav-link dropdown-toggle text-white" data-bs-toggle="collapse" href="#processosMenu">
                     <i class="bi bi-folder"></i> Processos
@@ -41,7 +37,6 @@
                 </div>
             </li>
 
-            <!-- Relatórios -->
             <li class="nav-item">
                 <a class="nav-link dropdown-toggle text-white" data-bs-toggle="collapse" href="#relatoriosMenu">
                     <i class="bi bi-bar-chart"></i> Relatórios
@@ -56,8 +51,7 @@
         </ul>
 
         <hr>
-        <!-- Perfil -->
-        <div class="dropdown pb-4 text-center">
+        <div class="dropdown pb-4 text-center position-absolute bottom-0 w-100">
             <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
                 <img src="https://github.com/mdo.png" alt="User" width="30" height="30" class="rounded-circle">
                 @auth
@@ -66,7 +60,7 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
                 @auth
-                <li><a class="dropdown-item" href="{{ route('register') }}">Cadastrar novo usuário</a></li>
+                    <li><a class="dropdown-item" href="{{ route('register') }}">Cadastrar novo usuário</a></li>
                 @endauth
                 <li><a class="dropdown-item" href="#">Perfil</a></li>
                 <li><hr class="dropdown-divider"></li>
@@ -82,18 +76,3 @@
         </div>
     </nav>
 </div>
-
-
-<!-- Script para Toggle Sidebar -->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let toggleButton = document.getElementById("toggleSidebar");
-        let sidebar = document.getElementById("sidebar");
-        let content = document.getElementById("content");
-
-        toggleButton.addEventListener("click", function () {
-            sidebar.classList.toggle("active");
-            content.classList.toggle("active");
-        });
-    });
-</script>

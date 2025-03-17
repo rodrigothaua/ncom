@@ -40,7 +40,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/create', [RegisteredUserController::class, 'store']);
     });    
 });
-Route::get('/teste-cadastro', [RegisteredUserController::class, 'create'])->name('teste-cadastro');
+
 // Rotas de autenticação
 Auth::routes();
 

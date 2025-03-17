@@ -21,10 +21,10 @@
                 </a>
                 <ul id="pages" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                     <li class="sidebar-item">
-                        <a href="#" class="sidebar-link"><i class="bi bi-list-ul"></i> Todos os Processos</a>
+                        <a href="{{ route('processos.index') }}" class="sidebar-link"><i class="bi bi-list-ul"></i> Todos os Processos</a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="#" class="sidebar-link"><i class="bi bi-plus-circle"></i> Novo processo</a>
+                        <a href="{{ route('processos.create') }}" class="sidebar-link"><i class="bi bi-plus-circle"></i> Novo processo</a>
                     </li>
                 </ul>
             </li>
@@ -41,7 +41,6 @@
                     <li><a class="dropdown-item" href="{{ route('register') }}">Cadastrar novo usuário</a></li>
                 @endauth
                 <li><a class="dropdown-item" href="#">Perfil</a></li>
-                <li><a class="dropdown-item" href="{{ route('teste-cadastro') }}">Teste Cadastro</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

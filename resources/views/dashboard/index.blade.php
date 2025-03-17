@@ -5,6 +5,29 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
+            <div class="col-12">
+                <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active" data-bs-interval="10000">
+                            <img src="{{ asset('img/slider-1.jpg') }}" class="d-block w-100" alt="..." height="300">
+                        </div>
+                        <div class="carousel-item" data-bs-interval="10000">
+                            <img src="{{ asset('img/slider-1.jpg') }}" class="d-block w-100" alt="..." height="300">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                    <button id="closeCarousel" class="btn btn-danger btn-sm close-carousel-btn">
+                        <i class="bi bi-x-lg"></i> Fechar
+                    </button>
+                </div><br>
+            </div>
             <div class="col-12 col-md-6 d-flex">
                 <div class="card flex-fill border-dark illustration">
                     <div class="card-body p-0 d-flex flex-fill">
@@ -49,4 +72,16 @@
             </div>
         </div>
     </div>
+
+    <!-- Fechar slide -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const carousel = document.getElementById('carouselExample');
+            const closeButton = document.getElementById('closeCarousel');
+
+            closeButton.addEventListener('click', function() {
+                carousel.style.display = 'none';
+            });
+        });
+    </script>
 @endsection

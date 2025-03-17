@@ -15,19 +15,19 @@
                 </a>
             </li>
             <li class="sidebar-item">
-                <a href="#" class="sidebar-link collapsed" data-bs-target="#pages" data-bs-toggle="collapse"
-                    aria-expanded="false"><i class="fa-solid fa-file-lines pe-2"></i>
-                        Processos
-                </a>
-                <ul id="pages" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                    <li class="sidebar-item">
-                        <a href="{{ route('processos.index') }}" class="sidebar-link"><i class="bi bi-list-ul"></i> Todos os Processos</a>
-                    </li>
-                    <li class="sidebar-item">
-                        <a href="{{ route('processos.create') }}" class="sidebar-link"><i class="bi bi-plus-circle"></i> Novo processo</a>
-                    </li>
-                </ul>
-            </li>
+    <a href="#" class="sidebar-link collapsed" data-bs-target="#pages" data-bs-toggle="collapse"
+        aria-expanded="false"><i class="bi bi-file-earmark-richtext pe-2"></i>
+        Processos
+    </a>
+    <ul id="pages" class="sidebar-dropdown list-unstyled collapse sidebar-submenu" data-bs-parent="#sidebar">
+        <li class="sidebar-item">
+            <a href="{{ route('processos.index') }}" class="sidebar-link"><i class="bi bi-list-ul"></i> Todos os Processos</a>
+        </li>
+        <li class="sidebar-item">
+            <a href="{{ route('processos.create') }}" class="sidebar-link"><i class="bi bi-plus-circle"></i> Novo processo</a>
+        </li>
+    </ul>
+</li>
         </ul>
         <div class="dropdown pb-4 text-center position-absolute bottom-0 w-100">
             <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">

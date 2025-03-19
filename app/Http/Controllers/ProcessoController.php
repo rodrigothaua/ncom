@@ -53,10 +53,13 @@ class ProcessoController extends Controller
             'contratos' => 'nullable|array',
             'contratos.*.id' => 'nullable|exists:contratos,id',
             'contratos.*.numero_contrato' => 'required_with:contratos|string',
+            'contratos.*.nome_empresa_contrato' => 'required_with:contratos|string',
+            'contratos.*.cnpj_contrato' => 'required_with:contratos|string',
+            'contratos.*.numero_telefone_contrato' => 'required_with:contratos|string',
             'contratos.*.valor_contrato' => 'required_with:contratos|string',
             'contratos.*.data_inicial_contrato' => 'required_with:contratos|date',
             'contratos.*.data_final_contrato' => 'required_with:contratos|date',
-            'contratos.*.observacao' => 'nullable|string', 
+            'contratos.*.observacoes' => 'nullable|string', 
         ]);
 
         // Convertendo os valores monetários corretamente
@@ -105,6 +108,9 @@ class ProcessoController extends Controller
                 if (isset($contrato['id'])) {
                     $processo->contratos()->where('id', $contrato['id'])->update([
                         'numero_contrato' => $contrato['numero_contrato'],
+                        'nome_empresa_contrato' => $contrato['nome_empresa_contrato'],
+                        'cnpj_contrato' => $contrato['cnpj_contrato'],
+                        'numero_telefone_contrato' => $contrato['numero_telefone_contrato'],
                         'valor_contrato' => $valor_contrato,
                         'data_inicial_contrato' => $contrato['data_inicial_contrato'],
                         'data_final_contrato' => $contrato['data_final_contrato'],
@@ -113,6 +119,9 @@ class ProcessoController extends Controller
                 } else {
                     $processo->contratos()->create([
                         'numero_contrato' => $contrato['numero_contrato'],
+                        'nome_empresa_contrato' => $contrato['nome_empresa_contrato'],
+                        'cnpj_contrato' => $contrato['cnpj_contrato'],
+                        'numero_telefone_contrato' => $contrato['numero_telefone_contrato'],
                         'valor_contrato' => $valor_contrato,
                         'data_inicial_contrato' => $contrato['data_inicial_contrato'],
                         'data_final_contrato' => $contrato['data_final_contrato'],
@@ -163,10 +172,13 @@ class ProcessoController extends Controller
             'contratos' => 'nullable|array',
             'contratos.*.id' => 'nullable|exists:contratos,id',
             'contratos.*.numero_contrato' => 'required_with:contratos|string',
+            'contratos.*.nome_empresa_contrato' => 'required_with:contratos|string',
+            'contratos.*.cnpj_contrato' => 'required_with:contratos|string',
+            'contratos.*.numero_telefone_contrato' => 'required_with:contratos|string',
             'contratos.*.valor_contrato' => 'required_with:contratos|string',
             'contratos.*.data_inicial_contrato' => 'required_with:contratos|date',
             'contratos.*.data_final_contrato' => 'required_with:contratos|date',
-            'contratos.*.observacao' => 'nullable|string',
+            'contratos.*.observacoes' => 'nullable|string',
         ]);
 
         // Atualiza os valores monetários, com a conversão correta
@@ -194,18 +206,24 @@ class ProcessoController extends Controller
                 if (isset($contrato['id'])) {
                     $processo->contratos()->where('id', $contrato['id'])->update([
                         'numero_contrato' => $contrato['numero_contrato'],
+                        'nome_empresa_contrato' => $contrato['nome_empresa_contrato'],
+                        'cnpj_contrato' => $contrato['cnpj_contrato'],
+                        'numero_telefone_contrato' => $contrato['numero_telefone_contrato'],
                         'valor_contrato' => $valor_contrato,
                         'data_inicial_contrato' => $contrato['data_inicial_contrato'],
                         'data_final_contrato' => $contrato['data_final_contrato'],
-                        'observacao' => $contrato['observacao'] ?? null,
+                        'observacoes' => $contrato['observacao'] ?? null,
                     ]);
                 } else {
                     $processo->contratos()->create([
                         'numero_contrato' => $contrato['numero_contrato'],
+                        'nome_empresa_contrato' => $contrato['nome_empresa_contrato'],
+                        'cnpj_contrato' => $contrato['cnpj_contrato'],
+                        'numero_telefone_contrato' => $contrato['numero_telefone_contrato'],
                         'valor_contrato' => $valor_contrato,
                         'data_inicial_contrato' => $contrato['data_inicial_contrato'],
                         'data_final_contrato' => $contrato['data_final_contrato'],
-                        'observacao' => $contrato['observacao'] ?? null,
+                        'observacoes' => $contrato['observacao'] ?? null,
                     ]);
                 }
             }

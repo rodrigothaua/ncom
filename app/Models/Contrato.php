@@ -14,6 +14,9 @@ class Contrato extends Model
     protected $fillable = [
         'processo_id',
         'numero_contrato',
+        'nome_empresa_contrato',
+        'cnpj_contrato',
+        'numero_telefone_contrato',
         'valor_contrato',
         'data_inicial_contrato',
         'data_final_contrato',

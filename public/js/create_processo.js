@@ -45,16 +45,17 @@ function adicionarDespesa(tipo) {
         <div class="row mt-1">
             <div class="col-md-12">
                 <label>Número PA</label>
-                <select name="${tipo}_despesas[${index}][numero_pa]" class="form-control">
+                <input type="text" name="${tipo}_despesas[${index}]numero_pa]" class="form-control">
+            </div>
+            <div class="col-md-12">
+                <label>Natureza Despesa</label>
+                <input type="text" name="${tipo}_despesas[${index}][natureza_despesa]" class="form-control">
+                <select name="${tipo}_despesas[${index}][natureza_despesa]" class="form-control">
                     <option value="">Selecione um PA</option>
                     <option value="1.1.11.11">1.1.11.11</option>
                     <option value="2.2.22.22">2.2.22.22</option>
                     <option value="3.3.33.33">3.3.33.33</option>
                 </select>
-            </div>
-            <div class="col-md-12">
-                <label>Natureza Despesa</label>
-                <input type="text" name="${tipo}_despesas[${index}][natureza_despesa]" class="form-control">
             </div>
             <div class="col-md-2">
                 <button type="button" class="btn btn-sm btn-danger mt-4" onclick="removerDespesa(this)">Remover</button>
@@ -70,71 +71,108 @@ function removerDespesa(button) {
 
 ////////////////////////
 // ADICIONAR CONTRATO //
-    let contratoIndex = 0;
+let contratoIndex = 0;
 
-    function adicionarContrato() {
-        contratoIndex++;
-        const contratoHTML = `
-            <div class="card mt-3 p-3 border shadow-sm" id="contrato_${contratoIndex}">
-                <div class="row g-3">
-                    <div class="col-12">
-                        <h5>Contrato ${contratoIndex}</h5>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Número do Contrato</label>
-                        <input type="text" class="form-control" name="contratos[${contratoIndex}][numero_contrato]">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Valor do Contrato</label>
-                        <input type="text" class="form-control money-input" name="contratos[${contratoIndex}][valor_contrato]">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Data Inicial</label>
-                        <input type="date" class="form-control" name="contratos[${contratoIndex}][data_inicial_contrato]">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Data Final</label>
-                        <input type="date" class="form-control" name="contratos[${contratoIndex}][data_final_contrato]">
-                    </div>
-                    <div class="col-md-12">
-                        <label class="form-label">Observações</label>
-                        <textarea class="form-control" name="contratos[${contratoIndex}][observacao]" rows="2"></textarea>
-                    </div>
-                    <div class="col-12 text-end">
-                        <button type="button" class="btn btn-danger btn-sm" onclick="removerContrato(${contratoIndex})">Excluir</button>
-                    </div>
+function adicionarContrato() {
+    contratoIndex++;
+    const contratoHTML = `
+        <div class="card mt-3 p-3 border shadow-sm" id="contrato_${contratoIndex}">
+            <div class="row g-3">
+                <div class="col-12">
+                    <h5>Contrato ${contratoIndex}</h5>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Número do Contrato</label>
+                    <input type="text" class="form-control" name="contratos[${contratoIndex}][numero_contrato]">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Empresa</label>
+                    <input type="text" class="form-control" name="contratos[${contratoIndex}][nome_empresa_contrato]">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">CNPJ</label>
+                    <input type="text" class="form-control cnpj-input" name="contratos[${contratoIndex}][cnpj_contrato]">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Número de Telefone</label>
+                    <input type="text" class="form-control phone-input" name="contratos[${contratoIndex}][numero_telefone_contrato]">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Valor do Contrato</label>
+                    <input type="text" class="form-control money-input" name="contratos[${contratoIndex}][valor_contrato]">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Data Inicial</label>
+                    <input type="date" class="form-control" name="contratos[${contratoIndex}][data_inicial_contrato]">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Data Final</label>
+                    <input type="date" class="form-control" name="contratos[${contratoIndex}][data_final_contrato]">
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Observações</label>
+                    <textarea class="form-control" name="contratos[${contratoIndex}][observacoes]" rows="2"></textarea>
+                </div>
+                <div class="col-12 text-end">
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removerContrato(${contratoIndex})">Excluir</button>
                 </div>
             </div>
-        `;
-        document.getElementById('contratos').insertAdjacentHTML('beforeend', contratoHTML);
+        </div>
+    `;
+    document.getElementById('contratos').insertAdjacentHTML('beforeend', contratoHTML);
 
-        // Aplicar máscara nos inputs de valores monetários
-        document.querySelectorAll(".money-input").forEach(function (input) {
-            IMask(input, {
-                mask: "R$ num",
-                blocks: {
-                    num: {
-                        mask: Number,
-                        thousandsSeparator: ".",
-                        radix: ",",
-                        mapToRadix: ["."],
-                        scale: 2
-                    }
+    // Aplicar máscaras
+    aplicarMascaras();
+
+    // Tornar os inputs de data clicáveis e focáveis
+    document.querySelectorAll("input[type='date']").forEach(input => {
+        input.addEventListener("focus", function () {
+            this.showPicker(); // Abre automaticamente o seletor de data
+        });
+    });
+}
+
+function aplicarMascaras() {
+    //Máscara de Número do Processo
+    document.querySelectorAll("#numero_processo").forEach(function (input) {
+        IMask(input, {
+            mask: '0000.000000/0000-00'
+        });
+    });
+    // Máscara de CNPJ
+    document.querySelectorAll(".cnpj-input").forEach(function (input) {
+        IMask(input, {
+            mask: '00.000.000/0000-00'
+        });
+    });
+
+    // Máscara de Número de Telefone
+    document.querySelectorAll(".phone-input").forEach(function (input) {
+        IMask(input, {
+            mask: '(00) 00000-0000'
+        });
+    });
+
+    // Máscara de Valores Monetários
+    document.querySelectorAll(".money-input").forEach(function (input) {
+        IMask(input, {
+            mask: "R$ num",
+            blocks: {
+                num: {
+                    mask: Number,
+                    thousandsSeparator: ".",
+                    radix: ",",
+                    mapToRadix: ["."],
+                    scale: 2
                 }
-            });
+            }
         });
+    });
+}
 
-        // Tornar os inputs de data clicáveis e focáveis
-        document.querySelectorAll("input[type='date']").forEach(input => {
-            input.addEventListener("focus", function () {
-                this.showPicker(); // Abre automaticamente o seletor de data
-            });
-        });
-    }
-
-    function removerContrato(index) {
-        document.getElementById(`contrato_${index}`).remove();
-    }
+function removerContrato(contratoIndex) {
+    document.getElementById(`contrato_${contratoIndex}`).remove();
+}
 
     ///////////////////////////
     /// ADICIONAR Nº PA //////

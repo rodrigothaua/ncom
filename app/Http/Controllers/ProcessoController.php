@@ -43,7 +43,36 @@ class ProcessoController extends Controller
         //dd($request->all()); // Exibe todos os dados enviados no formulário
 
         $validatedData = $request->validate([
-            'numero_processo' => 'required|string',
+            'numero_processo' => [
+                'required',
+                'string',
+                'regex:/^\d{4}\.\d{6}\/\d{4}-\d{2}$/',
+                'unique:processos,numero_processo'
+            ],
+            'consumo_despesa.numero_pa' => [
+                'nullable',
+                'regex:/^\d{2}\.\d{3}\.\d{3}\.\d{3}$/'
+            ],
+            'consumo_despesa.natureza_despesa' => [
+                'nullable',
+                'regex:/^\d\.\d\.\d{2}\.\d{2}$/'
+            ],
+            'permanente_despesa.numero_pa' => [
+                'nullable',
+                'regex:/^\d{2}\.\d{3}\.\d{3}\.\d{3}$/'
+            ],
+            'permanente_despesa.natureza_despesa' => [
+                'nullable',
+                'regex:/^\d\.\d\.\d{2}\.\d{2}$/'
+            ],
+            'servico_despesa.numero_pa' => [
+                'nullable',
+                'regex:/^\d{2}\.\d{3}\.\d{3}\.\d{3}$/'
+            ],
+            'servico_despesa.natureza_despesa' => [
+                'nullable',
+                'regex:/^\d\.\d\.\d{2}\.\d{2}$/'
+            ],
             'descricao' => 'required|string',
             'requisitante' => 'required|string',
             'data_entrada' => 'required|date',
@@ -161,7 +190,12 @@ class ProcessoController extends Controller
         $processo = Processo::findOrFail($id);
 
         $validatedData = $request->validate([
-            'numero_processo' => 'required|string|max:255|unique:processos,numero_processo,' . $id,
+            'numero_processo' => [
+                'required',
+                'string',
+                'regex:/^\d{4}\.\d{6}\/\d{4}-\d{2}$/',
+                'unique:processos,numero_processo,' . $id
+            ],
             'descricao' => 'required|string|max:1000',
             'requisitante' => 'required|string|max:255',
             'valor_consumo' => 'nullable|numeric',

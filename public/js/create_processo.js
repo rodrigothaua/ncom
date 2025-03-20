@@ -1,16 +1,115 @@
+// Não precisamos mais desta função pois o IMask cuidará da formatação
 function formatarNumeroProcesso(input) {
-    let value = input.value.replace(/\D/g, ''); // Remove tudo que não for número
-
-    if (value.length > 4) value = value.replace(/^(\d{4})/, '$1.');
-    if (value.length > 10) value = value.replace(/^(\d{4})\.(\d{6})/, '$1.$2/');
-    if (value.length > 14) value = value.replace(/^(\d{4})\.(\d{6})\/(\d{4})/, '$1.$2/$3-');
-    if (value.length > 16) value = value.slice(0, 19); // Limita o comprimento a 16 caracteres
-
-    input.value = value;
+    // A formatação será feita pelo IMask
 }
 
 
-document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
+        // Função para verificar e mostrar containers que possuem valores antigos
+        function verificarContainersAtivos() {
+            ['consumo', 'permanente', 'servico'].forEach(tipo => {
+                const input = document.querySelector(`input[name='valor_${tipo}']`);
+                const container = document.getElementById(`pa_${tipo}_container`);
+                const paInput = container?.querySelector(`input[name='${tipo}_despesa[numero_pa]']`);
+                const ndInput = container?.querySelector(`input[name='${tipo}_despesa[natureza_despesa]']`);
+
+                // Mostra container se houver valores em qualquer campo
+                if ((input && input.value && input.value.trim() !== '') || 
+                    (paInput && paInput.value && paInput.value.trim() !== '') ||
+                    (ndInput && ndInput.value && ndInput.value.trim() !== '')) {
+                    container?.classList.remove('d-none');
+                }
+
+                // Formata os valores existentes
+                if (input && input.value) {
+                    IMask(input, {
+                        mask: "R$ num",
+                        blocks: {
+                            num: {
+                                mask: Number,
+                                thousandsSeparator: ".",
+                                radix: ",",
+                                mapToRadix: ["."],
+                                scale: 2,
+                                padFractional: true
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        // Verificar containers ativos na inicialização
+        verificarContainersAtivos();
+
+        // Verificar e mostrar containers PA se houver novos valores
+        ['consumo', 'permanente', 'servico'].forEach(tipo => {
+            const input = document.querySelector(`input[name='valor_${tipo}']`);
+            const container = document.getElementById(`pa_${tipo}_container`);
+            
+        // Verifica se há valor e mostra o container
+        if (input && input.value && input.value.trim() !== '') {
+            if (container) {
+                container.classList.remove('d-none');
+            }
+            // Formata o valor usando IMask
+            IMask(input, {
+                mask: "R$ num",
+                blocks: {
+                    num: {
+                        mask: Number,
+                        thousandsSeparator: ".",
+                        radix: ",",
+                        mapToRadix: ["."],
+                        scale: 2,
+                        padFractional: true
+                    }
+                }
+            });
+        }
+
+        // Aplica máscaras em campos PA e ND que já possuem valores
+        if (container) {
+            container.querySelectorAll('.pa-input, .nd-input').forEach(field => {
+                if (field.value) {
+                    const maskType = field.classList.contains('pa-input') ? '00.000.000.000' : '0.0.00.00';
+                    criarMascara(field, maskType);
+                }
+            });
+        }
+        });
+
+    // Adiciona validação visual para todos os campos required
+    document.querySelectorAll('input[required], select[required], textarea[required]').forEach(function(element) {
+        element.addEventListener('invalid', function(e) {
+            e.preventDefault();
+            this.classList.add('is-invalid');
+            
+            // Adiciona mensagem de erro se não existir
+            let errorDiv = this.nextElementSibling;
+            if (!errorDiv || !errorDiv.classList.contains('invalid-feedback')) {
+                errorDiv = document.createElement('div');
+                errorDiv.className = 'invalid-feedback';
+                errorDiv.textContent = 'Este campo é obrigatório';
+                this.parentNode.insertBefore(errorDiv, this.nextSibling);
+            }
+        });
+        
+        element.addEventListener('input', function() {
+            if (this.validity.valid) {
+                this.classList.remove('is-invalid');
+                // Remove mensagem de erro se existir
+                const errorDiv = this.nextElementSibling;
+                if (errorDiv && errorDiv.classList.contains('invalid-feedback')) {
+                    errorDiv.remove();
+                }
+            }
+        });
+    });
+
+    // Inicializa todas as máscaras ao carregar a página
+    aplicarMascaras();
+
     const checkbox = document.getElementById("indeterminateCheckbox");
     const optionalFields = document.getElementById("optionalFields");
 
@@ -45,11 +144,11 @@ function adicionarDespesa(tipo) {
         <div class="row mt-1">
             <div class="col-md-12">
                 <label>Número PA</label>
-                <input type="text" name="${tipo}_despesas[${index}]numero_pa]" class="form-control">
+                <input type="text" name="${tipo}_despesas[${index}]numero_pa]" class="form-control pa-input" placeholder="00.000.000.000">
             </div>
             <div class="col-md-12">
                 <label>Natureza Despesa</label>
-                <input type="text" name="${tipo}_despesas[${index}][natureza_despesa]" class="form-control">
+                <input type="text" name="${tipo}_despesas[${index}][natureza_despesa]" class="form-control nd-input" placeholder="0.0.00.00">
                 <select name="${tipo}_despesas[${index}][natureza_despesa]" class="form-control">
                     <option value="">Selecione um PA</option>
                     <option value="1.1.11.11">1.1.11.11</option>
@@ -63,6 +162,8 @@ function adicionarDespesa(tipo) {
         </div>
     `;
     container.appendChild(div);
+    // Aplicar máscaras imediatamente após adicionar os campos
+    aplicarMascaras();
 }
 
 function removerDespesa(button) {
@@ -133,24 +234,91 @@ function adicionarContrato() {
 }
 
 function aplicarMascaras() {
-    //Máscara de Número do Processo
-    document.querySelectorAll("#numero_processo").forEach(function (input) {
-        IMask(input, {
-            mask: '0000.000000/0000-00'
+    // Função auxiliar para criar máscara
+    function criarMascara(input, mascara) {
+        // Define o placeholder com o formato completo
+        const placeholder = mascara.replace(/0/g, '0');
+        input.setAttribute('placeholder', placeholder);
+        
+        // Cria a máscara com o IMask
+        input.setAttribute('maxlength', mascara.length);
+        let maskInstance = IMask(input, {
+            mask: mascara,
+            lazy: true,
+            placeholderChar: '0',
+            prepare: (str) => {
+                return str.replace(/[^\d]/g, '');
+            },
+            beforeInput: (value, cb) => {
+                if (maskInstance && !value) {
+                    maskInstance.updateOptions({
+                        lazy: false
+                    });
+                }
+                cb(value);
+            }
         });
+        
+        const maskRef = maskInstance;
+
+        // Eventos ao focar no campo
+        input.addEventListener('focus', function() {
+            this.selectionStart = this.selectionEnd = 0;
+            if (!this.value) {
+                maskRef.updateValue();
+            }
+            requestAnimationFrame(() => {
+                if (this.value.length > 0) {
+                    this.setSelectionRange(0, 0);
+                }
+            });
+        });
+
+        // Eventos para gerenciar o placeholder
+        input.addEventListener('blur', function() {
+            if (!this.value) {
+                this.placeholder = placeholder;
+            }
+        });
+
+        // Atualiza valor quando colar
+        input.addEventListener('paste', function(e) {
+            setTimeout(() => maskRef.updateValue(), 0);
+        });
+
+        // Previne caracteres inválidos
+        input.addEventListener('keypress', function(e) {
+            if (!/\d/.test(e.key)) {
+                e.preventDefault();
+            }
+        });
+
+        return maskRef;
+    }
+
+    // Máscara para Número PA
+    document.querySelectorAll(".pa-input").forEach(input => {
+        criarMascara(input, '00.000.000.000');
     });
+
+    // Máscara para Natureza Despesa
+    document.querySelectorAll(".nd-input").forEach(input => {
+        criarMascara(input, '0.0.00.00');
+    });
+
+    // Máscara de Número do Processo
+    document.querySelectorAll("#numero_processo").forEach(input => {
+        criarMascara(input, '0000.000000/0000-00');
+    });
+
     // Máscara de CNPJ
-    document.querySelectorAll(".cnpj-input").forEach(function (input) {
-        IMask(input, {
-            mask: '00.000.000/0000-00'
-        });
+    document.querySelectorAll(".cnpj-input").forEach(input => {
+        criarMascara(input, '00.000.000/0000-00');
     });
 
     // Máscara de Número de Telefone
-    document.querySelectorAll(".phone-input").forEach(function (input) {
-        IMask(input, {
-            mask: '(00) 00000-0000'
-        });
+    document.querySelectorAll(".phone-input").forEach(input => {
+        criarMascara(input, '(00) 00000-0000');
     });
 
     // Máscara de Valores Monetários

@@ -10,6 +10,15 @@
 @section('content')
 @include('layouts.partials.alerts')
 <div class="container-fluid">
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <h1 class="my-4">Cadastrar Novo Processo</h1>
 
     <!-- Formulário de cadastro de novo processo -->
@@ -23,19 +32,46 @@
                         <!-- Input Número do Processo -->
                         <div class="col">
                             <label for="">Número do Processo</label>
-                            <input type="text" class="form-control" id="numero_processo" name="numero_processo"
-                            placeholder="Digite o número do processo" required maxlength="20" oninput="formatarNumeroProcesso(this)">
+                            <input type="text" class="form-control @error('numero_processo') is-invalid @enderror" 
+                                id="numero_processo" 
+                                name="numero_processo"
+                                placeholder="0000.000000/0000-00" 
+                                required 
+                                maxlength="19" 
+                                value="{{ old('numero_processo') }}">
+                            @error('numero_processo')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
                         <!-- input Data de Entrada -->
                         <div class="col">
                             <label for="">Data de Entrada</label>
-                            <input type="date" class="form-control" id="data_entrada" name="data_entrada" required value="{{ old('data_entrada') }}">
+                            <input type="date" class="form-control @error('data_entrada') is-invalid @enderror" 
+                                id="data_entrada" 
+                                name="data_entrada" 
+                                required 
+                                value="{{ old('data_entrada') }}">
+                            @error('data_entrada')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
                     </div>
                     <!-- select Requisitante -->
                     <div class="col-md-4">
                         <label for="">Requisitante</label>
-                        <select class="form-select" name="requisitante" id="requisitante" required>
+                        <select class="form-select @error('requisitante') is-invalid @enderror" 
+                            name="requisitante" 
+                            id="requisitante" 
+                            required>
+                            @error('requisitante')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                             <option selected disabled>Selecione...</option>
                             <option value="FUNESP">FUNESP</option>
                             <option value="GETEC">GETEC</option>
@@ -58,7 +94,17 @@
                     </div>
                     <div class="col-md-4">
                         <label for="">Descrição do processo</label>
-                        <textarea class="form-control" id="descricao" name="descricao" rows="4" placeholder="Informe resumidamente a descrição do processo" required></textarea>
+                        <textarea class="form-control @error('descricao') is-invalid @enderror" 
+                            id="descricao" 
+                            name="descricao" 
+                            rows="4" 
+                            placeholder="Informe resumidamente a descrição do processo" 
+                            required>{{ old('descricao') }}</textarea>
+                        @error('descricao')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
                 </div>
 
@@ -67,49 +113,104 @@
                     <div class="row g-3">
                         <div class="col-md-3">
                             <label>Consumo</label>
-                            <input type="text" name="valor_consumo" id="valor_consumo" class="form-control money" placeholder="R$0,00" oninput="calcularTotal()">
+                            <input type="text" 
+                                name="valor_consumo" 
+                                id="valor_consumo" 
+                                class="form-control money @error('valor_consumo') is-invalid @enderror" 
+                                placeholder="R$0,00" 
+                                value="{{ old('valor_consumo') }}" 
+                                oninput="calcularTotal()">
+                            @error('valor_consumo')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                             <div id="pa_consumo_container" class="mt-2 d-none">
                                 <label for="numero_pa_consumo">Número de PA (Consumo)</label>
-                                <input type="text" name="consumo_despesa[numero_pa]" class="form-control" placeholder="Digite o número de PA">
-                                <!-- input natureza de despesa -->
-                                <label for="natureza_despesa_consumo">Natureza da Despesa (Consumo)</label>
-                                <select name="consumo_despesa[natureza_despesa]" id="natureza_despesa_consumo" class="form-control">
-                                    <option value="">Selecione...</option>
-                                    <option value="1.1.11.11">1.1.11.11</option>
-                                    <option value="2.2.22.22">2.2.22.22</option>
-                                    <option value="3.3.33.33">3.3.33.33</option>
-                                </select>
+                            <input type="text" 
+                                name="consumo_despesa[numero_pa]" 
+                                class="form-control pa-input @error('consumo_despesa.numero_pa') is-invalid @enderror" 
+                                placeholder="00.000.000.000" 
+                                value="{{ old('consumo_despesa.numero_pa') }}">
+                            @error('consumo_despesa.numero_pa')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <!-- input natureza de despesa -->
+                            <label for="natureza_despesa_consumo">Natureza da Despesa (Consumo)</label>
+                            <input type="text" 
+                                name="consumo_despesa[natureza_despesa]" 
+                                class="form-control nd-input @error('consumo_despesa.natureza_despesa') is-invalid @enderror" 
+                                placeholder="0.0.00.00" 
+                                value="{{ old('consumo_despesa.natureza_despesa') }}">
+                            @error('consumo_despesa.natureza_despesa')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                             </div>
                         </div>
                         <div class="col-md-3">
                             <label>Permanente</label>
-                            <input type="text" name="valor_permanente" id="valor_permanente" class="form-control money" placeholder="R$0,00" oninput="calcularTotal()">
+                            <input type="text" 
+                                name="valor_permanente" 
+                                id="valor_permanente" 
+                                class="form-control money @error('valor_permanente') is-invalid @enderror" 
+                                placeholder="R$0,00" 
+                                value="{{ old('valor_permanente') }}" 
+                                oninput="calcularTotal()">
+                            @error('valor_permanente')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                             <div id="pa_permanente_container" class="mt-2 d-none">
                                 <label for="numero_pa_permanente">Número de PA (Permanente)</label>
-                                <input type="text" name="permanente_despesa[numero_pa]" class="form-control" placeholder="Digite o número de PA">
-                                <!-- input natureza de despesa -->
-                                <label for="natureza_despesa_permanente">Natureza da Despesa (Permanente)</label>
-                                <select name="permanente_despesa[natureza_despesa]" id="natureza_despesa_permanente" class="form-control">
-                                    <option value="">Selecione...</option>
-                                    <option value="1.1.11.11">1.1.11.11</option>
-                                    <option value="2.2.22.22">2.2.22.22</option>
-                                    <option value="3.3.33.33">3.3.33.33</option>
-                                </select>
+                            <input type="text" 
+                                name="permanente_despesa[numero_pa]" 
+                                class="form-control pa-input @error('permanente_despesa.numero_pa') is-invalid @enderror" 
+                                placeholder="00.000.000.000" 
+                                value="{{ old('permanente_despesa.numero_pa') }}">
+                            @error('permanente_despesa.numero_pa')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <!-- input natureza de despesa -->
+                            <label for="natureza_despesa_permanente">Natureza da Despesa (Permanente)</label>
+                            <input type="text" 
+                                name="permanente_despesa[natureza_despesa]" 
+                                class="form-control nd-input @error('permanente_despesa.natureza_despesa') is-invalid @enderror" 
+                                placeholder="0.0.00.00" 
+                                value="{{ old('permanente_despesa.natureza_despesa') }}">
+                            @error('permanente_despesa.natureza_despesa')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                             </div>
                         </div>
                         <div class="col-md-3">
                             <label>Serviço</label>
-                            <input type="text" name="valor_servico" id="valor_servico" class="form-control money" placeholder="R$0,00" oninput="calcularTotal()">
+                            <input type="text" 
+                                name="valor_servico" 
+                                id="valor_servico" 
+                                class="form-control money @error('valor_servico') is-invalid @enderror" 
+                                placeholder="R$0,00" 
+                                value="{{ old('valor_servico') }}" 
+                                oninput="calcularTotal()">
+                            @error('valor_servico')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                             <div id="pa_servico_container" class="mt-2 d-none">
                                 <label for="numero_pa_servico">Número de PA (Serviço)</label>
-                                <input type="text" name="servico_despesa[numero_pa]" class="form-control" placeholder="Digite o número de PA">
-                                <!-- input natureza de despesa -->
-                                <label for="natureza_despesa_servico">Natureza da Despesa (Serviço)</label>
-                                <select name="servico_despesa[natureza_despesa]" id="natureza_despesa_servico" class="form-control"> <option value="">Selecione um PA</option>
-                                    <option value="1.1.11.11">1.1.11.11</option>
-                                    <option value="2.2.22.22">2.2.22.22</option>
-                                    <option value="3.3.33.33">3.3.33.33</option>
-                                </select>
+                            <input type="text" 
+                                name="servico_despesa[numero_pa]" 
+                                class="form-control pa-input @error('servico_despesa.numero_pa') is-invalid @enderror" 
+                                placeholder="00.000.000.000" 
+                                value="{{ old('servico_despesa.numero_pa') }}">
+                            @error('servico_despesa.numero_pa')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <!-- input natureza de despesa -->
+                            <label for="natureza_despesa_servico">Natureza da Despesa (Serviço)</label>
+                            <input type="text" 
+                                name="servico_despesa[natureza_despesa]" 
+                                class="form-control nd-input @error('servico_despesa.natureza_despesa') is-invalid @enderror" 
+                                placeholder="0.0.00.00" 
+                                value="{{ old('servico_despesa.natureza_despesa') }}">
+                            @error('servico_despesa.natureza_despesa')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -184,5 +285,6 @@
     </form>
 </div>
 
+<script src="https://unpkg.com/imask"></script>
 <script src="{{ asset('js/create_processo.js') }}"></script>
 @endsection

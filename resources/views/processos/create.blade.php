@@ -129,7 +129,7 @@
                             <input type="text" 
                                 name="consumo_despesa[numero_pa]" 
                                 class="form-control pa-input @error('consumo_despesa.numero_pa') is-invalid @enderror" 
-                                placeholder="00.000.000.000" 
+                                placeholder="00.000.0000.0000" 
                                 value="{{ old('consumo_despesa.numero_pa') }}">
                             @error('consumo_despesa.numero_pa')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -163,7 +163,7 @@
                             <input type="text" 
                                 name="permanente_despesa[numero_pa]" 
                                 class="form-control pa-input @error('permanente_despesa.numero_pa') is-invalid @enderror" 
-                                placeholder="00.000.000.000" 
+                                placeholder="00.000.0000.0000" 
                                 value="{{ old('permanente_despesa.numero_pa') }}">
                             @error('permanente_despesa.numero_pa')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -197,7 +197,7 @@
                             <input type="text" 
                                 name="servico_despesa[numero_pa]" 
                                 class="form-control pa-input @error('servico_despesa.numero_pa') is-invalid @enderror" 
-                                placeholder="00.000.000.000" 
+                                placeholder="00.000.0000.0000" 
                                 value="{{ old('servico_despesa.numero_pa') }}">
                             @error('servico_despesa.numero_pa')
                                 <div class="invalid-feedback">{{ $message }}</div>

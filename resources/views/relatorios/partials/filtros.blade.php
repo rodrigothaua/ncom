@@ -133,7 +133,7 @@
                             <div class="card-body">
                                 <div class="mb-2">
                                     <label class="form-label">Número PA</label>
-                                    <input type="text" class="form-control" name="pa_numero" value="{{ request('pa_numero') }}">
+                                    <input type="text" class="form-control pa-mask" name="pa_numero" value="{{ request('pa_numero') }}">
                                 </div>
                                 <div class="mb-2">
                                     <label class="form-label">Número ND</label>
@@ -203,5 +203,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (urlParams.toString()) {
         document.getElementById('filtrosCollapse').classList.add('show');
     }
+
+    // Aplicar máscara ao campo de PA
+    $('.pa-mask').mask('00.000.0000.0000');
 });
 </script>

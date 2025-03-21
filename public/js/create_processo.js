@@ -298,7 +298,7 @@ function aplicarMascaras() {
 
     // Máscara para Número PA
     document.querySelectorAll(".pa-input").forEach(input => {
-        criarMascara(input, '00.000.000.000');
+        criarMascara(input, '00.000.0000.0000');
     });
 
     // Máscara para Natureza Despesa

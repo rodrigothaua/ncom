@@ -15,7 +15,7 @@ class Categorias extends Model
         'processo_id',
         'valor_consumo',
         'valor_permanente',
-        'valor_servico',
+        'valor_servico'
     ];
 
     public function processo()
@@ -25,6 +25,6 @@ class Categorias extends Model
 
     public function detalhesDespesa()
     {
-        return $this->hasOne(DetalhesDespesa::class);
+        return $this->hasOne(DetalhesDespesa::class, 'categorias_id');
     }
 }

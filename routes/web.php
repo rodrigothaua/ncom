@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProcessoController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\RelatoriosController;
 use Illuminate\Support\Facades\Auth;
 
 // Página inicial (Welcome)
@@ -38,6 +39,14 @@ Route::middleware(['auth'])->group(function () {
         // Registro de usuário (usando RegisteredUserController padrão)
         Route::get('/create', [RegisteredUserController::class, 'create'])->name('create');
         Route::post('/create', [RegisteredUserController::class, 'store']);
+    });
+
+    // Relatórios
+    Route::prefix('relatorios')->name('relatorios.')->group(function () {
+        Route::get('/', [RelatoriosController::class, 'index'])->name('index');
+        Route::get('/contratos-vencimento', [RelatoriosController::class, 'contratosPorVencimento'])->name('contratos.vencimento');
+        Route::get('/contratos-valor', [RelatoriosController::class, 'contratosPorValor'])->name('contratos.valor');
+        Route::get('/categorias-processo', [RelatoriosController::class, 'categoriasPorProcesso'])->name('categorias.processo');
     });    
 });
 

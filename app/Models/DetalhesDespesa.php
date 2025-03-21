@@ -18,11 +18,23 @@ class DetalhesDespesa extends Model
         'pa_servico',
         'nd_consumo',
         'nd_permanente',
-        'nd_servico',
+        'nd_servico'
     ];
 
-    public function categorias()
+    public function categoria()
     {
-        return $this->belongsTo(Categorias::class);
+        return $this->belongsTo(Categorias::class, 'categorias_id');
+    }
+
+    public function processo()
+    {
+        return $this->hasOneThrough(
+            Processo::class,
+            Categorias::class,
+            'id', // Foreign key on categorias table...
+            'id', // Foreign key on processos table...
+            'categorias_id', // Local key on detalhes_despesa table...
+            'processo_id' // Local key on categorias table...
+        );
     }
 }

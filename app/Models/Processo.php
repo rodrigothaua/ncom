@@ -29,4 +29,16 @@ class Processo extends Model
     {
         return $this->hasMany(Contrato::class);
     }
+
+    public function detalhesDespesa()
+    {
+        return $this->hasOneThrough(
+            DetalhesDespesa::class,
+            Categorias::class,
+            'processo_id', // Foreign key on categorias table...
+            'categorias_id', // Foreign key on detalhes_despesa table...
+            'id', // Local key on processos table...
+            'id' // Local key on categorias table...
+        );
+    }
 }

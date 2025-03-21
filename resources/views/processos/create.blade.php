@@ -73,6 +73,7 @@
                                 </div>
                             @enderror
                             <option selected disabled>Selecione...</option>
+                            <option value="GAB">GAB</option>
                             <option value="FUNESP">FUNESP</option>
                             <option value="GETEC">GETEC</option>
                             <option value="GECONV">GECONV</option>

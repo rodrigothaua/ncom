@@ -59,11 +59,11 @@
                             <div class="card-body">
                                 <div class="mb-2">
                                     <label class="form-label">Nome da Empresa</label>
-                                    <input type="text" class="form-control" name="empresa" value="{{ request('empresa') }}">
+                                    <input type="text" class="form-control" name="empresa" placeholder="Digite o nome da empresa" value="{{ request('empresa') }}">
                                 </div>
                                 <div class="mb-2">
                                     <label class="form-label">CNPJ</label>
-                                    <input type="text" class="form-control" name="cnpj" value="{{ request('cnpj') }}">
+                                    <input type="text" class="form-control" name="cnpj" placeholder="00.000.000/0000-00" value="{{ request('cnpj') }}">
                                 </div>
                             </div>
                         </div>
@@ -79,11 +79,11 @@
                                 <div class="row g-2">
                                     <div class="col-md-6">
                                         <label class="form-label">Valor Mínimo</label>
-                                        <input type="number" step="0.01" class="form-control" name="valor_min" value="{{ request('valor_min') }}">
+                                        <input type="text" class="form-control money-mask" name="valor_min" placeholder="R$ 0,00" value="{{ request('valor_min') }}">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Valor Máximo</label>
-                                        <input type="number" step="0.01" class="form-control" name="valor_max" value="{{ request('valor_max') }}">
+                                        <input type="text" class="form-control money-mask" name="valor_max" placeholder="R$ 0,00" value="{{ request('valor_max') }}">
                                     </div>
                                 </div>
                             </div>
@@ -101,22 +101,22 @@
                                     <div class="col-md-4">
                                         <label class="form-label">Consumo</label>
                                         <div class="input-group">
-                                            <input type="number" step="0.01" class="form-control" name="valor_consumo_min" placeholder="Mínimo" value="{{ request('valor_consumo_min') }}">
-                                            <input type="number" step="0.01" class="form-control" name="valor_consumo_max" placeholder="Máximo" value="{{ request('valor_consumo_max') }}">
+                                            <input type="text" class="form-control money-mask" name="valor_consumo_min" placeholder="R$ 0,00" value="{{ request('valor_consumo_min') }}">
+                                            <input type="text" class="form-control money-mask" name="valor_consumo_max" placeholder="R$ 0,00" value="{{ request('valor_consumo_max') }}">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label">Permanente</label>
                                         <div class="input-group">
-                                            <input type="number" step="0.01" class="form-control" name="valor_permanente_min" placeholder="Mínimo" value="{{ request('valor_permanente_min') }}">
-                                            <input type="number" step="0.01" class="form-control" name="valor_permanente_max" placeholder="Máximo" value="{{ request('valor_permanente_max') }}">
+                                            <input type="text" class="form-control money-mask" name="valor_permanente_min" placeholder="R$ 0,00" value="{{ request('valor_permanente_min') }}">
+                                            <input type="text" class="form-control money-mask" name="valor_permanente_max" placeholder="R$ 0,00" value="{{ request('valor_permanente_max') }}">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label">Serviço</label>
                                         <div class="input-group">
-                                            <input type="number" step="0.01" class="form-control" name="valor_servico_min" placeholder="Mínimo" value="{{ request('valor_servico_min') }}">
-                                            <input type="number" step="0.01" class="form-control" name="valor_servico_max" placeholder="Máximo" value="{{ request('valor_servico_max') }}">
+                                            <input type="text" class="form-control money-mask" name="valor_servico_min" placeholder="R$ 0,00" value="{{ request('valor_servico_min') }}">
+                                            <input type="text" class="form-control money-mask" name="valor_servico_max" placeholder="R$ 0,00" value="{{ request('valor_servico_max') }}">
                                         </div>
                                     </div>
                                 </div>
@@ -133,11 +133,11 @@
                             <div class="card-body">
                                 <div class="mb-2">
                                     <label class="form-label">Número PA</label>
-                                    <input type="text" class="form-control pa-mask" name="pa_numero" value="{{ request('pa_numero') }}">
+                                    <input type="text" class="form-control pa-mask" name="pa_numero" placeholder="00.000.0000.0000" value="{{ request('pa_numero') }}">
                                 </div>
                                 <div class="mb-2">
                                     <label class="form-label">Número ND</label>
-                                    <input type="text" class="form-control" name="nd_numero" value="{{ request('nd_numero') }}">
+                                    <input type="text" class="form-control" name="nd_numero" placeholder="00.000.0000.0000" value="{{ request('nd_numero') }}">
                                 </div>
                             </div>
                         </div>
@@ -204,7 +204,26 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('filtrosCollapse').classList.add('show');
     }
 
-    // Aplicar máscara ao campo de PA
+    // Aplicar máscaras aos campos
     $('.pa-mask').mask('00.000.0000.0000');
+    $('input[name="cnpj"]').mask('00.000.000/0000-00');
+    $('input[name="nd_numero"]').mask('00.000.0000.0000');
+    
+    // Máscaras para valores monetários
+    const moneyInputs = [
+        'input[name="valor_min"]',
+        'input[name="valor_max"]',
+        'input[name="valor_consumo_min"]',
+        'input[name="valor_consumo_max"]',
+        'input[name="valor_permanente_min"]',
+        'input[name="valor_permanente_max"]',
+        'input[name="valor_servico_min"]',
+        'input[name="valor_servico_max"]'
+    ];
+    
+    moneyInputs.forEach(selector => {
+        $(selector).mask('#.##0,00', {reverse: true});
+        $(selector).attr('placeholder', 'R$ 0,00');
+    });
 });
 </script>

@@ -181,19 +181,6 @@
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-funnel"></i> Aplicar Filtros
                         </button>
-                        
-                        @if(request()->getQueryString())
-                            <button type="submit" name="export_pdf" value="1" class="btn btn-danger">
-                                <i class="bi bi-file-pdf"></i> Exportar PDF
-                            </button>
-                            
-                            <div class="mt-2">
-                                <small class="text-muted">
-                                    <i class="bi bi-info-circle"></i> 
-                                    O PDF incluirá todos os detalhes dos itens filtrados, incluindo valores, categorias e números PA/ND.
-                                </small>
-                            </div>
-                        @endif
                     </div>
                 </div>
             </form>

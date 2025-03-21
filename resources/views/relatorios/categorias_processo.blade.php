@@ -7,20 +7,25 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-header">
                     <h5 class="mb-0"><i class="bi bi-pie-chart"></i> Categorias por Processo</h5>
-                    <div class="btn-group">
-                        <a href="{{ route('relatorios.index') }}" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left"></i> Voltar
-                        </a>
-                        <button onclick="window.print()" class="btn btn-primary">
-                            <i class="bi bi-printer"></i> Imprimir
-                        </button>
-                    </div>
                 </div>
                 <div class="card-body">
                     @include('relatorios.partials.filtros')
-                    <div class="table-responsive">
+                    
+                    @if(request()->getQueryString())
+                        <div class="d-flex justify-content-end mb-3">
+                            <div class="btn-group">
+                                <button onclick="window.print()" class="btn btn-primary">
+                                    <i class="bi bi-printer"></i> Imprimir
+                                </button>
+                                <button type="submit" form="filtroForm" name="export_pdf" value="1" class="btn btn-danger">
+                                    <i class="bi bi-file-pdf"></i> Exportar PDF
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
@@ -40,7 +45,7 @@
                                     $totalPermanente = 0;
                                     $totalServico = 0;
                                 @endphp
-                                @foreach($processos as $processo)
+                                @forelse($processos as $processo)
                                     @php
                                         $totalConsumo += $processo->categorias->valor_consumo ?? 0;
                                         $totalPermanente += $processo->categorias->valor_permanente ?? 0;
@@ -67,7 +72,11 @@
                                             </button>
                                         </td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="8" class="text-center">Nenhum processo encontrado com os filtros aplicados.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                             <tfoot>
                                 <tr class="table-primary">
@@ -82,47 +91,77 @@
                         </table>
                     </div>
 
-                    <div class="row mt-4">
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5 class="mb-0"><i class="bi bi-pie-chart"></i> Distribuição por Categoria</h5>
+                        @if($processos->isNotEmpty())
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0"><i class="bi bi-pie-chart"></i> Distribuição por Categoria</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <canvas id="categoriasChart" style="height: 300px;"></canvas>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <canvas id="categoriasChart" style="height: 300px;"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Resumo de Valores</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                            <tr>
-                                                <td>Total Consumo:</td>
-                                                <td class="text-end">R$ {{ number_format($totalConsumo, 2, ',', '.') }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Total Permanente:</td>
-                                                <td class="text-end">R$ {{ number_format($totalPermanente, 2, ',', '.') }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Total Serviço:</td>
-                                                <td class="text-end">R$ {{ number_format($totalServico, 2, ',', '.') }}</td>
-                                            </tr>
-                                            <tr class="table-primary">
-                                                <td><strong>Total Geral:</strong></td>
-                                                <td class="text-end"><strong>R$ {{ number_format($totalConsumo + $totalPermanente + $totalServico, 2, ',', '.') }}</strong></td>
-                                            </tr>
-                                        </table>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Resumo de Valores</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table">
+                                                    <tr>
+                                                        <td>Total Consumo:</td>
+                                                        <td class="text-end">R$ {{ number_format($totalConsumo, 2, ',', '.') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Total Permanente:</td>
+                                                        <td class="text-end">R$ {{ number_format($totalPermanente, 2, ',', '.') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Total Serviço:</td>
+                                                        <td class="text-end">R$ {{ number_format($totalServico, 2, ',', '.') }}</td>
+                                                    </tr>
+                                                    <tr class="table-primary">
+                                                        <td><strong>Total Geral:</strong></td>
+                                                        <td class="text-end"><strong>R$ {{ number_format($totalConsumo + $totalPermanente + $totalServico, 2, ',', '.') }}</strong></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            
+                            @push('scripts')
+                            <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var ctx = document.getElementById('categoriasChart').getContext('2d');
+                                new Chart(ctx, {
+                                    type: 'pie',
+                                    data: {
+                                        labels: ['Consumo', 'Permanente', 'Serviço'],
+                                        datasets: [{
+                                            data: [{{ $totalConsumo }}, {{ $totalPermanente }}, {{ $totalServico }}],
+                                            backgroundColor: [
+                                                'rgba(255, 99, 132, 0.8)',
+                                                'rgba(54, 162, 235, 0.8)',
+                                                'rgba(255, 206, 86, 0.8)'
+                                            ]
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        maintainAspectRatio: false
+                                    }
+                                });
+                            });
+                            </script>
+                            @endpush
+                        @endif
                     </div>
+                @endif
                 </div>
             </div>
         </div>
@@ -211,29 +250,4 @@
     }
 </style>
 
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    var ctx = document.getElementById('categoriasChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: ['Consumo', 'Permanente', 'Serviço'],
-            datasets: [{
-                data: [{{ $totalConsumo }}, {{ $totalPermanente }}, {{ $totalServico }}],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.8)',
-                    'rgba(54, 162, 235, 0.8)',
-                    'rgba(255, 206, 86, 0.8)'
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false
-        }
-    });
-});
-</script>
-@endpush
 @endsection

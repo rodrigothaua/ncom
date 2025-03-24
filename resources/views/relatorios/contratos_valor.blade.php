@@ -1,166 +1,180 @@
 @extends('layouts.app')
 
-@section('title', 'SIGECOM - Relatório de Contratos por Valor')
+@section('title', 'SIGECOM - Contratos por Valor')
 
 @section('content')
-<div class="container-fluid p-0">
-    <div class="row">
+<div class="container-fluid">
+    <div class="row mb-3">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-cash"></i> Contratos por Valor</h5>
-                    <div class="btn-group">
-                        <a href="{{ route('relatorios.index') }}" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left"></i> Voltar
+            <h2 class="h3">Contratos por Valor</h2>
+            <p>Filtre os contratos por faixa de valor.</p>
+        </div>
+    </div>
+
+    <form action="{{ route('relatorios.contratos.valor.buscar') }}" method="POST" id="searchForm">
+        @csrf
+        <div class="card">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">Faixa de Valor do Contrato</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Valor Mínimo</label>
+                                        <input type="text" class="form-control money-mask" name="valor_min" placeholder="R$ 0,00">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Valor Máximo</label>
+                                        <input type="text" class="form-control money-mask" name="valor_max" placeholder="R$ 0,00">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-12 text-end">
+                        <a href="{{ route('relatorios.contratos.valor') }}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Limpar Filtros
                         </a>
-                        <button onclick="window.print()" class="btn btn-primary">
-                            <i class="bi bi-printer"></i> Imprimir
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-funnel"></i> Aplicar Filtros
                         </button>
                     </div>
                 </div>
-                <div class="card-body">
-                    @include('relatorios.partials.filtros')
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Número do Processo</th>
-                                    <th>Empresa</th>
-                                    <th>Valor do Contrato</th>
-                                    <th>Categorias</th>
-                                    <th>Data Inicial</th>
-                                    <th>Data Final</th>
-                                    <th class="no-print">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($contratos as $contrato)
-                                    <tr>
-                                        <td>{{ $contrato->processo->numero_processo }}</td>
-                                        <td>{{ $contrato->nome_empresa_contrato }}</td>
-                                        <td class="text-end">R$ {{ number_format($contrato->valor_contrato, 2, ',', '.') }}</td>
-                                        <td>
-                                            @php
-                                                $categorias = $contrato->processo->categorias;
-                                                $valores = [];
-                                                if ($categorias->valor_consumo > 0) {
-                                                    $valores[] = 'Consumo: R$ ' . number_format($categorias->valor_consumo, 2, ',', '.');
-                                                }
-                                                if ($categorias->valor_permanente > 0) {
-                                                    $valores[] = 'Permanente: R$ ' . number_format($categorias->valor_permanente, 2, ',', '.');
-                                                }
-                                                if ($categorias->valor_servico > 0) {
-                                                    $valores[] = 'Serviço: R$ ' . number_format($categorias->valor_servico, 2, ',', '.');
-                                                }
-                                                echo implode('<br>', $valores);
-                                            @endphp
-                                        </td>
-                                        <td>{{ \Carbon\Carbon::parse($contrato->data_inicial_contrato)->format('d/m/Y') }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($contrato->data_final_contrato)->format('d/m/Y') }}</td>
-                                        <td class="no-print">
-                                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#detalhesModal{{ $contrato->id }}">
-                                                <i class="bi bi-eye"></i> Detalhes
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                            <tfoot>
-                                <tr class="table-primary">
-                                    <td colspan="2" class="text-end"><strong>Total:</strong></td>
-                                    <td class="text-end"><strong>R$ {{ number_format($contratos->sum('valor_contrato'), 2, ',', '.') }}</strong></td>
-                                    <td colspan="4"></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
+            </div>
+        </div>
+    </form>
+
+    @if(isset($contratos) && $contratos->count() > 0)
+    <form action="{{ route('relatorios.contratos.valor.pdf') }}" method="POST" id="pdfForm">
+        @csrf
+        <div class="card mt-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Contratos Encontrados</h5>
+                <div>
+                    <button type="submit" class="btn btn-primary" id="downloadSelected" disabled>
+                        <i class="bi bi-download"></i> Baixar Selecionados (PDF)
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="selectAll">
+                        <i class="bi bi-check-all"></i> Selecionar Todos
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="checkAll">
+                                    </div>
+                                </th>
+                                <th>Nº Contrato</th>
+                                <th>Nº Processo</th>
+                                <th>Empresa</th>
+                                <th>Valor</th>
+                                <th>Data Inicial</th>
+                                <th>Data Final</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($contratos as $contrato)
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input contrato-check" 
+                                               name="contratos[]" value="{{ $contrato->id }}">
+                                    </div>
+                                </td>
+                                <td>{{ $contrato->numero_contrato }}</td>
+                                <td>{{ $contrato->processo->numero_processo }}</td>
+                                <td>{{ $contrato->nome_empresa_contrato }}</td>
+                                <td>R$ {{ number_format($contrato->valor_contrato, 2, ',', '.') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($contrato->data_inicial_contrato)->format('d/m/Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($contrato->data_final_contrato)->format('d/m/Y') }}</td>
+                                <td>
+                                    <a href="{{ route('processos.show', $contrato->processo->id) }}" class="btn btn-sm btn-info">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
+    @elseif(isset($contratos))
+        <div class="alert alert-info mt-4">
+            Nenhum contrato encontrado para a faixa de valor selecionada.
+        </div>
+    @endif
 </div>
 
-@foreach($contratos as $contrato)
-    <!-- Modal de Detalhes -->
-    <div class="modal fade" id="detalhesModal{{ $contrato->id }}" tabindex="-1" aria-labelledby="detalhesModalLabel{{ $contrato->id }}" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="detalhesModalLabel{{ $contrato->id }}">Detalhes do Contrato</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <strong>Empresa:</strong> {{ $contrato->nome_empresa_contrato }}
-                        </div>
-                        <div class="col-md-6">
-                            <strong>CNPJ:</strong> {{ $contrato->cnpj_contrato }}
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <strong>Telefone:</strong> {{ $contrato->numero_telefone_contrato }}
-                        </div>
-                        <div class="col-md-6">
-                            <strong>Valor do Contrato:</strong> R$ {{ number_format($contrato->valor_contrato, 2, ',', '.') }}
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-12">
-                            <strong>Observações:</strong>
-                            <p>{{ $contrato->observacoes ?? 'Nenhuma observação registrada.' }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <strong>Valores por Categoria:</strong>
-                            <ul class="list-unstyled">
-                                <li>Consumo: R$ {{ number_format($contrato->processo->categorias->valor_consumo ?? 0, 2, ',', '.') }}</li>
-                                <li>Permanente: R$ {{ number_format($contrato->processo->categorias->valor_permanente ?? 0, 2, ',', '.') }}</li>
-                                <li>Serviço: R$ {{ number_format($contrato->processo->categorias->valor_servico ?? 0, 2, ',', '.') }}</li>
-                            </ul>
-                        </div>
-                    </div>
-                    @if($contrato->processo->categorias && $contrato->processo->categorias->detalhesDespesa)
-                        <div class="row mb-3">
-                            <div class="col-md-12">
-                                <strong>Números PA/ND:</strong>
-                                <ul class="list-unstyled">
-                                    @php $detalhes = $contrato->processo->categorias->detalhesDespesa; @endphp
-                                    @if($detalhes->pa_consumo)<li>PA Consumo: {{ $detalhes->pa_consumo }}</li>@endif
-                                    @if($detalhes->pa_permanente)<li>PA Permanente: {{ $detalhes->pa_permanente }}</li>@endif
-                                    @if($detalhes->pa_servico)<li>PA Serviço: {{ $detalhes->pa_servico }}</li>@endif
-                                    @if($detalhes->nd_consumo)<li>ND Consumo: {{ $detalhes->nd_consumo }}</li>@endif
-                                    @if($detalhes->nd_permanente)<li>ND Permanente: {{ $detalhes->nd_permanente }}</li>@endif
-                                    @if($detalhes->nd_servico)<li>ND Serviço: {{ $detalhes->nd_servico }}</li>@endif
-                                </ul>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-@endforeach
+<script src="https://unpkg.com/imask"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Máscara para campos monetários
+    document.querySelectorAll('.money-mask').forEach(function(input) {
+        IMask(input, {
+            mask: 'R$ num',
+            blocks: {
+                num: {
+                    mask: Number,
+                    thousandsSeparator: '.',
+                    radix: ',',
+                    scale: 2,
+                    padFractional: true
+                }
+            }
+        });
+    });
 
-<style>
-    @media print {
-        .no-print {
-            display: none !important;
-        }
-        .card {
-            border: none !important;
-        }
+    // Controle de seleção
+    const checkAll = document.getElementById('checkAll');
+    const contratoChecks = document.querySelectorAll('.contrato-check');
+    const downloadButton = document.getElementById('downloadSelected');
+    const selectAllButton = document.getElementById('selectAll');
+
+    function updateDownloadButton() {
+        const checkedCount = document.querySelectorAll('.contrato-check:checked').length;
+        downloadButton.disabled = checkedCount === 0;
+        downloadButton.innerHTML = `<i class="bi bi-download"></i> Baixar Selecionados (${checkedCount})`;
     }
-    .table td {
-        vertical-align: middle;
-        word-wrap: break-word;
-        max-width: 300px;
-        padding: 15px 10px;
+
+    if(checkAll) {
+        checkAll.addEventListener('change', function() {
+            contratoChecks.forEach(check => check.checked = this.checked);
+            updateDownloadButton();
+        });
     }
-</style>
+
+    contratoChecks.forEach(check => {
+        check.addEventListener('change', function() {
+            checkAll.checked = Array.from(contratoChecks).every(c => c.checked);
+            updateDownloadButton();
+        });
+    });
+
+    if(selectAllButton) {
+        selectAllButton.addEventListener('click', function() {
+            const isAllChecked = Array.from(contratoChecks).every(c => c.checked);
+            contratoChecks.forEach(check => check.checked = !isAllChecked);
+            checkAll.checked = !isAllChecked;
+            updateDownloadButton();
+        });
+    }
+
+    updateDownloadButton();
+});
+</script>
 @endsection

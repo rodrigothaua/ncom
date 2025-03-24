@@ -72,7 +72,7 @@ function formatarNumeroProcesso(input) {
         if (container) {
             container.querySelectorAll('.pa-input, .nd-input').forEach(field => {
                 if (field.value) {
-                    const maskType = field.classList.contains('pa-input') ? '00.000.000.000' : '0.0.00.00';
+                    const maskType = field.classList.contains('pa-input') ? '00.000.0000.0000' : '0.0.00.00';
                     criarMascara(field, maskType);
                 }
             });
@@ -144,7 +144,7 @@ function adicionarDespesa(tipo) {
         <div class="row mt-1">
             <div class="col-md-12">
                 <label>Número PA</label>
-                <input type="text" name="${tipo}_despesas[${index}]numero_pa]" class="form-control pa-input" placeholder="00.000.000.000">
+                <input type="text" name="${tipo}_despesas[${index}]numero_pa]" class="form-control pa-input" placeholder="00.000.0000.0000">
             </div>
             <div class="col-md-12">
                 <label>Natureza Despesa</label>

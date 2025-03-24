@@ -51,7 +51,7 @@ class ProcessoController extends Controller
             ],
             'consumo_despesa.numero_pa' => [
                 'nullable',
-                'regex:/^\d{2}\.\d{3}\.\d{3}\.\d{3}$/'
+                'regex:/^\d{2}\.\d{3}\.\d{4}\.\d{4}$/'
             ],
             'consumo_despesa.natureza_despesa' => [
                 'nullable',
@@ -59,7 +59,7 @@ class ProcessoController extends Controller
             ],
             'permanente_despesa.numero_pa' => [
                 'nullable',
-                'regex:/^\d{2}\.\d{3}\.\d{3}\.\d{3}$/'
+                'regex:/^\d{2}\.\d{3}\.\d{4}\.\d{4}$/'
             ],
             'permanente_despesa.natureza_despesa' => [
                 'nullable',
@@ -67,7 +67,7 @@ class ProcessoController extends Controller
             ],
             'servico_despesa.numero_pa' => [
                 'nullable',
-                'regex:/^\d{2}\.\d{3}\.\d{3}\.\d{3}$/'
+                'regex:/^\d{2}\.\d{3}\.\d{4}\.\d{4}$/'
             ],
             'servico_despesa.natureza_despesa' => [
                 'nullable',

@@ -137,7 +137,7 @@
                                 </div>
                                 <div class="mb-2">
                                     <label class="form-label">Número ND</label>
-                                    <input type="text" class="form-control" name="nd_numero" placeholder="00.000.0000.0000" value="{{ request('nd_numero') }}">
+                                    <input type="text" class="form-control" name="nd_numero" placeholder="0.0.00.00" value="{{ request('nd_numero') }}">
                                 </div>
                             </div>
                         </div>
@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Aplicar máscaras aos campos
     $('.pa-mask').mask('00.000.0000.0000');
     $('input[name="cnpj"]').mask('00.000.000/0000-00');
-    $('input[name="nd_numero"]').mask('00.000.0000.0000');
+    $('input[name="nd_numero"]').mask('0.0.00.00');
     
     // Máscaras para valores monetários
     const moneyInputs = [

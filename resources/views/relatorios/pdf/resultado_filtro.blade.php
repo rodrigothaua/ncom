@@ -1,22 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>Relatório Detalhado</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <title>Relatório - SIGECOM</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 20px;
+            font-family: sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
         }
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ccc;
         }
         .header h1 {
-            color: #333;
-            margin-bottom: 10px;
+            margin: 0;
+            font-size: 18px;
+        }
+        .header p {
+            margin: 5px 0;
+            color: #666;
         }
         table {
             width: 100%;
@@ -29,191 +34,195 @@
             text-align: left;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #f5f5f5;
+            font-weight: bold;
         }
-        .summary {
-            margin-top: 30px;
-            border-top: 2px solid #333;
-            padding-top: 20px;
-        }
-        .filter-info {
+        .filtros {
             margin-bottom: 20px;
             padding: 10px;
             background-color: #f9f9f9;
-            border: 1px solid #ddd;
+            border: 1px solid #eee;
         }
-        .total {
-            font-weight: bold;
+        .filtros strong {
             color: #333;
-            font-size: 1.2em;
+        }
+        .status-vencido {
+            color: #dc3545;
+        }
+        .status-proximo {
+            color: #ffc107;
+        }
+        .status-ok {
+            color: #28a745;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Relatório Detalhado - SIGECOM</h1>
-        <p>Data de Geração: {{ now()->format('d/m/Y H:i:s') }}</p>
+        <h1>Relatório - SIGECOM</h1>
+        <p>{{ \Carbon\Carbon::now()->format('d/m/Y H:i:s') }}</p>
+        @if($tipo == 'geral')
+            <p>Filtro Geral de Processos</p>
+        @elseif($tipo == 'vencimento')
+            <p>Contratos por Vencimento</p>
+        @elseif($tipo == 'valor')
+            <p>Contratos por Valor</p>
+        @else
+            <p>Categorias por Processo</p>
+        @endif
     </div>
 
-    <div class="filter-info">
+    @if(isset($filtros) && count($filtros) > 0)
+    <div class="filtros">
         <h3>Filtros Aplicados:</h3>
-        <ul>
-            @if(!empty($filtros['pa_numero']))
-                <li>Número PA: {{ $filtros['pa_numero'] }}</li>
+        @foreach($filtros as $key => $value)
+            @if($value && !str_contains($key, '_token') && !str_contains($key, 'pdf'))
+                <p><strong>{{ str_replace('_', ' ', ucfirst($key)) }}:</strong> {{ $value }}</p>
             @endif
-            @if(!empty($filtros['nd_numero']))
-                <li>Número ND: {{ $filtros['nd_numero'] }}</li>
-            @endif
-            @if(!empty($filtros['empresa']))
-                <li>Empresa: {{ $filtros['empresa'] }}</li>
-            @endif
-            @if(!empty($filtros['data_inicio']))
-                <li>Data Inicial: {{ \Carbon\Carbon::parse($filtros['data_inicio'])->format('d/m/Y') }}</li>
-            @endif
-            @if(!empty($filtros['data_fim']))
-                <li>Data Final: {{ \Carbon\Carbon::parse($filtros['data_fim'])->format('d/m/Y') }}</li>
-            @endif
-            @if(!empty($filtros['modalidade']))
-                <li>Modalidade: {{ $filtros['modalidade'] }}</li>
-            @endif
-        </ul>
+        @endforeach
     </div>
+    @endif
 
-    @if(isset($contratos))
+    @if($tipo == 'geral' && isset($resultados))
         <table>
             <thead>
                 <tr>
-                    <th>Processo</th>
+                    <th>Nº Processo</th>
+                    <th>Requisitante</th>
+                    <th>Data Entrada</th>
+                    <th>Valor Total</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($resultados as $processo)
+                <tr>
+                    <td>{{ $processo->numero_processo }}</td>
+                    <td>{{ $processo->requisitante }}</td>
+                    <td>{{ \Carbon\Carbon::parse($processo->data_entrada)->format('d/m/Y') }}</td>
+                    <td>R$ {{ number_format($processo->valor_total, 2, ',', '.') }}</td>
+                    <td>
+                        @if($processo->contratos->count() > 0)
+                            @php
+                                $hoje = \Carbon\Carbon::now();
+                                $dataFinal = \Carbon\Carbon::parse($processo->contratos->first()->data_final_contrato);
+                                $diasRestantes = $hoje->diffInDays($dataFinal, false);
+                            @endphp
+                            
+                            @if($diasRestantes < 0)
+                                <span class="status-vencido">Vencido</span>
+                            @elseif($diasRestantes <= 30)
+                                <span class="status-proximo">Vence em menos de 30 dias</span>
+                            @else
+                                <span class="status-ok">Em dia</span>
+                            @endif
+                        @else
+                            Sem contrato
+                        @endif
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @elseif($tipo == 'vencimento' && isset($contratos))
+        <table>
+            <thead>
+                <tr>
+                    <th>Nº Contrato</th>
+                    <th>Nº Processo</th>
+                    <th>Data Vencimento</th>
+                    <th>Valor</th>
+                    <th>Status</th>
+                    <th>Dias Restantes</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($contratos as $contrato)
+                <tr>
+                    <td>{{ $contrato->numero_contrato }}</td>
+                    <td>{{ $contrato->processo->numero_processo }}</td>
+                    <td>{{ \Carbon\Carbon::parse($contrato->data_final_contrato)->format('d/m/Y') }}</td>
+                    <td>R$ {{ number_format($contrato->valor_contrato, 2, ',', '.') }}</td>
+                    <td>
+                        @php
+                            $hoje = \Carbon\Carbon::now();
+                            $dataFinal = \Carbon\Carbon::parse($contrato->data_final_contrato);
+                            $diasRestantes = $hoje->diffInDays($dataFinal, false);
+                        @endphp
+                        
+                        @if($diasRestantes < 0)
+                            <span class="status-vencido">Vencido</span>
+                        @elseif($diasRestantes <= 30)
+                            <span class="status-proximo">Vence em menos de 30 dias</span>
+                        @else
+                            <span class="status-ok">Em dia</span>
+                        @endif
+                    </td>
+                    <td>
+                        @if($diasRestantes < 0)
+                            <span class="status-vencido">Vencido há {{ abs($diasRestantes) }} dias</span>
+                        @else
+                            <span class="status-ok">{{ $diasRestantes }} dias restantes</span>
+                        @endif
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @elseif($tipo == 'valor' && isset($contratos))
+        <table>
+            <thead>
+                <tr>
+                    <th>Nº Contrato</th>
+                    <th>Nº Processo</th>
                     <th>Empresa</th>
                     <th>Valor</th>
-                    <th>Categorias</th>
-                    <th>PA/ND</th>
+                    <th>Data Inicial</th>
+                    <th>Data Final</th>
                 </tr>
             </thead>
             <tbody>
-                @php $totalGeral = 0; @endphp
                 @foreach($contratos as $contrato)
-                    @php $totalGeral += $contrato->valor_contrato; @endphp
-                    <tr>
-                        <td>{{ $contrato->processo->numero_processo }}</td>
-                        <td>{{ $contrato->nome_empresa_contrato }}<br>CNPJ: {{ $contrato->cnpj_contrato }}</td>
-                        <td>R$ {{ number_format($contrato->valor_contrato, 2, ',', '.') }}</td>
-                        <td>
-                            @if($contrato->processo->categorias)
-                                Consumo: R$ {{ number_format($contrato->processo->categorias->valor_consumo ?? 0, 2, ',', '.') }}<br>
-                                Permanente: R$ {{ number_format($contrato->processo->categorias->valor_permanente ?? 0, 2, ',', '.') }}<br>
-                                Serviço: R$ {{ number_format($contrato->processo->categorias->valor_servico ?? 0, 2, ',', '.') }}
-                            @endif
-                        </td>
-                        <td>
-                            @if($contrato->processo->categorias && $contrato->processo->categorias->detalhesDespesa)
-                                @php $detalhes = $contrato->processo->categorias->detalhesDespesa; @endphp
-                                @if($detalhes->pa_consumo) PA Consumo: {{ $detalhes->pa_consumo }}<br>@endif
-                                @if($detalhes->pa_permanente) PA Permanente: {{ $detalhes->pa_permanente }}<br>@endif
-                                @if($detalhes->pa_servico) PA Serviço: {{ $detalhes->pa_servico }}<br>@endif
-                                @if($detalhes->nd_consumo) ND Consumo: {{ $detalhes->nd_consumo }}<br>@endif
-                                @if($detalhes->nd_permanente) ND Permanente: {{ $detalhes->nd_permanente }}<br>@endif
-                                @if($detalhes->nd_servico) ND Serviço: {{ $detalhes->nd_servico }}@endif
-                            @endif
-                        </td>
-                    </tr>
+                <tr>
+                    <td>{{ $contrato->numero_contrato }}</td>
+                    <td>{{ $contrato->processo->numero_processo }}</td>
+                    <td>{{ $contrato->nome_empresa_contrato }}</td>
+                    <td>R$ {{ number_format($contrato->valor_contrato, 2, ',', '.') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($contrato->data_inicial_contrato)->format('d/m/Y') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($contrato->data_final_contrato)->format('d/m/Y') }}</td>
+                </tr>
                 @endforeach
             </tbody>
         </table>
-
-        <div class="summary">
-            <h3>Resumo</h3>
-            <p>Total de Contratos: {{ $contratos->count() }}</p>
-            <p class="total">Valor Total: R$ {{ number_format($totalGeral, 2, ',', '.') }}</p>
-        </div>
-    @endif
-
-    @if(isset($processos))
+    @elseif($tipo == 'categorias' && isset($processos))
         <table>
             <thead>
                 <tr>
-                    <th>Processo</th>
-                    <th>Requisitante</th>
-                    <th>Valores por Categoria</th>
-                    <th>PA/ND</th>
+                    <th>Nº Processo</th>
+                    <th>Consumo</th>
+                    <th>Permanente</th>
+                    <th>Serviço</th>
+                    <th>Total</th>
+                    <th>Data Entrada</th>
                 </tr>
             </thead>
             <tbody>
-                @php 
-                    $totalConsumo = 0;
-                    $totalPermanente = 0;
-                    $totalServico = 0;
-                @endphp
                 @foreach($processos as $processo)
-                    @php 
-                        $totalConsumo += $processo->categorias->valor_consumo ?? 0;
-                        $totalPermanente += $processo->categorias->valor_permanente ?? 0;
-                        $totalServico += $processo->categorias->valor_servico ?? 0;
-                    @endphp
-                    <tr>
-                        <td>{{ $processo->numero_processo }}</td>
-                        <td>{{ $processo->requisitante }}</td>
-                        <td>
-                            @if($processo->categorias)
-                                Consumo: R$ {{ number_format($processo->categorias->valor_consumo ?? 0, 2, ',', '.') }}<br>
-                                Permanente: R$ {{ number_format($processo->categorias->valor_permanente ?? 0, 2, ',', '.') }}<br>
-                                Serviço: R$ {{ number_format($processo->categorias->valor_servico ?? 0, 2, ',', '.') }}
-                            @endif
-                        </td>
-                        <td>
-                            @if($processo->categorias && $processo->categorias->detalhesDespesa)
-                                @php $detalhes = $processo->categorias->detalhesDespesa; @endphp
-                                @if($detalhes->pa_consumo) PA Consumo: {{ $detalhes->pa_consumo }}<br>@endif
-                                @if($detalhes->pa_permanente) PA Permanente: {{ $detalhes->pa_permanente }}<br>@endif
-                                @if($detalhes->pa_servico) PA Serviço: {{ $detalhes->pa_servico }}<br>@endif
-                                @if($detalhes->nd_consumo) ND Consumo: {{ $detalhes->nd_consumo }}<br>@endif
-                                @if($detalhes->nd_permanente) ND Permanente: {{ $detalhes->nd_permanente }}<br>@endif
-                                @if($detalhes->nd_servico) ND Serviço: {{ $detalhes->nd_servico }}@endif
-                            @endif
-                        </td>
-                    </tr>
+                <tr>
+                    <td>{{ $processo->numero_processo }}</td>
+                    <td>R$ {{ number_format($processo->categorias->valor_consumo ?? 0, 2, ',', '.') }}</td>
+                    <td>R$ {{ number_format($processo->categorias->valor_permanente ?? 0, 2, ',', '.') }}</td>
+                    <td>R$ {{ number_format($processo->categorias->valor_servico ?? 0, 2, ',', '.') }}</td>
+                    <td>R$ {{ number_format($processo->valor_total ?? 0, 2, ',', '.') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($processo->data_entrada)->format('d/m/Y') }}</td>
+                </tr>
                 @endforeach
             </tbody>
         </table>
-
-        <div class="summary">
-            <h3>Resumo por Categoria</h3>
-            <p>Total de Processos: {{ $processos->count() }}</p>
-            <div style="width: 400px; margin: 20px auto;">
-                <canvas id="categoriasChart"></canvas>
-            </div>
-            <p>Total Consumo: R$ {{ number_format($totalConsumo, 2, ',', '.') }}</p>
-            <p>Total Permanente: R$ {{ number_format($totalPermanente, 2, ',', '.') }}</p>
-            <p>Total Serviço: R$ {{ number_format($totalServico, 2, ',', '.') }}</p>
-            <p class="total">Valor Total: R$ {{ number_format($totalConsumo + $totalPermanente + $totalServico, 2, ',', '.') }}</p>
-
-            <script>
-                const ctx = document.getElementById('categoriasChart');
-                new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Consumo', 'Permanente', 'Serviço'],
-                        datasets: [{
-                            data: [{{ $totalConsumo }}, {{ $totalPermanente }}, {{ $totalServico }}],
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.8)',
-                                'rgba(54, 162, 235, 0.8)',
-                                'rgba(255, 206, 86, 0.8)'
-                            ],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: 'Distribuição por Categoria'
-                            }
-                        }
-                    }
-                });
-            </script>
-        </div>
     @endif
+
+    <div class="footer">
+        <p>Relatório gerado em {{ \Carbon\Carbon::now()->format('d/m/Y \à\s H:i:s') }}</p>
+    </div>
 </body>
 </html>

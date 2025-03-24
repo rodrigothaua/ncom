@@ -26,27 +26,39 @@ Route::middleware(['auth'])->group(function () {
 
     // Gestão de processos
     Route::prefix('processos')->name('processos.')->group(function () {
-        Route::get('/', [ProcessoController::class, 'index'])->name('index'); // Lista de processos
-        Route::get('/create', [ProcessoController::class, 'create'])->name('create'); // Página de criação
-        Route::get('/{id}', [ProcessoController::class, 'show'])->name('show'); // Rota para exibir um processo específico
-        Route::get('/{id}/edit', [ProcessoController::class, 'edit'])->name('edit'); // Página de edição
-        Route::put('/{id}', [ProcessoController::class, 'update'])->name('update'); // Atualizar processo
-        Route::delete('/{id}', [ProcessoController::class, 'destroy'])->name('destroy'); // Excluir processo
+        Route::get('/', [ProcessoController::class, 'index'])->name('index');
+        Route::get('/create', [ProcessoController::class, 'create'])->name('create');
+        Route::get('/{id}', [ProcessoController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [ProcessoController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [ProcessoController::class, 'update'])->name('update');
+        Route::delete('/{id}', [ProcessoController::class, 'destroy'])->name('destroy');
     });
 
     //Cadastro de usuários
     Route::prefix('usuarios')->name('usuarios.')->group(function () {
-        // Registro de usuário (usando RegisteredUserController padrão)
         Route::get('/create', [RegisteredUserController::class, 'create'])->name('create');
         Route::post('/create', [RegisteredUserController::class, 'store']);
     });
 
     // Relatórios
     Route::prefix('relatorios')->name('relatorios.')->group(function () {
+        // Rotas principais
         Route::get('/', [RelatoriosController::class, 'index'])->name('index');
+        Route::get('/filtro-geral', [RelatoriosController::class, 'filtroGeral'])->name('filtro.geral');
         Route::get('/contratos-vencimento', [RelatoriosController::class, 'contratosPorVencimento'])->name('contratos.vencimento');
         Route::get('/contratos-valor', [RelatoriosController::class, 'contratosPorValor'])->name('contratos.valor');
         Route::get('/categorias-processo', [RelatoriosController::class, 'categoriasPorProcesso'])->name('categorias.processo');
+        
+        // Rotas de busca
+        Route::post('/filtro-geral/buscar', [RelatoriosController::class, 'buscarFiltroGeral'])->name('filtro.geral.buscar');
+        Route::post('/contratos-vencimento/buscar', [RelatoriosController::class, 'buscarContratosPorVencimento'])->name('contratos.vencimento.buscar');
+        Route::post('/contratos-valor/buscar', [RelatoriosController::class, 'buscarContratosPorValor'])->name('contratos.valor.buscar');
+        Route::post('/categorias-processo/buscar', [RelatoriosController::class, 'buscarCategoriasPorProcesso'])->name('categorias.processo.buscar');
+
+        // Rotas para PDFs
+        Route::post('/contratos-vencimento/pdf', [RelatoriosController::class, 'gerarPdfContratosSelecionados'])->name('contratos.vencimento.pdf');
+        Route::post('/contratos-valor/pdf', [RelatoriosController::class, 'gerarPdfContratosSelecionados'])->name('contratos.valor.pdf');
+        Route::post('/categorias-processo/pdf', [RelatoriosController::class, 'gerarPdfProcessosSelecionados'])->name('categorias.processo.pdf');
     });    
 });
 

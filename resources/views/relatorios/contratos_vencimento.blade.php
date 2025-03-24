@@ -1,190 +1,186 @@
 @extends('layouts.app')
 
-@section('title', 'SIGECOM - Relatório de Contratos por Vencimento')
+@section('title', 'SIGECOM - Contratos por Vencimento')
 
 @section('content')
-<div class="container-fluid p-0">
-    <div class="row">
+<div class="container-fluid">
+    <div class="row mb-3">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-calendar-check"></i> Contratos por Vencimento</h5>
-                    <div class="btn-group">
-                        <a href="{{ route('relatorios.index') }}" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left"></i> Voltar
+            <h2 class="h3">Contratos por Vencimento</h2>
+            <p>Filtre os contratos por período de vencimento.</p>
+        </div>
+    </div>
+
+    <form action="{{ route('relatorios.contratos.vencimento.buscar') }}" method="POST" id="searchForm">
+        @csrf
+        <div class="card">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">Período de Vigência</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-2">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Data Inicial</label>
+                                        <input type="date" class="form-control" name="data_inicio" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Data Final</label>
+                                        <input type="date" class="form-control" name="data_fim" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-12 text-end">
+                        <a href="{{ route('relatorios.contratos.vencimento') }}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Limpar Filtros
                         </a>
-                        <button onclick="window.print()" class="btn btn-primary">
-                            <i class="bi bi-printer"></i> Imprimir
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-funnel"></i> Aplicar Filtros
                         </button>
                     </div>
                 </div>
-                <div class="card-body">
-                    @include('relatorios.partials.filtros')
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Número do Processo</th>
-                                    <th>Empresa</th>
-                                    <th>Valor do Contrato</th>
-                                    <th>Data Inicial</th>
-                                    <th>Data Final</th>
-                                    <th>Status</th>
-                                    <th class="no-print">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($contratos as $contrato)
-                                    <tr>
-                                        <td>{{ $contrato->processo->numero_processo }}</td>
-                                        <td>{{ $contrato->nome_empresa_contrato }}</td>
-                                        <td>R$ {{ number_format($contrato->valor_contrato, 2, ',', '.') }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($contrato->data_inicial_contrato)->format('d/m/Y') }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($contrato->data_final_contrato)->format('d/m/Y') }}</td>
-                                        <td>
-                                            @php
-                                                $dataFinal = \Carbon\Carbon::parse($contrato->data_final_contrato);
-                                                $hoje = now();
-                                                $diff = $dataFinal->diff($hoje);
-                                                
-                                                if ($dataFinal->isPast()) {
-                                                    echo '<span class="badge bg-danger">Vencido</span>';
-                                                } else {
-                                                    $partes = [];
-                                                    if ($diff->y > 0) {
-                                                        $partes[] = $diff->y . ' ' . ($diff->y == 1 ? 'ano' : 'anos');
-                                                    }
-                                                    if ($diff->m > 0) {
-                                                        $partes[] = $diff->m . ' ' . ($diff->m == 1 ? 'mês' : 'meses');
-                                                    }
-                                                    if ($diff->d > 0) {
-                                                        $partes[] = $diff->d . ' ' . ($diff->d == 1 ? 'dia' : 'dias');
-                                                    }
-                                                    
-                                                    $status = 'Falta' . (count($partes) > 1 ? 'm' : '') . ' ' . implode(', ', $partes);
-                                                    
-                                                    $diasTotais = $diff->days;
-                                                    $class = 'bg-primary';
-                                                    if ($diasTotais <= 30) {
-                                                        $class = 'bg-danger';
-                                                    } elseif ($diasTotais <= 60) {
-                                                        $class = 'bg-warning';
-                                                    } elseif ($diasTotais <= 90) {
-                                                        $class = 'bg-warning';
-                                                    } elseif ($diasTotais <= 180) {
-                                                        $class = 'bg-success';
-                                                    }
-                                                    
-                                                    echo '<span class="badge ' . $class . '">' . $status . '</span>';
-                                                }
-                                            @endphp
-                                        </td>
-                                        <td class="no-print">
-                                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#detalhesModal{{ $contrato->id }}">
-                                                <i class="bi bi-eye"></i> Detalhes
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+            </div>
+        </div>
+    </form>
+
+    @if(isset($contratos) && $contratos->count() > 0)
+    <form action="{{ route('relatorios.contratos.vencimento.pdf') }}" method="POST" id="pdfForm">
+        @csrf
+        <div class="card mt-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Contratos Encontrados</h5>
+                <div>
+                    <button type="submit" class="btn btn-primary" id="downloadSelected" disabled>
+                        <i class="bi bi-download"></i> Baixar Selecionados (PDF)
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="selectAll">
+                        <i class="bi bi-check-all"></i> Selecionar Todos
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="checkAll">
+                                    </div>
+                                </th>
+                                <th>Nº Contrato</th>
+                                <th>Nº Processo</th>
+                                <th>Data Inicial</th>
+                                <th>Data Final</th>
+                                <th>Valor</th>
+                                <th>Status</th>
+                                <th>Dias Restantes</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($contratos as $contrato)
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input contrato-check" 
+                                               name="contratos[]" value="{{ $contrato->id }}">
+                                    </div>
+                                </td>
+                                <td>{{ $contrato->numero_contrato }}</td>
+                                <td>{{ $contrato->processo->numero_processo }}</td>
+                                <td>{{ \Carbon\Carbon::parse($contrato->data_inicial_contrato)->format('d/m/Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($contrato->data_final_contrato)->format('d/m/Y') }}</td>
+                                <td>R$ {{ number_format($contrato->valor_contrato, 2, ',', '.') }}</td>
+                                <td>
+                                    @php
+                                        $hoje = \Carbon\Carbon::now();
+                                        $dataFinal = \Carbon\Carbon::parse($contrato->data_final_contrato);
+                                        $diasRestantes = $hoje->diffInDays($dataFinal, false);
+                                    @endphp
+                                    
+                                    @if($diasRestantes < 0)
+                                        <span class="badge bg-danger">Vencido</span>
+                                    @elseif($diasRestantes <= 30)
+                                        <span class="badge bg-warning">Vence em menos de 30 dias</span>
+                                    @elseif($diasRestantes <= 60)
+                                        <span class="badge bg-info">Vence em 30-60 dias</span>
+                                    @else
+                                        <span class="badge bg-success">Em dia</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($diasRestantes < 0)
+                                        <span class="text-danger">Vencido há {{ abs($diasRestantes) }} dias</span>
+                                    @else
+                                        <span class="text-success">{{ $diasRestantes }} dias restantes</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <a href="{{ route('processos.show', $contrato->processo->id) }}" class="btn btn-sm btn-info">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
+    @elseif(isset($contratos))
+        <div class="alert alert-info mt-4">
+            Nenhum contrato encontrado para o período selecionado.
+        </div>
+    @endif
 </div>
 
-@foreach($contratos as $contrato)
-    <!-- Modal de Detalhes -->
-    <div class="modal fade" id="detalhesModal{{ $contrato->id }}" tabindex="-1" aria-labelledby="detalhesModalLabel{{ $contrato->id }}" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="detalhesModalLabel{{ $contrato->id }}">Detalhes do Contrato</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <strong>Empresa:</strong> {{ $contrato->nome_empresa_contrato }}
-                        </div>
-                        <div class="col-md-6">
-                            <strong>CNPJ:</strong> {{ $contrato->cnpj_contrato }}
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <strong>Telefone:</strong> {{ $contrato->numero_telefone_contrato }}
-                        </div>
-                        <div class="col-md-6">
-                            <strong>Valor do Contrato:</strong> R$ {{ number_format($contrato->valor_contrato, 2, ',', '.') }}
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-12">
-                            <strong>Observações:</strong>
-                            <p>{{ $contrato->observacoes ?? 'Nenhuma observação registrada.' }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <strong>Valores por Categoria:</strong>
-                            <ul class="list-unstyled">
-                                <li>Consumo: R$ {{ number_format($contrato->processo->categorias->valor_consumo ?? 0, 2, ',', '.') }}</li>
-                                <li>Permanente: R$ {{ number_format($contrato->processo->categorias->valor_permanente ?? 0, 2, ',', '.') }}</li>
-                                <li>Serviço: R$ {{ number_format($contrato->processo->categorias->valor_servico ?? 0, 2, ',', '.') }}</li>
-                            </ul>
-                        </div>
-                    </div>
-                    @if($contrato->processo->categorias && $contrato->processo->categorias->detalhesDespesa)
-                        <div class="row mb-3">
-                            <div class="col-md-12">
-                                <strong>Números PA/ND:</strong>
-                                <ul class="list-unstyled">
-                                    @php $detalhes = $contrato->processo->categorias->detalhesDespesa; @endphp
-                                    @if($detalhes->pa_consumo)<li>PA Consumo: {{ $detalhes->pa_consumo }}</li>@endif
-                                    @if($detalhes->pa_permanente)<li>PA Permanente: {{ $detalhes->pa_permanente }}</li>@endif
-                                    @if($detalhes->pa_servico)<li>PA Serviço: {{ $detalhes->pa_servico }}</li>@endif
-                                    @if($detalhes->nd_consumo)<li>ND Consumo: {{ $detalhes->nd_consumo }}</li>@endif
-                                    @if($detalhes->nd_permanente)<li>ND Permanente: {{ $detalhes->nd_permanente }}</li>@endif
-                                    @if($detalhes->nd_servico)<li>ND Serviço: {{ $detalhes->nd_servico }}</li>@endif
-                                </ul>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-@endforeach
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkAll = document.getElementById('checkAll');
+    const contratoChecks = document.querySelectorAll('.contrato-check');
+    const downloadButton = document.getElementById('downloadSelected');
+    const selectAllButton = document.getElementById('selectAll');
 
-<style>
-    @media print {
-        .no-print {
-            display: none !important;
-        }
-        .card {
-            border: none !important;
-        }
-        .badge {
-            border: 1px solid #000 !important;
-        }
+    function updateDownloadButton() {
+        const checkedCount = document.querySelectorAll('.contrato-check:checked').length;
+        downloadButton.disabled = checkedCount === 0;
+        downloadButton.innerHTML = `<i class="bi bi-download"></i> Baixar Selecionados (${checkedCount})`;
     }
-    .table td {
-        vertical-align: middle;
-        word-wrap: break-word;
-        max-width: 300px;
-        padding: 15px 10px;
+
+    if(checkAll) {
+        checkAll.addEventListener('change', function() {
+            contratoChecks.forEach(check => check.checked = this.checked);
+            updateDownloadButton();
+        });
     }
-    .badge {
-        white-space: normal !important;
-        text-align: left;
-        padding: 8px 12px;
-        line-height: 1.3;
+
+    contratoChecks.forEach(check => {
+        check.addEventListener('change', function() {
+            checkAll.checked = Array.from(contratoChecks).every(c => c.checked);
+            updateDownloadButton();
+        });
+    });
+
+    if(selectAllButton) {
+        selectAllButton.addEventListener('click', function() {
+            const isAllChecked = Array.from(contratoChecks).every(c => c.checked);
+            contratoChecks.forEach(check => check.checked = !isAllChecked);
+            checkAll.checked = !isAllChecked;
+            updateDownloadButton();
+        });
     }
-</style>
+
+    updateDownloadButton();
+});
+</script>
 @endsection

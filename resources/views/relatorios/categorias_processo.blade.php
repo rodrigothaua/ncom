@@ -1,253 +1,265 @@
 @extends('layouts.app')
 
-@section('title', 'SIGECOM - Relatório de Categorias por Processo')
+@section('title', 'SIGECOM - Categorias por Processo')
 
 @section('content')
-<div class="container-fluid p-0">
-    <div class="row">
+<div class="container-fluid">
+    <div class="row mb-3">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-pie-chart"></i> Categorias por Processo</h5>
-                </div>
-                <div class="card-body">
-                    @include('relatorios.partials.filtros')
-                    
-                    @if(request()->getQueryString())
-                        <div class="d-flex justify-content-end mb-3">
-                            <div class="btn-group">
-                                <button onclick="window.print()" class="btn btn-primary">
-                                    <i class="bi bi-printer"></i> Imprimir
-                                </button>
-                                <button type="submit" form="filtroForm" name="export_pdf" value="1" class="btn btn-danger">
-                                    <i class="bi bi-file-pdf"></i> Exportar PDF
-                                </button>
+            <h2 class="h3">Categorias por Processo</h2>
+            <p>Filtre os processos por valores das categorias.</p>
+        </div>
+    </div>
+
+    <form action="{{ route('relatorios.categorias.processo.buscar') }}" method="POST" id="searchForm">
+        @csrf
+        <div class="card">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">Valores por Categoria</h6>
                             </div>
-                        </div>
-
-                        <div class="table-responsive">
-                        <table class="table table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Número do Processo</th>
-                                    <th>Requisitante</th>
-                                    <th style="min-width: 200px">Descrição</th>
-                                    <th>Consumo</th>
-                                    <th>Permanente</th>
-                                    <th>Serviço</th>
-                                    <th>Total</th>
-                                    <th class="no-print">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @php
-                                    $totalConsumo = 0;
-                                    $totalPermanente = 0;
-                                    $totalServico = 0;
-                                @endphp
-                                @forelse($processos as $processo)
-                                    @php
-                                        $totalConsumo += $processo->categorias->valor_consumo ?? 0;
-                                        $totalPermanente += $processo->categorias->valor_permanente ?? 0;
-                                        $totalServico += $processo->categorias->valor_servico ?? 0;
-                                    @endphp
-                                    <tr>
-                                        <td>{{ $processo->numero_processo }}</td>
-                                        <td>{{ $processo->requisitante }}</td>
-                                        <td>{{ $processo->descricao }}</td>
-                                        <td class="text-end">R$ {{ number_format($processo->categorias->valor_consumo ?? 0, 2, ',', '.') }}</td>
-                                        <td class="text-end">R$ {{ number_format($processo->categorias->valor_permanente ?? 0, 2, ',', '.') }}</td>
-                                        <td class="text-end">R$ {{ number_format($processo->categorias->valor_servico ?? 0, 2, ',', '.') }}</td>
-                                        <td class="text-end">
-                                            <strong>R$ {{ number_format(
-                                                ($processo->categorias->valor_consumo ?? 0) +
-                                                ($processo->categorias->valor_permanente ?? 0) +
-                                                ($processo->categorias->valor_servico ?? 0),
-                                                2, ',', '.'
-                                            ) }}</strong>
-                                        </td>
-                                        <td class="no-print">
-                                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#detalhesModal{{ $processo->id }}">
-                                                <i class="bi bi-eye"></i> Detalhes
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="8" class="text-center">Nenhum processo encontrado com os filtros aplicados.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                            <tfoot>
-                                <tr class="table-primary">
-                                    <td colspan="3" class="text-end"><strong>Totais:</strong></td>
-                                    <td class="text-end"><strong>R$ {{ number_format($totalConsumo, 2, ',', '.') }}</strong></td>
-                                    <td class="text-end"><strong>R$ {{ number_format($totalPermanente, 2, ',', '.') }}</strong></td>
-                                    <td class="text-end"><strong>R$ {{ number_format($totalServico, 2, ',', '.') }}</strong></td>
-                                    <td class="text-end"><strong>R$ {{ number_format($totalConsumo + $totalPermanente + $totalServico, 2, ',', '.') }}</strong></td>
-                                    <td class="no-print"></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-
-                        @if($processos->isNotEmpty())
-                            <div class="row mt-4">
-                                <div class="col-md-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h5 class="mb-0"><i class="bi bi-pie-chart"></i> Distribuição por Categoria</h5>
-                                        </div>
-                                        <div class="card-body">
-                                            <canvas id="categoriasChart" style="height: 300px;"></canvas>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <!-- Consumo -->
+                                    <div class="col-md-4">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h6 class="mb-0">Consumo</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-2">
+                                                    <label class="form-label">Valor Mínimo</label>
+                                                    <input type="text" class="form-control money-mask" name="valor_consumo_min" placeholder="R$ 0,00">
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label class="form-label">Valor Máximo</label>
+                                                    <input type="text" class="form-control money-mask" name="valor_consumo_max" placeholder="R$ 0,00">
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label class="form-label">Número PA</label>
+                                                    <input type="text" class="form-control pa-input" name="pa_consumo" placeholder="00.000.0000.0000">
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label class="form-label">Natureza Despesa</label>
+                                                    <input type="text" class="form-control nd-input" name="nd_consumo" placeholder="0.0.00.00">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Resumo de Valores</h5>
+
+                                    <!-- Permanente -->
+                                    <div class="col-md-4">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h6 class="mb-0">Permanente</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-2">
+                                                    <label class="form-label">Valor Mínimo</label>
+                                                    <input type="text" class="form-control money-mask" name="valor_permanente_min" placeholder="R$ 0,00">
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label class="form-label">Valor Máximo</label>
+                                                    <input type="text" class="form-control money-mask" name="valor_permanente_max" placeholder="R$ 0,00">
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label class="form-label">Número PA</label>
+                                                    <input type="text" class="form-control pa-input" name="pa_permanente" placeholder="00.000.0000.0000">
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label class="form-label">Natureza Despesa</label>
+                                                    <input type="text" class="form-control nd-input" name="nd_permanente" placeholder="0.0.00.00">
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="card-body">
-                                            <div class="table-responsive">
-                                                <table class="table">
-                                                    <tr>
-                                                        <td>Total Consumo:</td>
-                                                        <td class="text-end">R$ {{ number_format($totalConsumo, 2, ',', '.') }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Total Permanente:</td>
-                                                        <td class="text-end">R$ {{ number_format($totalPermanente, 2, ',', '.') }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Total Serviço:</td>
-                                                        <td class="text-end">R$ {{ number_format($totalServico, 2, ',', '.') }}</td>
-                                                    </tr>
-                                                    <tr class="table-primary">
-                                                        <td><strong>Total Geral:</strong></td>
-                                                        <td class="text-end"><strong>R$ {{ number_format($totalConsumo + $totalPermanente + $totalServico, 2, ',', '.') }}</strong></td>
-                                                    </tr>
-                                                </table>
+                                    </div>
+
+                                    <!-- Serviço -->
+                                    <div class="col-md-4">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h6 class="mb-0">Serviço</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-2">
+                                                    <label class="form-label">Valor Mínimo</label>
+                                                    <input type="text" class="form-control money-mask" name="valor_servico_min" placeholder="R$ 0,00">
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label class="form-label">Valor Máximo</label>
+                                                    <input type="text" class="form-control money-mask" name="valor_servico_max" placeholder="R$ 0,00">
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label class="form-label">Número PA</label>
+                                                    <input type="text" class="form-control pa-input" name="pa_servico" placeholder="00.000.0000.0000">
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label class="form-label">Natureza Despesa</label>
+                                                    <input type="text" class="form-control nd-input" name="nd_servico" placeholder="0.0.00.00">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            
-                            @push('scripts')
-                            <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                var ctx = document.getElementById('categoriasChart').getContext('2d');
-                                new Chart(ctx, {
-                                    type: 'pie',
-                                    data: {
-                                        labels: ['Consumo', 'Permanente', 'Serviço'],
-                                        datasets: [{
-                                            data: [{{ $totalConsumo }}, {{ $totalPermanente }}, {{ $totalServico }}],
-                                            backgroundColor: [
-                                                'rgba(255, 99, 132, 0.8)',
-                                                'rgba(54, 162, 235, 0.8)',
-                                                'rgba(255, 206, 86, 0.8)'
-                                            ]
-                                        }]
-                                    },
-                                    options: {
-                                        responsive: true,
-                                        maintainAspectRatio: false
-                                    }
-                                });
-                            });
-                            </script>
-                            @endpush
-                        @endif
+                        </div>
                     </div>
-                @endif
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-12 text-end">
+                        <a href="{{ route('relatorios.categorias.processo') }}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Limpar Filtros
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-funnel"></i> Aplicar Filtros
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
+
+    @if(isset($processos) && $processos->count() > 0)
+    <form action="{{ route('relatorios.categorias.processo.pdf') }}" method="POST" id="pdfForm">
+        @csrf
+        <div class="card mt-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Processos Encontrados</h5>
+                <div>
+                    <button type="submit" class="btn btn-primary" id="downloadSelected" disabled>
+                        <i class="bi bi-download"></i> Baixar Selecionados (PDF)
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="selectAll">
+                        <i class="bi bi-check-all"></i> Selecionar Todos
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="checkAll">
+                                    </div>
+                                </th>
+                                <th>Nº Processo</th>
+                                <th>Consumo</th>
+                                <th>Permanente</th>
+                                <th>Serviço</th>
+                                <th>Total</th>
+                                <th>Data Entrada</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($processos as $processo)
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input processo-check" 
+                                               name="processos[]" value="{{ $processo->id }}">
+                                    </div>
+                                </td>
+                                <td>{{ $processo->numero_processo }}</td>
+                                <td>R$ {{ number_format($processo->categorias->valor_consumo ?? 0, 2, ',', '.') }}</td>
+                                <td>R$ {{ number_format($processo->categorias->valor_permanente ?? 0, 2, ',', '.') }}</td>
+                                <td>R$ {{ number_format($processo->categorias->valor_servico ?? 0, 2, ',', '.') }}</td>
+                                <td>R$ {{ number_format($processo->valor_total ?? 0, 2, ',', '.') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($processo->data_entrada)->format('d/m/Y') }}</td>
+                                <td>
+                                    <a href="{{ route('processos.show', $processo->id) }}" class="btn btn-sm btn-info">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </form>
+    @elseif(isset($processos))
+        <div class="alert alert-info mt-4">
+            Nenhum processo encontrado com os filtros selecionados.
+        </div>
+    @endif
 </div>
 
-@foreach($processos as $processo)
-    <!-- Modal de Detalhes -->
-    <div class="modal fade" id="detalhesModal{{ $processo->id }}" tabindex="-1" aria-labelledby="detalhesModalLabel{{ $processo->id }}" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="detalhesModalLabel{{ $processo->id }}">Detalhes do Processo</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <strong>Número do Processo:</strong> {{ $processo->numero_processo }}
-                        </div>
-                        <div class="col-md-6">
-                            <strong>Requisitante:</strong> {{ $processo->requisitante }}
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-12">
-                            <strong>Descrição:</strong>
-                            <p>{{ $processo->descricao }}</p>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-12">
-                            <strong>Valores por Categoria:</strong>
-                            <ul class="list-unstyled">
-                                <li>Consumo: R$ {{ number_format($processo->categorias->valor_consumo ?? 0, 2, ',', '.') }}</li>
-                                <li>Permanente: R$ {{ number_format($processo->categorias->valor_permanente ?? 0, 2, ',', '.') }}</li>
-                                <li>Serviço: R$ {{ number_format($processo->categorias->valor_servico ?? 0, 2, ',', '.') }}</li>
-                                <li><strong>Total: R$ {{ number_format(
-                                    ($processo->categorias->valor_consumo ?? 0) +
-                                    ($processo->categorias->valor_permanente ?? 0) +
-                                    ($processo->categorias->valor_servico ?? 0),
-                                    2, ',', '.'
-                                ) }}</strong></li>
-                            </ul>
-                        </div>
-                    </div>
-                    @if($processo->categorias && $processo->categorias->detalhesDespesa)
-                        <div class="row mb-3">
-                            <div class="col-md-12">
-                                <strong>Números PA/ND:</strong>
-                                <ul class="list-unstyled">
-                                    @php $detalhes = $processo->categorias->detalhesDespesa; @endphp
-                                    @if($detalhes->pa_consumo)<li>PA Consumo: {{ $detalhes->pa_consumo }}</li>@endif
-                                    @if($detalhes->pa_permanente)<li>PA Permanente: {{ $detalhes->pa_permanente }}</li>@endif
-                                    @if($detalhes->pa_servico)<li>PA Serviço: {{ $detalhes->pa_servico }}</li>@endif
-                                    @if($detalhes->nd_consumo)<li>ND Consumo: {{ $detalhes->nd_consumo }}</li>@endif
-                                    @if($detalhes->nd_permanente)<li>ND Permanente: {{ $detalhes->nd_permanente }}</li>@endif
-                                    @if($detalhes->nd_servico)<li>ND Serviço: {{ $detalhes->nd_servico }}</li>@endif
-                                </ul>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-@endforeach
+<script src="https://unpkg.com/imask"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Máscaras para campos monetários
+    document.querySelectorAll('.money-mask').forEach(function(input) {
+        IMask(input, {
+            mask: 'R$ num',
+            blocks: {
+                num: {
+                    mask: Number,
+                    thousandsSeparator: '.',
+                    radix: ',',
+                    scale: 2,
+                    padFractional: true
+                }
+            }
+        });
+    });
 
-<style>
-    @media print {
-        .no-print {
-            display: none !important;
-        }
-        .card {
-            border: none !important;
-        }
-    }
-    .table td {
-        vertical-align: middle;
-        word-wrap: break-word;
-        max-width: 300px;
-        padding: 15px 10px;
-    }
-</style>
+    // Máscaras para PA e ND
+    document.querySelectorAll('.pa-input').forEach(function(input) {
+        IMask(input, {
+            mask: '00.000.0000.0000'
+        });
+    });
 
+    document.querySelectorAll('.nd-input').forEach(function(input) {
+        IMask(input, {
+            mask: '0.0.00.00'
+        });
+    });
+
+    // Controle de seleção
+    const checkAll = document.getElementById('checkAll');
+    const processoChecks = document.querySelectorAll('.processo-check');
+    const downloadButton = document.getElementById('downloadSelected');
+    const selectAllButton = document.getElementById('selectAll');
+
+    function updateDownloadButton() {
+        const checkedCount = document.querySelectorAll('.processo-check:checked').length;
+        downloadButton.disabled = checkedCount === 0;
+        downloadButton.innerHTML = `<i class="bi bi-download"></i> Baixar Selecionados (${checkedCount})`;
+    }
+
+    if(checkAll) {
+        checkAll.addEventListener('change', function() {
+            processoChecks.forEach(check => check.checked = this.checked);
+            updateDownloadButton();
+        });
+    }
+
+    processoChecks.forEach(check => {
+        check.addEventListener('change', function() {
+            checkAll.checked = Array.from(processoChecks).every(c => c.checked);
+            updateDownloadButton();
+        });
+    });
+
+    if(selectAllButton) {
+        selectAllButton.addEventListener('click', function() {
+            const isAllChecked = Array.from(processoChecks).every(c => c.checked);
+            processoChecks.forEach(check => check.checked = !isAllChecked);
+            checkAll.checked = !isAllChecked;
+            updateDownloadButton();
+        });
+    }
+
+    updateDownloadButton();
+});
+</script>
 @endsection

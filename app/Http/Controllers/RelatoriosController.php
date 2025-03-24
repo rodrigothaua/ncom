@@ -6,321 +6,212 @@ use App\Models\Processo;
 use App\Models\Contrato;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class RelatoriosController extends Controller
 {
-    protected function applyFilters($query, Request $request, $isProcesso = false)
-    {
-        if ($request->filled('data_inicio')) {
-            if ($isProcesso) {
-                $query->whereHas('contratos', function($q) use ($request) {
-                    $q->where('data_inicial_contrato', '>=', $request->data_inicio);
-                });
-            } else {
-                $query->where('data_inicial_contrato', '>=', $request->data_inicio);
-            }
-        }
-        
-        if ($request->filled('data_fim')) {
-            if ($isProcesso) {
-                $query->whereHas('contratos', function($q) use ($request) {
-                    $q->where('data_final_contrato', '<=', $request->data_fim);
-                });
-            } else {
-                $query->where('data_final_contrato', '<=', $request->data_fim);
-            }
-        }
-
-        if ($request->filled('status')) {
-            $hoje = now();
-            $statusQuery = function($q) use ($request, $hoje) {
-                switch ($request->status) {
-                    case 'vencido':
-                        $q->where('data_final_contrato', '<', $hoje);
-                        break;
-                    case 'menos30':
-                        $q->whereBetween('data_final_contrato', [$hoje, $hoje->copy()->addDays(30)]);
-                        break;
-                    case '30a60':
-                        $q->whereBetween('data_final_contrato', [$hoje->copy()->addDays(30), $hoje->copy()->addDays(60)]);
-                        break;
-                    case '60a90':
-                        $q->whereBetween('data_final_contrato', [$hoje->copy()->addDays(60), $hoje->copy()->addDays(90)]);
-                        break;
-                    case '90a180':
-                        $q->whereBetween('data_final_contrato', [$hoje->copy()->addDays(90), $hoje->copy()->addDays(180)]);
-                        break;
-                    case 'mais180':
-                        $q->where('data_final_contrato', '>', $hoje->copy()->addDays(180));
-                        break;
-                }
-            };
-
-            if ($isProcesso) {
-                $query->whereHas('contratos', $statusQuery);
-            } else {
-                $statusQuery($query);
-            }
-        }
-
-        if ($request->filled('empresa')) {
-            if ($isProcesso) {
-                $query->whereHas('contratos', function($q) use ($request) {
-                    $q->where('nome_empresa_contrato', 'LIKE', '%' . $request->empresa . '%');
-                });
-            } else {
-                $query->where('nome_empresa_contrato', 'LIKE', '%' . $request->empresa . '%');
-            }
-        }
-
-        if ($request->filled('cnpj')) {
-            if ($isProcesso) {
-                $query->whereHas('contratos', function($q) use ($request) {
-                    $q->where('cnpj_contrato', 'LIKE', '%' . $request->cnpj . '%');
-                });
-            } else {
-                $query->where('cnpj_contrato', 'LIKE', '%' . $request->cnpj . '%');
-            }
-        }
-
-        if ($request->filled('valor_min')) {
-            if ($isProcesso) {
-                $query->whereHas('contratos', function($q) use ($request) {
-                    $q->where('valor_contrato', '>=', $request->valor_min);
-                });
-            } else {
-                $query->where('valor_contrato', '>=', $request->valor_min);
-            }
-        }
-
-        if ($request->filled('valor_max')) {
-            if ($isProcesso) {
-                $query->whereHas('contratos', function($q) use ($request) {
-                    $q->where('valor_contrato', '<=', $request->valor_max);
-                });
-            } else {
-                $query->where('valor_contrato', '<=', $request->valor_max);
-            }
-        }
-
-        if ($request->filled('modalidade')) {
-            if ($isProcesso) {
-                $query->where('modalidade', $request->modalidade);
-            } else {
-                $query->whereHas('processo', function($q) use ($request) {
-                    $q->where('modalidade', $request->modalidade);
-                });
-            }
-        }
-
-        if ($request->filled('procedimentos')) {
-            if ($isProcesso) {
-                $query->where('procedimentos_auxiliares', $request->procedimentos);
-            } else {
-                $query->whereHas('processo', function($q) use ($request) {
-                    $q->where('procedimentos_auxiliares', $request->procedimentos);
-                });
-            }
-        }
-
-        // Filtros para categorias
-        if ($request->filled('valor_consumo_min')) {
-            if ($isProcesso) {
-                $query->whereHas('categorias', function($q) use ($request) {
-                    $q->where('valor_consumo', '>=', $request->valor_consumo_min);
-                });
-            } else {
-                $query->whereHas('processo.categorias', function($q) use ($request) {
-                    $q->where('valor_consumo', '>=', $request->valor_consumo_min);
-                });
-            }
-        }
-
-        if ($request->filled('valor_consumo_max')) {
-            if ($isProcesso) {
-                $query->whereHas('categorias', function($q) use ($request) {
-                    $q->where('valor_consumo', '<=', $request->valor_consumo_max);
-                });
-            } else {
-                $query->whereHas('processo.categorias', function($q) use ($request) {
-                    $q->where('valor_consumo', '<=', $request->valor_consumo_max);
-                });
-            }
-        }
-
-        if ($request->filled('valor_permanente_min')) {
-            if ($isProcesso) {
-                $query->whereHas('categorias', function($q) use ($request) {
-                    $q->where('valor_permanente', '>=', $request->valor_permanente_min);
-                });
-            } else {
-                $query->whereHas('processo.categorias', function($q) use ($request) {
-                    $q->where('valor_permanente', '>=', $request->valor_permanente_min);
-                });
-            }
-        }
-
-        if ($request->filled('valor_permanente_max')) {
-            if ($isProcesso) {
-                $query->whereHas('categorias', function($q) use ($request) {
-                    $q->where('valor_permanente', '<=', $request->valor_permanente_max);
-                });
-            } else {
-                $query->whereHas('processo.categorias', function($q) use ($request) {
-                    $q->where('valor_permanente', '<=', $request->valor_permanente_max);
-                });
-            }
-        }
-
-        if ($request->filled('valor_servico_min')) {
-            if ($isProcesso) {
-                $query->whereHas('categorias', function($q) use ($request) {
-                    $q->where('valor_servico', '>=', $request->valor_servico_min);
-                });
-            } else {
-                $query->whereHas('processo.categorias', function($q) use ($request) {
-                    $q->where('valor_servico', '>=', $request->valor_servico_min);
-                });
-            }
-        }
-
-        if ($request->filled('valor_servico_max')) {
-            if ($isProcesso) {
-                $query->whereHas('categorias', function($q) use ($request) {
-                    $q->where('valor_servico', '<=', $request->valor_servico_max);
-                });
-            } else {
-                $query->whereHas('processo.categorias', function($q) use ($request) {
-                    $q->where('valor_servico', '<=', $request->valor_servico_max);
-                });
-            }
-        }
-
-        // Filtros para números PA e ND
-        if ($request->filled('pa_numero')) {
-            if ($isProcesso) {
-                $query->whereHas('categorias.detalhesDespesa', function($q) use ($request) {
-                    $q->where('pa_consumo', 'LIKE', '%' . $request->pa_numero . '%')
-                      ->orWhere('pa_permanente', 'LIKE', '%' . $request->pa_numero . '%')
-                      ->orWhere('pa_servico', 'LIKE', '%' . $request->pa_numero . '%');
-                });
-            } else {
-                $query->whereHas('processo.categorias.detalhesDespesa', function($q) use ($request) {
-                    $q->where('pa_consumo', 'LIKE', '%' . $request->pa_numero . '%')
-                      ->orWhere('pa_permanente', 'LIKE', '%' . $request->pa_numero . '%')
-                      ->orWhere('pa_servico', 'LIKE', '%' . $request->pa_numero . '%');
-                });
-            }
-        }
-
-        if ($request->filled('nd_numero')) {
-            if ($isProcesso) {
-                $query->whereHas('categorias.detalhesDespesa', function($q) use ($request) {
-                    $q->where('nd_consumo', 'LIKE', '%' . $request->nd_numero . '%')
-                      ->orWhere('nd_permanente', 'LIKE', '%' . $request->nd_numero . '%')
-                      ->orWhere('nd_servico', 'LIKE', '%' . $request->nd_numero . '%');
-                });
-            } else {
-                $query->whereHas('processo.categorias.detalhesDespesa', function($q) use ($request) {
-                    $q->where('nd_consumo', 'LIKE', '%' . $request->nd_numero . '%')
-                      ->orWhere('nd_permanente', 'LIKE', '%' . $request->nd_numero . '%')
-                      ->orWhere('nd_servico', 'LIKE', '%' . $request->nd_numero . '%');
-                });
-            }
-        }
-
-        return $query;
-    }
-
     public function index()
     {
         return view('relatorios.index');
     }
 
-    public function contratosPorVencimento(Request $request)
+    public function filtroGeral()
     {
-        $query = Contrato::with([
-            'processo',
-            'processo.categorias',
-            'processo.categorias.detalhesDespesa'
-        ])->orderBy('data_final_contrato', 'asc');
-            
+        $requisitantes = Processo::distinct('requisitante')->pluck('requisitante');
+        $modalidades = Processo::distinct('modalidade')->whereNotNull('modalidade')->pluck('modalidade');
+        $procedimentos = Processo::distinct('procedimentos_auxiliares')->whereNotNull('procedimentos_auxiliares')->pluck('procedimentos_auxiliares');
+
+        return view('relatorios.filtro_geral', compact('requisitantes', 'modalidades', 'procedimentos'));
+    }
+
+    public function buscarFiltroGeral(Request $request)
+    {
+        $query = Processo::with(['contratos', 'categorias', 'categorias.detalhesDespesa']);
         $query = $this->applyFilters($query, $request);
+        $resultados = $query->get();
+
+        return view('relatorios.filtro_geral', [
+            'resultados' => $resultados,
+            'requisitantes' => Processo::distinct('requisitante')->pluck('requisitante'),
+            'modalidades' => Processo::distinct('modalidade')->whereNotNull('modalidade')->pluck('modalidade'),
+            'procedimentos' => Processo::distinct('procedimentos_auxiliares')->whereNotNull('procedimentos_auxiliares')->pluck('procedimentos_auxiliares')
+        ]);
+    }
+
+    public function contratosPorVencimento()
+    {
+        return view('relatorios.contratos_vencimento');
+    }
+
+    public function buscarContratosPorVencimento(Request $request)
+    {
+        $request->validate([
+            'data_inicio' => 'required|date',
+            'data_fim' => 'required|date|after_or_equal:data_inicio'
+        ]);
+
+        $query = Contrato::with(['processo']);
+
+        $query->where(function($q) use ($request) {
+            $q->where('data_inicial_contrato', '<=', $request->data_fim)
+              ->where('data_final_contrato', '>=', $request->data_inicio);
+        });
+
+        $query->orderBy('data_final_contrato', 'asc');
         $contratos = $query->get();
-        
-        if ($request->has('export_pdf')) {
-            $pdf = PDF::loadView('relatorios.pdf.resultado_filtro', [
-                'contratos' => $contratos,
-                'filtros' => $request->all(),
-                'tipo' => 'vencimento'
-            ]);
-            return $pdf->download('relatorio_contratos_vencimento.pdf');
-        }
 
         return view('relatorios.contratos_vencimento', compact('contratos'));
     }
 
-    public function contratosPorValor(Request $request)
+    public function contratosPorValor()
     {
-        $query = Contrato::with([
-            'processo',
-            'processo.categorias',
-            'processo.categorias.detalhesDespesa'
-        ])->orderBy('valor_contrato', 'desc');
-            
-        $query = $this->applyFilters($query, $request);
-        $contratos = $query->get();
-        
-        if ($request->has('export_pdf')) {
-            $pdf = PDF::loadView('relatorios.pdf.resultado_filtro', [
-                'contratos' => $contratos,
-                'filtros' => $request->all(),
-                'tipo' => 'valor'
-            ]);
-            return $pdf->download('relatorio_contratos_valor.pdf');
+        return view('relatorios.contratos_valor');
+    }
+
+    public function buscarContratosPorValor(Request $request)
+    {
+        $query = Contrato::with(['processo']);
+
+        if ($request->filled('valor_min')) {
+            $valorMin = str_replace(['R$', '.', ','], ['', '', '.'], $request->valor_min);
+            $query->where('valor_contrato', '>=', floatval($valorMin));
         }
+
+        if ($request->filled('valor_max')) {
+            $valorMax = str_replace(['R$', '.', ','], ['', '', '.'], $request->valor_max);
+            $query->where('valor_contrato', '<=', floatval($valorMax));
+        }
+
+        $query->orderBy('valor_contrato', 'desc');
+        $contratos = $query->get();
 
         return view('relatorios.contratos_valor', compact('contratos'));
     }
 
-    public function categoriasPorProcesso(Request $request)
+    public function categoriasPorProcesso()
     {
-        $query = Processo::with([
-            'categorias',
-            'contratos',
-            'categorias.detalhesDespesa'
-        ]);
-        
-        if ($request->filled('order_by')) {
-            switch ($request->order_by) {
-                case 'consumo':
-                    $query->whereHas('categorias')->orderBy('categorias.valor_consumo', $request->order_dir ?? 'desc');
-                    break;
-                case 'permanente':
-                    $query->whereHas('categorias')->orderBy('categorias.valor_permanente', $request->order_dir ?? 'desc');
-                    break;
-                case 'servico':
-                    $query->whereHas('categorias')->orderBy('categorias.valor_servico', $request->order_dir ?? 'desc');
-                    break;
-                default:
-                    $query->orderBy('created_at', 'desc');
-            }
-        } else {
-            $query->orderBy('created_at', 'desc');
-        }
-            
-        $query = $this->applyFilters($query, $request, true);
-        $processos = $query->get();
-        
-        if ($request->has('export_pdf')) {
-            $pdf = PDF::loadView('relatorios.pdf.resultado_filtro', [
-                'processos' => $processos,
-                'filtros' => $request->all(),
-                'tipo' => 'categorias'
-            ]);
-            return $pdf->download('relatorio_categorias_processo.pdf');
+        return view('relatorios.categorias_processo');
+    }
+
+    public function buscarCategoriasPorProcesso(Request $request)
+    {
+        $query = Processo::with(['categorias', 'categorias.detalhesDespesa']);
+
+        if ($request->filled(['valor_consumo_min', 'valor_consumo_max'])) {
+            $valorMin = str_replace(['R$', '.', ','], ['', '', '.'], $request->valor_consumo_min);
+            $valorMax = str_replace(['R$', '.', ','], ['', '', '.'], $request->valor_consumo_max);
+            $query->whereHas('categorias', function($q) use ($valorMin, $valorMax) {
+                $q->whereBetween('valor_consumo', [floatval($valorMin), floatval($valorMax)]);
+            });
         }
 
+        if ($request->filled(['valor_permanente_min', 'valor_permanente_max'])) {
+            $valorMin = str_replace(['R$', '.', ','], ['', '', '.'], $request->valor_permanente_min);
+            $valorMax = str_replace(['R$', '.', ','], ['', '', '.'], $request->valor_permanente_max);
+            $query->whereHas('categorias', function($q) use ($valorMin, $valorMax) {
+                $q->whereBetween('valor_permanente', [floatval($valorMin), floatval($valorMax)]);
+            });
+        }
+
+        if ($request->filled(['valor_servico_min', 'valor_servico_max'])) {
+            $valorMin = str_replace(['R$', '.', ','], ['', '', '.'], $request->valor_servico_min);
+            $valorMax = str_replace(['R$', '.', ','], ['', '', '.'], $request->valor_servico_max);
+            $query->whereHas('categorias', function($q) use ($valorMin, $valorMax) {
+                $q->whereBetween('valor_servico', [floatval($valorMin), floatval($valorMax)]);
+            });
+        }
+
+        $paFields = ['pa_consumo', 'pa_permanente', 'pa_servico'];
+        foreach ($paFields as $field) {
+            if ($request->filled($field)) {
+                $query->whereHas('categorias.detalhesDespesa', function($q) use ($field, $request) {
+                    $q->where($field, $request->$field);
+                });
+            }
+        }
+
+        $ndFields = ['nd_consumo', 'nd_permanente', 'nd_servico'];
+        foreach ($ndFields as $field) {
+            if ($request->filled($field)) {
+                $query->whereHas('categorias.detalhesDespesa', function($q) use ($field, $request) {
+                    $q->where($field, $request->$field);
+                });
+            }
+        }
+
+        $processos = $query->get();
+
         return view('relatorios.categorias_processo', compact('processos'));
+    }
+
+    public function gerarPdfContratosSelecionados(Request $request)
+    {
+        $request->validate([
+            'contratos' => 'required|array|min:1',
+            'contratos.*' => 'exists:contratos,id'
+        ]);
+
+        $contratos = Contrato::with(['processo'])
+            ->whereIn('id', $request->contratos)
+            ->orderBy('data_final_contrato', 'asc')
+            ->get();
+
+        $pdf = PDF::loadView('relatorios.pdf.contratos_selecionados', [
+            'contratos' => $contratos,
+            'titulo' => 'Relatório de Contratos Selecionados',
+            'data_geracao' => Carbon::now()->format('d/m/Y H:i:s')
+        ]);
+
+        return $pdf->download('contratos_selecionados.pdf');
+    }
+
+    public function gerarPdfProcessosSelecionados(Request $request)
+    {
+        $request->validate([
+            'processos' => 'required|array|min:1',
+            'processos.*' => 'exists:processos,id'
+        ]);
+
+        $processos = Processo::with(['categorias', 'categorias.detalhesDespesa', 'contratos'])
+            ->whereIn('id', $request->processos)
+            ->orderBy('data_entrada', 'desc')
+            ->get();
+
+        $pdf = PDF::loadView('relatorios.pdf.processos_selecionados', [
+            'processos' => $processos,
+            'titulo' => 'Relatório de Processos Selecionados',
+            'data_geracao' => Carbon::now()->format('d/m/Y H:i:s')
+        ]);
+
+        return $pdf->download('processos_selecionados.pdf');
+    }
+
+    protected function applyFilters($query, Request $request)
+    {
+        if ($request->filled('numero_processo')) {
+            $query->where('numero_processo', $request->numero_processo);
+        }
+
+        if ($request->filled('requisitante')) {
+            $query->where('requisitante', $request->requisitante);
+        }
+
+        if ($request->filled('data_inicio')) {
+            $query->where('data_entrada', '>=', $request->data_inicio);
+        }
+
+        if ($request->filled('data_fim')) {
+            $query->where('data_entrada', '<=', $request->data_fim);
+        }
+
+        if ($request->filled('modalidade')) {
+            $query->where('modalidade', $request->modalidade);
+        }
+
+        if ($request->filled('procedimentos')) {
+            $query->where('procedimentos_auxiliares', $request->procedimentos);
+        }
+
+        return $query;
     }
 }

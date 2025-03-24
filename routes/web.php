@@ -16,15 +16,12 @@ Route::post('/home/filter', [HomeController::class, 'filter'])->name('home.filte
 
 // Rotas protegidas pelo middleware "auth"
 Route::middleware(['auth'])->group(function () {
-
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/create', [DashboardController::class, 'create'])->name('dashboard.create');
 
-    // CRUD completo (Evita duplicação)
+    // Processos
     Route::resource('processos', ProcessoController::class);
-
-    // Gestão de processos
     Route::prefix('processos')->name('processos.')->group(function () {
         Route::get('/', [ProcessoController::class, 'index'])->name('index');
         Route::get('/create', [ProcessoController::class, 'create'])->name('create');
@@ -34,7 +31,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/{id}', [ProcessoController::class, 'destroy'])->name('destroy');
     });
 
-    //Cadastro de usuários
+    // Usuários
     Route::prefix('usuarios')->name('usuarios.')->group(function () {
         Route::get('/create', [RegisteredUserController::class, 'create'])->name('create');
         Route::post('/create', [RegisteredUserController::class, 'store']);
@@ -42,28 +39,32 @@ Route::middleware(['auth'])->group(function () {
 
     // Relatórios
     Route::prefix('relatorios')->name('relatorios.')->group(function () {
-        // Rotas principais
+        // Página inicial dos relatórios
         Route::get('/', [RelatoriosController::class, 'index'])->name('index');
-        Route::get('/filtro-geral', [RelatoriosController::class, 'filtroGeral'])->name('filtro.geral');
-        Route::get('/contratos-vencimento', [RelatoriosController::class, 'contratosPorVencimento'])->name('contratos.vencimento');
-        Route::get('/contratos-valor', [RelatoriosController::class, 'contratosPorValor'])->name('contratos.valor');
-        Route::get('/categorias-processo', [RelatoriosController::class, 'categoriasPorProcesso'])->name('categorias.processo');
         
-        // Rotas de busca
+        // Filtro Geral
+        Route::get('/filtro-geral/{tipo?}', [RelatoriosController::class, 'filtroGeral'])->name('filtro.geral');
         Route::post('/filtro-geral/buscar', [RelatoriosController::class, 'buscarFiltroGeral'])->name('filtro.geral.buscar');
+        Route::post('/filtro-geral/pdf', [RelatoriosController::class, 'gerarPdfFiltroGeral'])->name('filtro.geral.pdf');
+        
+        // Contratos por Vencimento
+        Route::get('/contratos-vencimento', [RelatoriosController::class, 'contratosPorVencimento'])->name('contratos.vencimento');
         Route::post('/contratos-vencimento/buscar', [RelatoriosController::class, 'buscarContratosPorVencimento'])->name('contratos.vencimento.buscar');
-        Route::post('/contratos-valor/buscar', [RelatoriosController::class, 'buscarContratosPorValor'])->name('contratos.valor.buscar');
-        Route::post('/categorias-processo/buscar', [RelatoriosController::class, 'buscarCategoriasPorProcesso'])->name('categorias.processo.buscar');
-
-        // Rotas para PDFs
         Route::post('/contratos-vencimento/pdf', [RelatoriosController::class, 'gerarPdfContratosSelecionados'])->name('contratos.vencimento.pdf');
+        Route::get('/contratos-vencimento/detalhes/{contrato}', [RelatoriosController::class, 'detalhesContratoVencimento'])->name('contratos.vencimento.detalhes');
+
+        // Contratos por Valor
+        Route::get('/contratos-valor', [RelatoriosController::class, 'contratosPorValor'])->name('contratos.valor');
+        Route::post('/contratos-valor/buscar', [RelatoriosController::class, 'buscarContratosPorValor'])->name('contratos.valor.buscar');
         Route::post('/contratos-valor/pdf', [RelatoriosController::class, 'gerarPdfContratosSelecionados'])->name('contratos.valor.pdf');
+
+        // Categorias por Processo
+        Route::get('/categorias-processo', [RelatoriosController::class, 'categoriasPorProcesso'])->name('categorias.processo');
+        Route::post('/categorias-processo/buscar', [RelatoriosController::class, 'buscarCategoriasPorProcesso'])->name('categorias.processo.buscar');
         Route::post('/categorias-processo/pdf', [RelatoriosController::class, 'gerarPdfProcessosSelecionados'])->name('categorias.processo.pdf');
-    });    
+    });
 });
 
-// Rotas de autenticação
+// Autenticação
 Auth::routes();
-
-// Rotas de autenticação
 require __DIR__.'/auth.php';

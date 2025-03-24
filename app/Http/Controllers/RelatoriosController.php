@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Processo;
 use App\Models\Contrato;
+use App\Models\Categorias;
+use App\Models\DetalhesDespesa;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -15,13 +17,17 @@ class RelatoriosController extends Controller
         return view('relatorios.index');
     }
 
-    public function filtroGeral()
+    public function filtroGeral(Request $request)
     {
-        $requisitantes = Processo::distinct('requisitante')->pluck('requisitante');
-        $modalidades = Processo::distinct('modalidade')->whereNotNull('modalidade')->pluck('modalidade');
-        $procedimentos = Processo::distinct('procedimentos_auxiliares')->whereNotNull('procedimentos_auxiliares')->pluck('procedimentos_auxiliares');
+        $tipo = $request->get('tipo', 'processo');
+        $dados = [
+            'requisitantes' => Processo::distinct('requisitante')->pluck('requisitante'),
+            'modalidades' => Processo::distinct('modalidade')->whereNotNull('modalidade')->pluck('modalidade'),
+            'procedimentos' => Processo::distinct('procedimentos_auxiliares')->whereNotNull('procedimentos_auxiliares')->pluck('procedimentos_auxiliares'),
+            'tipo' => $tipo
+        ];
 
-        return view('relatorios.filtro_geral', compact('requisitantes', 'modalidades', 'procedimentos'));
+        return view('relatorios.filtro_geral', $dados);
     }
 
     public function buscarFiltroGeral(Request $request)
@@ -45,17 +51,14 @@ class RelatoriosController extends Controller
 
     public function buscarContratosPorVencimento(Request $request)
     {
-        $request->validate([
-            'data_inicio' => 'required|date',
-            'data_fim' => 'required|date|after_or_equal:data_inicio'
-        ]);
-
         $query = Contrato::with(['processo']);
 
-        $query->where(function($q) use ($request) {
-            $q->where('data_inicial_contrato', '<=', $request->data_fim)
-              ->where('data_final_contrato', '>=', $request->data_inicio);
-        });
+        if ($request->filled(['data_inicio', 'data_fim'])) {
+            $query->where(function($q) use ($request) {
+                $q->where('data_inicial_contrato', '<=', $request->data_fim)
+                  ->where('data_final_contrato', '>=', $request->data_inicio);
+            });
+        }
 
         $query->orderBy('data_final_contrato', 'asc');
         $contratos = $query->get();
@@ -90,7 +93,45 @@ class RelatoriosController extends Controller
 
     public function categoriasPorProcesso()
     {
-        return view('relatorios.categorias_processo');
+        $valores = [
+            'consumo' => ['min' => 0, 'max' => Categorias::max('valor_consumo')],
+            'permanente' => ['min' => 0, 'max' => Categorias::max('valor_permanente')],
+            'servico' => ['min' => 0, 'max' => Categorias::max('valor_servico')]
+        ];
+
+        $pas = DetalhesDespesa::distinct()
+            ->whereNotNull('pa_consumo')
+            ->orWhereNotNull('pa_permanente')
+            ->orWhereNotNull('pa_servico')
+            ->get()
+            ->map(function($item) {
+                return [
+                    $item->pa_consumo,
+                    $item->pa_permanente,
+                    $item->pa_servico
+                ];
+            })
+            ->flatten()
+            ->unique()
+            ->filter();
+
+        $nds = DetalhesDespesa::distinct()
+            ->whereNotNull('nd_consumo')
+            ->orWhereNotNull('nd_permanente')
+            ->orWhereNotNull('nd_servico')
+            ->get()
+            ->map(function($item) {
+                return [
+                    $item->nd_consumo,
+                    $item->nd_permanente,
+                    $item->nd_servico
+                ];
+            })
+            ->flatten()
+            ->unique()
+            ->filter();
+
+        return view('relatorios.categorias_processo', compact('valores', 'pas', 'nds'));
     }
 
     public function buscarCategoriasPorProcesso(Request $request)
@@ -122,6 +163,8 @@ class RelatoriosController extends Controller
         }
 
         $paFields = ['pa_consumo', 'pa_permanente', 'pa_servico'];
+        $ndFields = ['nd_consumo', 'nd_permanente', 'nd_servico'];
+
         foreach ($paFields as $field) {
             if ($request->filled($field)) {
                 $query->whereHas('categorias.detalhesDespesa', function($q) use ($field, $request) {
@@ -130,7 +173,6 @@ class RelatoriosController extends Controller
             }
         }
 
-        $ndFields = ['nd_consumo', 'nd_permanente', 'nd_servico'];
         foreach ($ndFields as $field) {
             if ($request->filled($field)) {
                 $query->whereHas('categorias.detalhesDespesa', function($q) use ($field, $request) {
@@ -141,7 +183,46 @@ class RelatoriosController extends Controller
 
         $processos = $query->get();
 
-        return view('relatorios.categorias_processo', compact('processos'));
+        // Recupera os valores para os selects
+        $valores = [
+            'consumo' => ['min' => 0, 'max' => Categorias::max('valor_consumo')],
+            'permanente' => ['min' => 0, 'max' => Categorias::max('valor_permanente')],
+            'servico' => ['min' => 0, 'max' => Categorias::max('valor_servico')]
+        ];
+
+        $pas = DetalhesDespesa::distinct()
+            ->whereNotNull('pa_consumo')
+            ->orWhereNotNull('pa_permanente')
+            ->orWhereNotNull('pa_servico')
+            ->get()
+            ->map(function($item) {
+                return [
+                    $item->pa_consumo,
+                    $item->pa_permanente,
+                    $item->pa_servico
+                ];
+            })
+            ->flatten()
+            ->unique()
+            ->filter();
+
+        $nds = DetalhesDespesa::distinct()
+            ->whereNotNull('nd_consumo')
+            ->orWhereNotNull('nd_permanente')
+            ->orWhereNotNull('nd_servico')
+            ->get()
+            ->map(function($item) {
+                return [
+                    $item->nd_consumo,
+                    $item->nd_permanente,
+                    $item->nd_servico
+                ];
+            })
+            ->flatten()
+            ->unique()
+            ->filter();
+
+        return view('relatorios.categorias_processo', compact('processos', 'valores', 'pas', 'nds'));
     }
 
     public function gerarPdfContratosSelecionados(Request $request)

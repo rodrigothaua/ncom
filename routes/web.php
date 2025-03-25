@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProcessoController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\RelatoriosController;
+use App\Http\Controllers\DesenvolvimentoController;
 use Illuminate\Support\Facades\Auth;
 
 // Página inicial (Welcome)
@@ -35,6 +36,11 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('usuarios')->name('usuarios.')->group(function () {
         Route::get('/create', [RegisteredUserController::class, 'create'])->name('create');
         Route::post('/create', [RegisteredUserController::class, 'store']);
+    });
+
+    // Desenvolvimento
+    Route::prefix('desenvolvimento')->name('desenvolvimento.')->group(function () {
+        Route::get('/', [DesenvolvimentoController::class, 'index'])->name('index');
     });
 
     // Relatórios

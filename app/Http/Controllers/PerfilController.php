@@ -30,8 +30,23 @@ class PerfilController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'telefone' => 'required|string|max:15',
+            'role' => 'required|string|in:admin,user',
+            'password' => 'nullable|min:8|confirmed',
+            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
+
+        if ($request->hasFile('profile_photo')) {
+            $file = $request->file('profile_photo');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('profile_photos'), $filename);
+            $validated['profile_photo'] = 'profile_photos/' . $filename;
+        }
+
+        if (isset($validated['password'])) {
+            $validated['password'] = bcrypt($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
 
         $user->update($validated);
 

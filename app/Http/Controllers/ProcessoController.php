@@ -83,11 +83,11 @@ class ProcessoController extends Controller
             'contratos.*.id' => 'nullable|exists:contratos,id',
             'contratos.*.numero_contrato' => 'required_with:contratos|string',
             'contratos.*.nome_empresa_contrato' => 'required_with:contratos|string',
-            'contratos.*.cnpj_contrato' => 'required_with:contratos|string',
-            'contratos.*.numero_telefone_contrato' => 'required_with:contratos|string',
+            'contratos.*.cnpj_contrato' => 'nullable:contratos|string',
+            'contratos.*.numero_telefone_contrato' => 'nullable:contratos|string',
             'contratos.*.valor_contrato' => 'required_with:contratos|string',
-            'contratos.*.data_inicial_contrato' => 'required_with:contratos|date',
-            'contratos.*.data_final_contrato' => 'required_with:contratos|date',
+            'contratos.*.data_inicial_contrato' => 'nullable|date',
+            'contratos.*.data_final_contrato' => 'nullable|date',
             'contratos.*.observacoes' => 'nullable|string', 
         ]);
 
@@ -141,8 +141,8 @@ class ProcessoController extends Controller
                         'cnpj_contrato' => $contrato['cnpj_contrato'],
                         'numero_telefone_contrato' => $contrato['numero_telefone_contrato'],
                         'valor_contrato' => $valor_contrato,
-                        'data_inicial_contrato' => $contrato['data_inicial_contrato'],
-                        'data_final_contrato' => $contrato['data_final_contrato'],
+                        'data_inicial_contrato' => $contrato['data_inicial_contrato'] ?? null,
+                        'data_final_contrato' => $contrato['data_final_contrato'] ?? null,
                         'observacoes' => $contrato['observacao'] ?? null,
                     ]);
                 } else {
@@ -152,8 +152,8 @@ class ProcessoController extends Controller
                         'cnpj_contrato' => $contrato['cnpj_contrato'],
                         'numero_telefone_contrato' => $contrato['numero_telefone_contrato'],
                         'valor_contrato' => $valor_contrato,
-                        'data_inicial_contrato' => $contrato['data_inicial_contrato'],
-                        'data_final_contrato' => $contrato['data_final_contrato'],
+                        'data_inicial_contrato' => $contrato['data_inicial_contrato'] ?? nulll,
+                        'data_final_contrato' => $contrato['data_final_contrato'] ?? null,
                         'observacoes' => $contrato['observacao'] ?? null,
                     ]);
                 }

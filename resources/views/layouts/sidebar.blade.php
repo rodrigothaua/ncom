@@ -56,6 +56,12 @@
                     </li>
                 </ul>
             </li>
+            <li class="sidebar-item">
+                <a href="{{ route('desenvolvimento.index') }}" class="sidebar-link">
+                    <i class="bi bi-code-slash"></i> 
+                        Desenvolvimento
+                </a>
+            </li>
         </ul>
         <div class="dropdown pb-4 text-center position-absolute bottom-0 w-100">
             <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">

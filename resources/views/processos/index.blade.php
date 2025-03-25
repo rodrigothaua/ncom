@@ -37,12 +37,12 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Número do Processo</th>
+                <th style="min-width: 200px">Número do Processo</th>
                 <th>Descrição</th>
                 <th>Requisitante</th>
                 <th>Data de Entrada</th>
                 <th>Valor Total</th>
-                <th>Ações</th>
+                <th style="min-width: 250px">Ações</th>
             </tr>
         </thead>
         <tbody>

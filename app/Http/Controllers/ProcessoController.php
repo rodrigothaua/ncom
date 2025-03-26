@@ -181,7 +181,11 @@ class ProcessoController extends Controller
 
     public function edit($id)
     {
-        $processo = Processo::with('contratos')->findOrFail($id);
+        $processo = Processo::with([
+            'categorias.detalhesDespesa',
+            'contratos'
+        ])->findOrFail($id);
+
         return view('processos.edit', compact('processo'));
     }
 

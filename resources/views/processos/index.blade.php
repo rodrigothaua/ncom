@@ -180,7 +180,16 @@
             document.getElementById("det-nd-permanente").innerText = processo.categorias.detalhes_despesa.nd_permanente || '-';
             document.getElementById("det-pa-servico").innerText = processo.categorias.detalhes_despesa.pa_servico || '-';
             document.getElementById("det-nd-servico").innerText = processo.categorias.detalhes_despesa.nd_servico || '-';
+        } else {
+            document.getElementById("det-pa-consumo").innerText = '-';
+            document.getElementById("det-nd-consumo").innerText = '-';
+            document.getElementById("det-pa-permanente").innerText = '-';
+            document.getElementById("det-nd-permanente").innerText = '-';
+            document.getElementById("det-pa-servico").innerText = '-';
+            document.getElementById("det-nd-servico").innerText = '-';
         }
+        // Exibir descrição completa no modal  
+         document.getElementById("descricaoCompleta").innerText = processo.descricao_completa || 'Nenhuma descrição completa disponível.';
 
         // Contratos
         let contratosLista = document.getElementById("det-contratos");
@@ -203,7 +212,8 @@
     document.addEventListener('DOMContentLoaded', function() {
         atualizarValoresTotais();
     });
-        function atualizarValoresTotais() {
+    
+    function atualizarValoresTotais() {
         const valoresTotais = document.querySelectorAll('.valor-total');
         valoresTotais.forEach(valorTotal => {
             const consumo = parseFloat(valorTotal.dataset.consumo) || 0;

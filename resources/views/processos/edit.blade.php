@@ -69,49 +69,49 @@
                             <label>Consumo</label>
                             <input type="text" name="valor_consumo" id="valor_consumo" class="form-control money"
                                 placeholder="R$0,00" oninput="calcularTotal()"
-                                value="{{ $processo->valor_consumo }}">
+                                value="{{ number_format($processo->categorias->valor_consumo ?? 0, 2, ',', '.') }}">
                             <div id="pa_consumo_container" class="mt-2 {{ $processo->consumo_despesa ? '' : 'd-none' }}">
                                 <label for="numero_pa_consumo">Número de PA (Consumo)</label>
                                 <input type="text" name="consumo_despesa[numero_pa]" class="form-control pa-input"
                                     placeholder="00.000.0000.0000"
-                                    value="{{ $processo->consumo_despesa ? $processo->consumo_despesa['numero_pa'] : '' }}">
+                                    value="{{ $processo->categorias->detalhesDespesa->pa_consumo ?? '' }}">
                                 <label for="natureza_despesa_consumo">Natureza da Despesa (Consumo)</label>
                                 <input type="text" name="consumo_despesa[natureza_despesa]" class="form-control nd-input"
                                     placeholder="0.0.00.00"
-                                    value="{{ $processo->consumo_despesa ? $processo->consumo_despesa['natureza_despesa'] : '' }}">
+                                    value="{{ $processo->categorias->detalhesDespesa->nd_consumo ?? '' }}">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <label>Permanente</label>
                             <input type="text" name="valor_permanente" id="valor_permanente" class="form-control money"
                                 placeholder="R$0,00" oninput="calcularTotal()"
-                                value="{{ $processo->valor_permanente }}">
+                                value="{{ number_format($processo->categorias->valor_permanente ?? 0, 2, ',', '.') }}">
                             <div id="pa_permanente_container" class="mt-2 {{ $processo->permanente_despesa ? '' : 'd-none' }}">
                                 <label for="numero_pa_permanente">Número de PA (Permanente)</label>
                                 <input type="text" name="permanente_despesa[numero_pa]" class="form-control pa-input"
                                     placeholder="00.000.0000.0000"
-                                    value="{{ $processo->permanente_despesa ? $processo->permanente_despesa['numero_pa'] : '' }}">
+                                    value="{{ $processo->categorias->detalhesDespesa->pa_permanente ?? '' }}">
                                 <label for="natureza_despesa_permanente">Natureza da Despesa (Permanente)</label>
                                 <input type="text" name="permanente_despesa[natureza_despesa]" class="form-control nd-input"
                                     placeholder="0.0.00.00"
-                                    value="{{ $processo->permanente_despesa ? $processo->permanente_despesa['natureza_despesa'] : '' }}">
+                                    value="{{ $processo->categorias->detalhesDespesa->nd_permanente ?? '' }}">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <label>Serviço</label>
                             <input type="text" name="valor_servico" id="valor_servico" class="form-control money"
                                 placeholder="R$0,00" oninput="calcularTotal()"
-                                value="{{ $processo->valor_servico }}">
+                                value="{{ number_format($processo->categorias->valor_servico ?? 0, 2, ',', '.') }}">
                             <div id="pa_servico_container"
-                                class="mt-2 {{ $processo->servico_despesa ? '' : 'd-none' }}">
+                                class="mt-2 {{ $processo->categorias->detalhesDespesa->pa_servico ? '' : 'd-none' }}">
                                 <label for="numero_pa_servico">Número de PA (Serviço)</label>
                                 <input type="text" name="servico_despesa[numero_pa]" class="form-control pa-input"
                                     placeholder="00.000.0000.0000"
-                                    value="{{ $processo->servico_despesa ? $processo->servico_despesa['numero_pa'] : '' }}">
+                                    value="{{ $processo->categorias->detalhesDespesa->pa_servico ?? '' }}">
                                 <label for="natureza_despesa_servico">Natureza da Despesa (Serviço)</label>
                                 <input type="text" name="servico_despesa[natureza_despesa]" class="form-control nd-input"
                                     placeholder="0.0.00.00"
-                                    value="{{ $processo->servico_despesa ? $processo->servico_despesa['natureza_despesa'] : '' }}">
+                                    value="{{ $processo->categorias->detalhesDespesa->nd_servico ?? '' }}">
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -269,5 +269,22 @@
         // Inicializa as máscaras
         aplicarMascaras();
     });
+
+    // funçção para calcular o valor total
+    function calcularTotal() {
+        let valorConsumo = parseFloat(document.getElementById('valor_consumo').value.replace(/[^\d,-]/g, '').replace('.', '').replace(',', '.'));
+        let valorPermanente = parseFloat(document.getElementById('valor_permanente').value.replace(/[^\d,-]/g, '').replace('.', '').replace(',', '.'));
+        let valorServico = parseFloat(document.getElementById('valor_servico').value.replace(/[^\d,-]/g, '').replace('.', '').replace(',', '.'));
+
+        if (isNaN(valorConsumo)) valorConsumo = 0;
+        if (isNaN(valorPermanente)) valorPermanente = 0;
+        if (isNaN(valorServico)) valorServico = 0;
+
+        let total = valorConsumo + valorPermanente + valorServico;
+
+        document.getElementById('valor_total').value = 'R$' + total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    window.onload = calcularTotal;
 </script>
 @endsection

@@ -9,6 +9,12 @@
                 Admin Elements
             </li>
             <li class="sidebar-item">
+                <a href="{{ route('home') }}" class="sidebar-link">
+                    <i class="bi bi-house"></i>
+                        Home
+                </a>
+            </li>
+            <li class="sidebar-item">
                 <a href="{{ route('dashboard') }}" class="sidebar-link">
                     <i class="bi bi-speedometer2"></i>
                         Dashboard

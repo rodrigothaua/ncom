@@ -14,10 +14,42 @@ use App\Models\Contrato;
 
 class ProcessoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $processos = Processo::with(['contratos', 'categorias', 'categorias.detalhesDespesa'])->paginate(10);
-        return view('processos.index', compact('processos'));
+        $query = Processo::with(['contratos', 'categorias', 'categorias.detalhesDespesa']);
+        
+        // Aplicar filtros se fornecidos
+        if ($request->filled('numero_processo')) {
+            $query->where('numero_processo', 'like', '%' . $request->numero_processo . '%');
+        }
+        
+        if ($request->filled('descricao')) {
+            $query->where('descricao', 'like', '%' . $request->descricao . '%');
+        }
+        
+        if ($request->filled('requisitante')) {
+            $query->where('requisitante', 'like', '%' . $request->requisitante . '%');
+        }
+        
+        if ($request->filled('data_entrada')) {
+            $query->whereDate('data_entrada', $request->data_entrada);
+        }
+        
+        if ($request->filled('valor_total')) {
+            $query->where('valor_total', $request->valor_total);
+        }
+        
+        // Ordenar e paginar os resultados
+        $processos = $query->orderBy('created_at', 'desc')->paginate(10);
+        
+        // Buscar todos os requisitantes únicos do banco de dados
+        $requisitantes = Processo::select('requisitante')
+        ->distinct()
+        ->whereNotNull('requisitante')
+        ->orderBy('requisitante')
+        ->pluck('requisitante');
+
+        return view('processos.index', compact('processos', 'requisitantes'));
     }
 
     public function create()

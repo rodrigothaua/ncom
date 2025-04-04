@@ -33,39 +33,99 @@
         </div>
     </div>
 
+    <div class="row">
+        <!-- Adicione este bloco no topo da sua view index de processos -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-search me-1"></i> Filtrar Processos
+            </div>
+            <div class="card-body">
+                <form action="{{ route('processos.index') }}" method="GET" class="row g-3">
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-hash"></i></span>
+                            <input type="text" class="form-control" name="numero_processo" placeholder="Número do Processo" value="{{ request('numero_processo') }}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-file-text"></i></span>
+                            <input type="text" class="form-control" name="descricao" placeholder="Descrição" value="{{ request('descricao') }}">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <select class="form-select" name="requisitante">
+                                <option value="">Selecione um Requisitante</option>
+                                @foreach($requisitantes as $requisitante)
+                                    <option value="{{ $requisitante }}" {{ request('requisitante') == $requisitante ? 'selected' : '' }}>
+                                        {{ $requisitante }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                            <input type="date" class="form-control" name="data_entrada" placeholder="Data de Entrada" value="{{ request('data_entrada') }}">
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+                            <input type="text" class="form-control" name="valor_total" placeholder="Valor Total" value="{{ request('valor_total') }}">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-search"></i> Pesquisar
+                        </button>
+                        <a href="{{ route('processos.index') }}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Limpar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th style="min-width: 200px">Número do Processo</th>
-                <th>Descrição</th>
-                <th>Requisitante</th>
-                <th>Data de Entrada</th>
-                <th>Valor Total</th>
-                <th style="min-width: 250px">Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($processos as $processo)
+        <!-- tabela de processos -->
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>{{ $processo->numero_processo }}</td>
-                    <td>{{ $processo->descricao }}</td>
-                    <td>{{ $processo->requisitante }}</td>
-                    <td>{{ $processo->data_entrada ? date('d/m/Y', strtotime($processo->data_entrada)) : '-' }}</td>
-                    <td class="valor-total" data-consumo="{{ $processo->categorias ? $processo->categorias->valor_consumo : 0 }}" data-permanente="{{ $processo->categorias ? $processo->categorias->valor_permanente : 0 }}" data-servico="{{ $processo->categorias ? $processo->categorias->valor_servico : 0 }}"></td>
-                    <td>
-                        <button class="btn btn-primary btn-sm" onclick="mostrarDetalhes({{ json_encode($processo) }})">Detalhes</button>
-                        <a href="{{ route('processos.edit', $processo->id) }}" class="btn btn-sm btn-warning">Editar</a>
-                        <form action="{{ route('processos.destroy', $processo->id) }}" method="POST" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza?')">Excluir</button>
-                        </form>
-                    </td>
+                    <th style="min-width: 200px">Número do Processo</th>
+                    <th>Descrição</th>
+                    <th>Requisitante</th>
+                    <th>Data de Entrada</th>
+                    <th>Valor Total</th>
+                    <th style="min-width: 250px">Ações</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach ($processos as $processo)
+                    <tr>
+                        <td>{{ $processo->numero_processo }}</td>
+                        <td>{{ $processo->descricao }}</td>
+                        <td>{{ $processo->requisitante }}</td>
+                        <td>{{ $processo->data_entrada ? date('d/m/Y', strtotime($processo->data_entrada)) : '-' }}</td>
+                        <td class="valor-total" data-consumo="{{ $processo->categorias ? $processo->categorias->valor_consumo : 0 }}" data-permanente="{{ $processo->categorias ? $processo->categorias->valor_permanente : 0 }}" data-servico="{{ $processo->categorias ? $processo->categorias->valor_servico : 0 }}"></td>
+                        <td>
+                            <button class="btn btn-primary btn-sm" onclick="mostrarDetalhes({{ json_encode($processo) }})">Detalhes</button>
+                            <a href="{{ route('processos.edit', $processo->id) }}" class="btn btn-sm btn-warning">Editar</a>
+                            <form action="{{ route('processos.destroy', $processo->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza?')">Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+
+    
 
     <!-- Modal de Detalhes -->
     <div class="modal fade" id="modalDetalhes" tabindex="-1" aria-labelledby="modalDetalhesLabel" aria-hidden="true">

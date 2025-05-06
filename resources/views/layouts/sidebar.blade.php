@@ -46,6 +46,11 @@
                 </a>
                 <ul id="relatorios" class="sidebar-dropdown list-unstyled collapse sidebar-submenu" data-bs-parent="#sidebar">
                     <li class="sidebar-item">
+                        <a href="{{ route('relatorios.filtro.geral') }}" class="sidebar-link">
+                            <i class="bi bi-calendar-check"></i> Filtro Geral
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
                         <a href="{{ route('relatorios.contratos.vencimento') }}" class="sidebar-link">
                             <i class="bi bi-calendar-check"></i> Contratos por Vencimento
                         </a>

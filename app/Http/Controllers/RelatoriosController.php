@@ -42,7 +42,8 @@ class RelatoriosController extends Controller
             'requisitantes' => Processo::distinct('requisitante')->pluck('requisitante'),
             'modalidades' => Processo::distinct('modalidade')->whereNotNull('modalidade')->pluck('modalidade'),
             'procedimentos' => Processo::distinct('procedimentos_auxiliares')->whereNotNull('procedimentos_auxiliares')->pluck('procedimentos_auxiliares'),
-            'tipo' => $tipo
+            'tipo' => $tipo,
+            'filtros' => $request->all() // Passa os filtros aplicados para a view
         ]);
     }
 
@@ -267,6 +268,29 @@ class RelatoriosController extends Controller
         ]);
 
         return $pdf->download('processos_selecionados.pdf');
+    }
+
+    public function gerarPdfFiltroGeral(Request $request)
+    {
+        $request->validate([
+            'processos' => 'required|array|min:1',
+            'processos.*' => 'exists:processos,id'
+        ]);
+
+        $processosSelecionados = Processo::with(['contratos', 'categorias', 'categorias.detalhesDespesa'])
+            ->whereIn('id', $request->processos)
+            ->get();
+
+        $tipo = $request->get('tipo', 'processo');
+
+        $pdf = PDF::loadView('relatorios.pdf.filtro_geral', [
+            'resultados' => $processosSelecionados,
+            'titulo' => 'Relatório de Filtro Geral',
+            'data_geracao' => Carbon::now()->format('d/m/Y H:i:s'),
+            'tipo' => $tipo
+        ]);
+
+        return $pdf->download('relatorio_filtro_geral.pdf');
     }
 
     protected function applyFilters($query, Request $request)

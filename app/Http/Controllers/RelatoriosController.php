@@ -35,12 +35,14 @@ class RelatoriosController extends Controller
         $query = Processo::with(['contratos', 'categorias', 'categorias.detalhesDespesa']);
         $query = $this->applyFilters($query, $request);
         $resultados = $query->get();
+        $tipo = $request->get('tipo', 'processo');
 
         return view('relatorios.filtro_geral', [
             'resultados' => $resultados,
             'requisitantes' => Processo::distinct('requisitante')->pluck('requisitante'),
             'modalidades' => Processo::distinct('modalidade')->whereNotNull('modalidade')->pluck('modalidade'),
-            'procedimentos' => Processo::distinct('procedimentos_auxiliares')->whereNotNull('procedimentos_auxiliares')->pluck('procedimentos_auxiliares')
+            'procedimentos' => Processo::distinct('procedimentos_auxiliares')->whereNotNull('procedimentos_auxiliares')->pluck('procedimentos_auxiliares'),
+            'tipo' => $tipo
         ]);
     }
 

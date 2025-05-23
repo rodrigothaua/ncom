@@ -43,6 +43,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [DesenvolvimentoController::class, 'index'])->name('index');
     });
 
+    // Documentação da API
+    Route::get('/api/documentacao', [App\Http\Controllers\API\DocumentacaoController::class, 'index'])->name('api.documentacao');
+
     // Relatórios
     Route::prefix('relatorios')->name('relatorios.')->group(function () {
         // Página inicial dos relatórios

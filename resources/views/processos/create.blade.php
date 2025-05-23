@@ -75,6 +75,8 @@
                             <option selected disabled>Selecione...</option>
                             <option value="GEPLAN">GEPLAN</option>
                             <option value="GAB">GAB</option>
+                            <option value="GAEX">GAEX</option>
+                            <option value="NGESC">NGESC</option>
                             <option value="FUNESP">FUNESP</option>
                             <option value="GETEC">GETEC</option>
                             <option value="GECONV">GECONV</option>

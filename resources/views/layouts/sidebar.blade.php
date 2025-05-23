@@ -73,6 +73,12 @@
                         Desenvolvimento
                 </a>
             </li>
+            <li class="sidebar-item">
+                <a href="{{ route('api.documentacao') }}" class="sidebar-link">
+                    <i class="bi bi-file-code"></i> 
+                        Documentação API
+                </a>
+            </li>
         </ul>
         <div class="dropdown pb-4 text-center position-absolute bottom-0 w-100">
             <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">

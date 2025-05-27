@@ -45,6 +45,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Documentação da API
     Route::get('/api/documentacao', [App\Http\Controllers\API\DocumentacaoController::class, 'index'])->name('api.documentacao');
+    Route::get('/api/documentacao/react', [App\Http\Controllers\API\DocumentacaoController::class, 'exemploReact'])->name('api.documentacao.react');
 
     // Relatórios
     Route::prefix('relatorios')->name('relatorios.')->group(function () {

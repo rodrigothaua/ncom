@@ -230,6 +230,15 @@
                         <li><span class="badge bg-danger">422</span> Erro de validação</li>
                         <li><span class="badge bg-danger">500</span> Erro interno do servidor</li>
                     </ul>
+
+                    <hr>
+
+                    <h6 class="fw-bold mt-4">Exemplos de Implementação</h6>
+                    <div class="mt-3">
+                        <a href="{{ route('api.documentacao.react') }}" class="btn btn-primary">
+                            <i class="bi bi-react"></i> Ver Exemplo com React.js
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

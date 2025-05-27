@@ -10,4 +10,9 @@ class DocumentacaoController extends Controller
     {
         return view('api.documentacao');
     }
+
+    public function exemploReact()
+    {
+        return view('api.exemplos.react');
+    }
 }

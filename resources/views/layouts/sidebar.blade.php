@@ -79,6 +79,29 @@
                         Documentação API
                 </a>
             </li>
+            <li class="sidebar-item">
+                <a href="#" class="sidebar-link collapsed" data-bs-target="#orcamentos" data-bs-toggle="collapse"
+                    aria-expanded="false"><i class="bi bi-currency-dollar pe-2"></i>
+                    Orçamentos
+                </a>
+                <ul id="orcamentos" class="sidebar-dropdown list-unstyled collapse sidebar-submenu" data-bs-parent="#sidebar">
+                    <li class="sidebar-item">
+                        <a href="{{ route('orcamentos.index') }}" class="sidebar-link">
+                            <i class="bi bi-graph-up"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="{{ route('orcamentos.fontes') }}" class="sidebar-link">
+                            <i class="bi bi-diagram-2"></i> Fontes de Orçamento
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="{{ route('orcamentos.orcamentos') }}" class="sidebar-link">
+                            <i class="bi bi-cash-stack"></i> Lista de Orçamentos
+                        </a>
+                    </li>
+                </ul>
+            </li>
         </ul>
         <div class="dropdown pb-4 text-center position-absolute bottom-0 w-100">
             <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">

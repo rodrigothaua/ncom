@@ -7,6 +7,7 @@ use App\Http\Controllers\ProcessoController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\RelatoriosController;
 use App\Http\Controllers\DesenvolvimentoController;
+use App\Http\Controllers\OrcamentoController;
 use Illuminate\Support\Facades\Auth;
 
 // Página inicial (Welcome)
@@ -46,6 +47,31 @@ Route::middleware(['auth'])->group(function () {
     // Documentação da API
     Route::get('/api/documentacao', [App\Http\Controllers\API\DocumentacaoController::class, 'index'])->name('api.documentacao');
     Route::get('/api/documentacao/react', [App\Http\Controllers\API\DocumentacaoController::class, 'exemploReact'])->name('api.documentacao.react');
+
+    // Orçamentos
+    Route::prefix('orcamentos')->name('orcamentos.')->group(function () {
+        // Dashboard
+        Route::get('/', [OrcamentoController::class, 'index'])->name('index');
+        
+        // Fontes de Orçamento
+        Route::get('/fontes', [OrcamentoController::class, 'fontes'])->name('fontes');
+        Route::get('/fontes/criar', [OrcamentoController::class, 'criarFonte'])->name('fontes.criar');
+        Route::post('/fontes', [OrcamentoController::class, 'salvarFonte'])->name('fontes.salvar');
+        
+        // Orçamentos
+        Route::get('/lista', [OrcamentoController::class, 'orcamentos'])->name('orcamentos');
+        Route::get('/criar', [OrcamentoController::class, 'criar'])->name('criar');
+        Route::post('/', [OrcamentoController::class, 'salvar'])->name('salvar');
+        Route::get('/{id}', [OrcamentoController::class, 'detalhes'])->name('detalhes');
+        
+        // Alocações
+        Route::get('/{id}/alocar', [OrcamentoController::class, 'alocar'])->name('alocar');
+        Route::post('/{id}/alocar', [OrcamentoController::class, 'salvarAlocacao'])->name('alocar.salvar');
+        
+        // Utilização
+        Route::get('/{id}/utilizar/{detalheId}', [OrcamentoController::class, 'registrarUtilizacao'])->name('utilizar');
+        Route::post('/{id}/utilizar/{detalheId}', [OrcamentoController::class, 'salvarUtilizacao'])->name('utilizar.salvar');
+    });
 
     // Relatórios
     Route::prefix('relatorios')->name('relatorios.')->group(function () {

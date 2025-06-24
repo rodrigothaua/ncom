@@ -11,6 +11,8 @@ return new class extends Migration
         Schema::create('orcamentos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('fonte_orcamento_id')->constrained('fontes_orcamento');
+            $table->foreignId('created_by')->constrained('users');
+            $table->foreignId('updated_by')->nullable()->constrained('users');
             $table->string('numero_orcamento')->unique();
             $table->decimal('valor_total', 15, 2);
             $table->decimal('valor_utilizado', 15, 2)->default(0);
@@ -37,6 +39,8 @@ return new class extends Migration
         Schema::create('detalhes_despesa_orcamento', function (Blueprint $table) {
             $table->id();
             $table->foreignId('detalhes_despesa_id')->constrained('detalhes_despesa')->onDelete('cascade');
+            $table->foreignId('created_by')->constrained('users');
+            $table->foreignId('updated_by')->nullable()->constrained('users');
             $table->foreignId('orcamento_id')->constrained('orcamentos')->onDelete('cascade');
             $table->decimal('valor_alocado', 15, 2);
             $table->decimal('valor_utilizado', 15, 2)->default(0);

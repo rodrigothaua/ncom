@@ -97,9 +97,11 @@
                     <th style="min-width: 200px">Número do Processo</th>
                     <th>Descrição</th>
                     <th>Requisitante</th>
-                    <th>Data de Entrada</th>
-                    <th>Valor Total</th>
-                    <th style="min-width: 250px">Ações</th>
+                        <th>Data de Entrada</th>
+                        <th>Valor Total</th>
+                        <th>Criado por</th>
+                        <th>Última Atualização</th>
+                        <th style="min-width: 250px">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -110,6 +112,8 @@
                         <td>{{ $processo->requisitante }}</td>
                         <td>{{ $processo->data_entrada ? date('d/m/Y', strtotime($processo->data_entrada)) : '-' }}</td>
                         <td class="valor-total" data-consumo="{{ $processo->categorias ? $processo->categorias->valor_consumo : 0 }}" data-permanente="{{ $processo->categorias ? $processo->categorias->valor_permanente : 0 }}" data-servico="{{ $processo->categorias ? $processo->categorias->valor_servico : 0 }}"></td>
+                        <td>{{ $processo->creator ? $processo->creator->name : '-' }}</td>
+                        <td>{{ $processo->updater ? $processo->updater->name . ' em ' . $processo->updated_at->format('d/m/Y H:i') : '-' }}</td>
                         <td>
                             <button class="btn btn-primary btn-sm" onclick="mostrarDetalhes({{ json_encode($processo) }})">Detalhes</button>
                             <a href="{{ route('processos.edit', $processo->id) }}" class="btn btn-sm btn-warning">Editar</a>
@@ -136,6 +140,10 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <p><strong>Informações de Rastreamento:</strong></p>
+                <p class="text-muted" id="det-creator-info"></p>
+                <p class="text-muted" id="det-updater-info"></p>
+                <hr>
                 <p><strong>Número do Processo:</strong> <span id="det-numero"></span></p>
                 <p><strong>Descrição:</strong> <span id="det-descricao"></span></p>
                 <p><strong>Requisitante:</strong> <span id="det-requisitante"></span></p>
@@ -217,6 +225,10 @@
 <script>
     // script para exibir detalhes do processo e soma do valor total
     function mostrarDetalhes(processo) {
+        // Informações de rastreamento
+        document.getElementById("det-creator-info").innerText = processo.creator_info || 'Informação de criação não disponível';
+        document.getElementById("det-updater-info").innerText = processo.updater_info || 'Informação de atualização não disponível';
+        
         document.getElementById("det-numero").innerText = processo.numero_processo;
         document.getElementById("det-descricao").innerText = processo.descricao;
         document.getElementById("det-requisitante").innerText = processo.requisitante;
